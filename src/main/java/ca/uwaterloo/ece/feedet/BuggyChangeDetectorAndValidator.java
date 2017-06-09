@@ -202,7 +202,7 @@ public class BuggyChangeDetectorAndValidator {
 				process(new IntOverflowOfMathMin(projectName,preFixWholeCodeAST,id,newPath,repo).detect());
 				process(new SleepWithNegativeValue(projectName,preFixWholeCodeAST,id,newPath,repo).detect());
 			}else{
-				Class<?> bugPatternClass = Class.forName("ca.uwaterloo.ece.detector.bugpatterns." + patternName);
+				Class<?> bugPatternClass = Class.forName("ca.uwaterloo.ece.feedet.bugpatterns." + patternName);
 				Constructor<?> constructor = bugPatternClass.getConstructor(String.class, JavaASTParser.class,String.class,String.class,Repository.class);
 				process(((Bug)constructor.newInstance(projectName,preFixWholeCodeAST,id,newPath,repo)).detect());
 			}
