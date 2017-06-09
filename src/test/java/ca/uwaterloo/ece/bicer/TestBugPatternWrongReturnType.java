@@ -40,6 +40,16 @@ public class TestBugPatternWrongReturnType {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(++numOfTPs,identifiedPotentialBug.size());
     	
+    	// FP WrongReturnType	kafka	Alive	d0e436c471ba4122ddcc0f7a1624546f97c4a517	connect/api/src/main/java/org/apache/kafka/connect/data/Struct.java
+    	// 129	public Long getInt64(String fieldName){
+    	// 143	public Double getFloat64(String fieldName){
+    	projectName = "kafka";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "connect/api/src/main/java/org/apache/kafka/connect/data/Struct.java";
+    	shaId = "d0e436c471ba4122ddcc0f7a1624546f97c4a517";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

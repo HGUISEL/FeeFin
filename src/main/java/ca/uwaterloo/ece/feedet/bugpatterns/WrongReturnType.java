@@ -21,6 +21,7 @@ public class WrongReturnType extends Bug {
 		// An example loop to get some AST nodes to analyze
 		for(MethodDeclaration methodDec:wholeCodeAST.getMethodDeclarations()){
 			
+			// Q1
 			if(!isViolatedReturnPrimitiveTypeAndMethodName(methodDec))
 				continue;
 			
@@ -56,7 +57,7 @@ public class WrongReturnType extends Bug {
 
 	private boolean containsOtherPrimitiveRatherThanItSelf(String returnType, String methodName) {
 		
-		if(methodName.contains(returnType)) return false;
+		if(returnProperTypeBasedOnMethodName(methodName,returnType)) return false;
 
 		if(methodName.contains("int") 
 				|| methodName.contains("long") 
@@ -65,6 +66,34 @@ public class WrongReturnType extends Bug {
 		)
 			return true;
 
+		return false;
+	}
+
+	private boolean returnProperTypeBasedOnMethodName(String methodName, String returnType) {
+		
+		// for Q2
+		// Long getInt64
+		if(returnType.equals("long")){
+			
+			if(methodName.contains(returnType)) return true;
+			
+			// int64 in methodName?
+			if(methodName.contains("int64")) return true;
+
+		}
+			
+		// Double getFloat64
+		if(returnType.equals("double")){
+			
+			if(methodName.contains(returnType)) return true;
+			
+			// int64 in methodName?
+			if(methodName.contains("float64")) return true;
+		}
+		
+		if(methodName.contains(returnType)) return true;
+			
+		
 		return false;
 	}
 
