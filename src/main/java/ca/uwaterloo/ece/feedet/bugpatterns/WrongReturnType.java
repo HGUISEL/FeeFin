@@ -59,10 +59,14 @@ public class WrongReturnType extends Bug {
 		
 		if(returnProperTypeBasedOnMethodName(methodName,returnType)) return false;
 
-		if(methodName.contains("int") 
-				|| methodName.contains("long") 
-				|| methodName.contains("float") 
-				|| methodName.contains("double")
+		if(methodName.endsWith("int")
+				|| methodName.endsWith("int32") 
+				|| methodName.endsWith("int64") 
+				|| methodName.endsWith("long") 
+				|| methodName.endsWith("float") 
+				|| methodName.endsWith("float32") 
+				|| methodName.endsWith("float64") 
+				|| methodName.endsWith("double")
 		)
 			return true;
 
@@ -75,25 +79,42 @@ public class WrongReturnType extends Bug {
 		// Long getInt64
 		if(returnType.equals("long")){
 			
-			if(methodName.contains(returnType)) return true;
+			if(methodName.endsWith(returnType)) return true;
 			
 			// int64 in methodName?
-			if(methodName.contains("int64")) return true;
+			if(methodName.endsWith("int64")) return true;
 
 		}
 			
 		// Double getFloat64
 		if(returnType.equals("double")){
 			
-			if(methodName.contains(returnType)) return true;
+			if(methodName.endsWith(returnType)) return true;
 			
 			// int64 in methodName?
-			if(methodName.contains("float64")) return true;
+			if(methodName.endsWith("float64")) return true;
 		}
 		
-		if(methodName.contains(returnType)) return true;
+		// float getFloat32
+		if(returnType.equals("float")){
 			
+			if(methodName.endsWith(returnType)) return true;
+			
+			// int64 in methodName?
+			if(methodName.endsWith("float32")) return true;
+		}
 		
+		// int getInt32
+		if(returnType.equals("int")){
+			
+			if(methodName.endsWith(returnType)) return true;
+			
+			// int64 in methodName?
+			if(methodName.endsWith("int32")) return true;
+		}
+		
+		if(methodName.endsWith(returnType)) return true;
+			
 		return false;
 	}
 

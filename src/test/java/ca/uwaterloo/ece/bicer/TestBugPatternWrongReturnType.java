@@ -50,6 +50,25 @@ public class TestBugPatternWrongReturnType {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP d0e436c471ba4122ddcc0f7a1624546f97c4a517		connect/api/src/main/java/org/apache/kafka/connect/data/Struct.java
+    	// 136 public Float getFloat32(String fieldName){
+    	projectName = "kafka";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "connect/api/src/main/java/org/apache/kafka/connect/data/Struct.java";
+    	shaId = "d0e436c471ba4122ddcc0f7a1624546f97c4a517";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP WrongReturnType storm   Alive   eceb8ed797e7a528e074f3e45f63040428e0719b        external/storm-kinesis/src/main/java/org/apache/storm/kinesis/spout/ZkInfo.java 67      public     Long getCommitIntervalMs(){
+    	projectName = "storm";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "external/storm-kinesis/src/main/java/org/apache/storm/kinesis/spout/ZkInfo.java";
+    	shaId = "eceb8ed797e7a528e074f3e45f63040428e0719b";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
