@@ -11,7 +11,7 @@
 apply plugin: 'java'
 apply plugin: 'application' // gradle distZip to generate a runnable package, $ gradle distZip
 
-mainClassName = "ca.uwaterloo.ece.bicer.BICCollector" //"ca.uwaterloo.ece.bicer.NoiseFilterRunner"
+mainClassName = "ca.uwaterloo.ece.feedet.JITFeeDetSimulator" //"ca.uwaterloo.ece.bicer.NoiseFilterRunner"
 
 // In this section you declare where to find the dependencies of your project
 repositories {
