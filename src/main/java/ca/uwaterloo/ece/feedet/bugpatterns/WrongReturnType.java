@@ -35,19 +35,46 @@ public class WrongReturnType extends Bug {
 
 	private boolean isViolatedReturnPrimitiveTypeAndMethodName(MethodDeclaration methodDec) {
 		
+		if(methodDec.getReturnType2()==null) return false; // ignore if there is no return type, i.e., constructor
+		
 		String returnType = methodDec.getReturnType2().toString().toLowerCase();
 		String methodName = methodDec.getName().toString().toLowerCase();
 		
 		// only consider following primitive types
-		if(returnType.equals("int") || returnType.equals("long") || returnType.equals("float") || returnType.equals("double")){
+		if(containsTagetPrimitive(returnType)){
 			
 			if(methodName.startsWith("to") || methodName.startsWith("get")){
 				
-				if(!methodName.contains(returnType)) return true;
+				if(containsOtherPrimitiveRatherThanItSelf(returnType, methodName)) return true;
 				
 			}
 			return false;
 		}
+		
+		return false;
+	}
+
+	private boolean containsOtherPrimitiveRatherThanItSelf(String returnType, String methodName) {
+		
+		if(methodName.contains(returnType)) return false;
+
+		if(methodName.contains("int") 
+				|| methodName.contains("long") 
+				|| methodName.contains("float") 
+				|| methodName.contains("double")
+		)
+			return true;
+
+		return false;
+	}
+
+	private boolean containsTagetPrimitive(String returnType) {
+		if(returnType.equals("int") 
+				|| returnType.equals("long") 
+				|| returnType.equals("float") 
+				|| returnType.equals("double")
+		)
+			return true;
 		
 		return false;
 	}
