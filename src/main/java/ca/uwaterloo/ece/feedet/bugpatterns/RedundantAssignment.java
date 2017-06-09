@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.IfStatement;
+import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.PostfixExpression;
@@ -95,7 +96,9 @@ public class RedundantAssignment extends Bug {
 
 	private boolean containsAnyOperation(ArrayAccess arrayAccess) {
 		
-		if (arrayAccess.getIndex() instanceof PostfixExpression || arrayAccess.getIndex() instanceof PrefixExpression)
+		if (arrayAccess.getIndex() instanceof PostfixExpression 
+				|| arrayAccess.getIndex() instanceof PrefixExpression
+				||  arrayAccess.getIndex() instanceof InfixExpression)
 			return true;
 		
 		return false;
