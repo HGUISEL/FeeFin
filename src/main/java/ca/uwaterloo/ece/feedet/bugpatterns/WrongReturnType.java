@@ -58,15 +58,17 @@ public class WrongReturnType extends Bug {
 	private boolean containsOtherPrimitiveRatherThanItSelf(String returnType, String methodName) {
 		
 		if(returnProperTypeBasedOnMethodName(methodName,returnType)) return false;
+		
+		String methodNameWOToAndGet = methodName.replace("to", "").replace("get", "");
 
-		if(methodName.endsWith("int")
-				|| methodName.endsWith("int32") 
-				|| methodName.endsWith("int64") 
-				|| methodName.endsWith("long") 
-				|| methodName.endsWith("float") 
-				|| methodName.endsWith("float32") 
-				|| methodName.endsWith("float64") 
-				|| methodName.endsWith("double")
+		if(methodNameWOToAndGet.equals("int")
+				|| methodNameWOToAndGet.equals("int32") 
+				|| methodNameWOToAndGet.equals("int64") 
+				|| methodNameWOToAndGet.equals("long") 
+				|| methodNameWOToAndGet.equals("float") 
+				|| methodNameWOToAndGet.equals("float32") 
+				|| methodNameWOToAndGet.equals("float64") 
+				|| methodNameWOToAndGet.equals("double")
 		)
 			return true;
 

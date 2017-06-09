@@ -69,6 +69,16 @@ public class TestBugPatternWrongReturnType {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP WrongReturnType cassandra       Alive   c09ba58e56dcafcb06e6a722c6a137172eef2678            src/java/org/apache/cassandra/gms/Gossiper.java
+    	// 831     protected long getExpireTimeForEndpoint(InetAddress endpoint){
+    	projectName = "cassandra";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "src/java/org/apache/cassandra/gms/Gossiper.java";
+    	shaId = "c09ba58e56dcafcb06e6a722c6a137172eef2678";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
