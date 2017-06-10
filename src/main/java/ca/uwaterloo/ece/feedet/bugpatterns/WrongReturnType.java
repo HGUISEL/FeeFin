@@ -28,7 +28,8 @@ public class WrongReturnType extends Bug {
 			// get Line number
 			int lineNum = wholeCodeAST.getLineNum(methodDec.getStartPosition());
 			
-			detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, methodDec.toString(), false, false));
+			// buggy code should be only definition line so replace getBody to empty string
+			detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, methodDec.toString().replace(methodDec.getBody().toString(), ""), false, false));
 		}
 		
 		return detRec;
