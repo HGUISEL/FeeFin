@@ -15,9 +15,9 @@ import org.eclipse.jgit.lib.Repository;
 import ca.uwaterloo.ece.feedet.DetectionRecord;
 import ca.uwaterloo.ece.feedet.utils.JavaASTParser;
 
-public class CompareSameValueFromGetterAndConstant extends Bug {
+public class CompareSameValueFromGetterAndField extends Bug {
 
-	public CompareSameValueFromGetterAndConstant(String prjName,JavaASTParser ast, String id, String path, Repository repo){
+	public CompareSameValueFromGetterAndField(String prjName,JavaASTParser ast, String id, String path, Repository repo){
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
 	}
 	

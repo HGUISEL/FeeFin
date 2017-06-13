@@ -4,7 +4,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.junit.Test;
 
 import ca.uwaterloo.ece.feedet.DetectionRecord;
-import ca.uwaterloo.ece.feedet.bugpatterns.CompareSameValueFromGetterAndConstant;
+import ca.uwaterloo.ece.feedet.bugpatterns.CompareSameValueFromGetterAndField;
 import ca.uwaterloo.ece.feedet.utils.JavaASTParser;
 import ca.uwaterloo.ece.feedet.utils.Utils;
 
@@ -73,7 +73,7 @@ public class TestBugCompareSameValueFromGetterAndConstant {
 			
 			JavaASTParser preFixWholeCodeAST = new JavaASTParser(fileSource);
 			
-			process(prjName,new CompareSameValueFromGetterAndConstant(prjName,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(prjName,new CompareSameValueFromGetterAndField(prjName,preFixWholeCodeAST,shaId,path,repo).detect());
 			
 		} catch (IOException e1) {
 			e1.printStackTrace();
