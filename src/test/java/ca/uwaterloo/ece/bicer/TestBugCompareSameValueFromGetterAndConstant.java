@@ -28,6 +28,7 @@ public class TestBugCompareSameValueFromGetterAndConstant {
     @Test public void testSomeLibraryMethod() {
     	
     	String projectPathRoot1 = System.getProperty("user.home") + "/Documents/githubProjects/apache"; //System.getProperty("user.home") + "/X"; // "/Volumes/Faith/githubProjects/apache"; //System.getProperty("user.home") + "/Documents/githubProjects/apache";
+    	String projectPathRoot2 = System.getProperty("user.home") + "/Documents/githubProjects/google";
     	
     	int numOfTPs = 0;
     	
@@ -45,6 +46,15 @@ public class TestBugCompareSameValueFromGetterAndConstant {
     	gitURI = projectPathRoot1 + File.separator + projectName;
     	path = "clients/src/main/java/org/apache/kafka/clients/consumer/internals/AbstractCoordinator.java";
     	shaId = "1abed91bd2915226cf6320395e1a5877ea0705d7";
+    	
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP 73e382fa877f80994817a136b0adcc4365ccd904 guava/src/com/google/common/cache/LocalCache.java e.getHash() == hash
+    	projectName = "guava";
+    	gitURI = projectPathRoot2 + File.separator + projectName;
+    	path = "guava/src/com/google/common/cache/LocalCache.java";
+    	shaId = "73e382fa877f80994817a136b0adcc4365ccd904";
     	
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());

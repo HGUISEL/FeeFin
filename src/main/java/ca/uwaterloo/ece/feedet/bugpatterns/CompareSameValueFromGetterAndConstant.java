@@ -33,11 +33,12 @@ public class CompareSameValueFromGetterAndConstant extends Bug {
 			if(methodDec.getReturnType2() != null && methodDec.parameters().size() ==0) // getter
 				mapGetters.put(methodDec.getName().toString(),methodDec);
 		}
-		
 	
 		for(MethodInvocation methodInv:wholeCodeAST.getMethodInvocations()){
 			
 			String methodName = methodInv.getName().toString();
+			
+			if(methodInv.getExpression() != null) continue; // to only consider member methods
 			
 			if(!mapGetters.containsKey(methodName)) continue;
 			
