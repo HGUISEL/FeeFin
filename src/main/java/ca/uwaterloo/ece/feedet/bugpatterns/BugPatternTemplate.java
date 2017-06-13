@@ -39,7 +39,6 @@ public class BugPatternTemplate extends Bug {
 				//		path
 				//		lineNum = lineNum;
 				//		detected representative buggy line: should be one line or several tokens
-				//		surroundingCode to show the buggy code
 				//		isAlreadyFixed: currently not using set as false
 				//		isAliveInHEAD: currently not using set as false
 				
@@ -55,7 +54,7 @@ public class BugPatternTemplate extends Bug {
 				//		surroundingCode to show the buggy code
 				//		isAlreadyFixed: currently not using set as false
 				//		isAliveInHEAD: currently not using set as false
-				// detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, cInstCre.getParent().toString(), cInstCre.getParent().getParent().toString() false, false));
+				// detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, cInstCre.getParent().toString(), cInstCre.getParent().getParent().toString(), false, false));
 				
 			}
 		}
