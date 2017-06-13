@@ -59,6 +59,15 @@ public class TestBugCompareSameValueFromGetterAndConstant {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     	
+    	// FP c462d69329709f72a17a64cb229d15e76e72199c        guava/src/com/google/common/io/MultiInputStream.java    117     read() == -1
+    	projectName = "guava";
+    	gitURI = projectPathRoot2 + File.separator + projectName;
+    	path = "guava/src/com/google/common/io/MultiInputStream.java";
+    	shaId = "c462d69329709f72a17a64cb229d15e76e72199c";
+    	
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

@@ -5,11 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jgit.lib.Repository;
 
 import ca.uwaterloo.ece.feedet.DetectionRecord;
@@ -21,6 +23,7 @@ public class CompareSameValueFromGetterAndField extends Bug {
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<DetectionRecord> detect() {
 		// Detection results are stored in this ArrayList
@@ -28,10 +31,17 @@ public class CompareSameValueFromGetterAndField extends Bug {
 		
 		// get all getters
 		HashMap<String,MethodDeclaration> mapGetters = new HashMap<String,MethodDeclaration>();
-		
 		for(MethodDeclaration methodDec:wholeCodeAST.getMethodDeclarations()){
 			if(methodDec.getReturnType2() != null && methodDec.parameters().size() ==0) // getter
 				mapGetters.put(methodDec.getName().toString(),methodDec);
+		}
+		
+		// get all fields
+		ArrayList<String> listFields = new ArrayList<String>();
+		for(FieldDeclaration fieldDec:wholeCodeAST.getFieldDeclarations()){
+			for(VariableDeclarationFragment frag:(List<VariableDeclarationFragment>)fieldDec.fragments()){
+				listFields.add(frag.getName().toString());
+			}
 		}
 	
 		for(MethodInvocation methodInv:wholeCodeAST.getMethodInvocations()){
@@ -57,7 +67,7 @@ public class CompareSameValueFromGetterAndField extends Bug {
 					
 					String returnValue = returnStmt.getExpression().toString();
 					
-					if(returnValue.equals("null")) continue;
+					if(!listFields.contains(returnValue)) continue; // only consider when return value is from fields.
 					
 					if(inFixExp.getLeftOperand() instanceof MethodInvocation && ((MethodInvocation) inFixExp.getLeftOperand()).getName().toString().equals(methodName)){
 						String operand = inFixExp.getRightOperand().toString();
