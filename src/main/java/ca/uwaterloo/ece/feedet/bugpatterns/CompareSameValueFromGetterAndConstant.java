@@ -75,7 +75,7 @@ public class CompareSameValueFromGetterAndConstant extends Bug {
 			if(returnSameValue){				
 				// get Line number
 				int lineNum = wholeCodeAST.getLineNum(methodInv.getStartPosition());
-				detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, methodInv.getParent().toString(), getters.get(methodName).toString(), false, false));
+				detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, methodInv.getParent().toString(), methodInv.getParent().getParent().toString() + "\n" +getters.get(methodName).toString(), false, false));
 			}
 		}
 		
@@ -84,7 +84,9 @@ public class CompareSameValueFromGetterAndConstant extends Bug {
 
 	private ArrayList<ReturnStatement> getReturnStatements(MethodDeclaration methodDeclaration) {
 		
-		@SuppressWarnings("unchecked")
+		if(methodDeclaration.getBody()==null) return new ArrayList<ReturnStatement>();
+		
+		@SuppressWarnings("unchecked")		
 		List<Statement> statements = methodDeclaration.getBody().statements();
 		
 		final ArrayList<ReturnStatement> returnStmts = new ArrayList<ReturnStatement>();
