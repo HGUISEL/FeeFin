@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -48,19 +49,25 @@ public class CompareSameValueFromGetterAndConstant extends Bug {
 				if(inFixExp.getOperator() != InfixExpression.Operator.EQUALS)
 					continue;
 				
-				
-				String returnValue = getReturnValue(getters.get(methodName));
+				ArrayList<ReturnStatement> returnStatements = getReturnStatements(getters.get(methodName));
 				
 				// Q1
-				if(inFixExp.getLeftOperand() instanceof MethodInvocation && ((MethodInvocation) inFixExp.getLeftOperand()).getName().toString().equals(methodName)){
-					String operand = inFixExp.getRightOperand().toString();
-					if(returnValue.equals(operand))
-						returnSameValue = true;
+				for(ReturnStatement returnStmt:returnStatements){
 					
-				}else{
-					String operand = inFixExp.getLeftOperand().toString();
-					if(returnValue.equals(operand))
-						returnSameValue = true;
+					String returnValue = returnStmt.getExpression().toString();
+					
+					if(returnValue.equals("null")) continue;
+					
+					if(inFixExp.getLeftOperand() instanceof MethodInvocation && ((MethodInvocation) inFixExp.getLeftOperand()).getName().toString().equals(methodName)){
+						String operand = inFixExp.getRightOperand().toString();
+						if(returnValue.equals(operand))
+							returnSameValue = true;
+						
+					}else{
+						String operand = inFixExp.getLeftOperand().toString();
+						if(returnValue.equals(operand))
+							returnSameValue = true;
+					}
 				}
 				
 			}
@@ -68,25 +75,32 @@ public class CompareSameValueFromGetterAndConstant extends Bug {
 			if(returnSameValue){				
 				// get Line number
 				int lineNum = wholeCodeAST.getLineNum(methodInv.getStartPosition());
-				detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, methodInv.getParent().toString(), methodInv.getParent().getParent().toString(), false, false));
+				detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, methodInv.getParent().toString(), getters.get(methodName).toString(), false, false));
 			}
 		}
 		
 		return detRec;
 	}
 
-	private String getReturnValue(MethodDeclaration methodDeclaration) {
+	private ArrayList<ReturnStatement> getReturnStatements(MethodDeclaration methodDeclaration) {
 		
 		@SuppressWarnings("unchecked")
 		List<Statement> statements = methodDeclaration.getBody().statements();
 		
-		ArrayList<ReturnStatement> returnStmts = new ArrayList<ReturnStatement>();
+		final ArrayList<ReturnStatement> returnStmts = new ArrayList<ReturnStatement>();
+		
+		methodDeclaration.accept(new ASTVisitor() {
+			public boolean visit(ReturnStatement node) {
+				returnStmts.add(node);
+				return super.visit(node);
+			}
+		});	
 		
 		for(Statement stmt:statements){
 			if(stmt instanceof ReturnStatement)
 				returnStmts.add((ReturnStatement)stmt);
 		}
 		
-		return returnStmts.get(0).getExpression().toString();
+		return returnStmts;
 	}
 }

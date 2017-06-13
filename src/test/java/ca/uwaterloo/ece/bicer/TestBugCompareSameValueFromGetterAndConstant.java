@@ -40,6 +40,15 @@ public class TestBugCompareSameValueFromGetterAndConstant {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(++numOfTPs,identifiedPotentialBug.size());
     	
+    	// FP	kafka 1abed91bd2915226cf6320395e1a5877ea0705d7	clients/src/main/java/org/apache/kafka/clients/consumer/internals/AbstractCoordinator.java	618	coordinator() == null
+    	projectName = "kafka";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "clients/src/main/java/org/apache/kafka/clients/consumer/internals/AbstractCoordinator.java";
+    	shaId = "1abed91bd2915226cf6320395e1a5877ea0705d7";
+    	
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
