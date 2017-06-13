@@ -10,7 +10,6 @@ import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.ReturnStatement;
-import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jgit.lib.Repository;
 
@@ -32,7 +31,7 @@ public class CompareSameValueFromGetterAndField extends Bug {
 		// get all getters
 		HashMap<String,MethodDeclaration> mapGetters = new HashMap<String,MethodDeclaration>();
 		for(MethodDeclaration methodDec:wholeCodeAST.getMethodDeclarations()){
-			if(methodDec.getReturnType2() != null && methodDec.parameters().size() ==0) // getter
+			if(methodDec.getReturnType2() != null && methodDec.parameters().size() == 0) // getter
 				mapGetters.put(methodDec.getName().toString(),methodDec);
 		}
 		
@@ -62,25 +61,25 @@ public class CompareSameValueFromGetterAndField extends Bug {
 				
 				ArrayList<ReturnStatement> returnStatements = getReturnStatements(mapGetters.get(methodName));
 				
-				// Q1
-				for(ReturnStatement returnStmt:returnStatements){
-					
-					String returnValue = returnStmt.getExpression().toString();
-					
-					if(!listFields.contains(returnValue)) continue; // only consider when return value is from fields.
-					
-					if(inFixExp.getLeftOperand() instanceof MethodInvocation && ((MethodInvocation) inFixExp.getLeftOperand()).getName().toString().equals(methodName)){
-						String operand = inFixExp.getRightOperand().toString();
-						if(returnValue.equals(operand))
-							returnSameValue = true;
-						
-					}else{
-						String operand = inFixExp.getLeftOperand().toString();
-						if(returnValue.equals(operand))
-							returnSameValue = true;
-					}
-				}
+				if(returnStatements.size()!= 1) continue;
 				
+				// Q1
+				ReturnStatement returnStmt = returnStatements.get(0);
+					
+				String returnValue = returnStmt.getExpression().toString();
+				
+				if(!listFields.contains(returnValue)) continue; // only consider when return value is from fields.
+				
+				if(inFixExp.getLeftOperand() instanceof MethodInvocation && ((MethodInvocation) inFixExp.getLeftOperand()).getName().toString().equals(methodName)){
+					String operand = inFixExp.getRightOperand().toString();
+					if(returnValue.equals(operand))
+						returnSameValue = true;
+					
+				}else{
+					String operand = inFixExp.getLeftOperand().toString();
+					if(returnValue.equals(operand))
+						returnSameValue = true;
+				}
 			}
 			
 			if(returnSameValue){				
@@ -97,9 +96,6 @@ public class CompareSameValueFromGetterAndField extends Bug {
 		
 		if(methodDeclaration.getBody()==null) return new ArrayList<ReturnStatement>();
 		
-		@SuppressWarnings("unchecked")		
-		List<Statement> listStatements = methodDeclaration.getBody().statements();
-		
 		final ArrayList<ReturnStatement> listReturnStmts = new ArrayList<ReturnStatement>();
 		
 		methodDeclaration.accept(new ASTVisitor() {
@@ -108,11 +104,6 @@ public class CompareSameValueFromGetterAndField extends Bug {
 				return super.visit(node);
 			}
 		});	
-		
-		for(Statement stmt:listStatements){
-			if(stmt instanceof ReturnStatement)
-				listReturnStmts.add((ReturnStatement)stmt);
-		}
 		
 		return listReturnStmts;
 	}

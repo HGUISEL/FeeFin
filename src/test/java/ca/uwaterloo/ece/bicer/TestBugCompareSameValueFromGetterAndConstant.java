@@ -68,6 +68,15 @@ public class TestBugCompareSameValueFromGetterAndConstant {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     	
+    	// FP j2objc  path_deleted    058af38fe3c8929662c52fc483b6e46b9703bba4        jre_emul/android/external/okhttp/android/main/java/com/squareup/okhttp/internal/http/RouteSelector.java 130     nextTlsMode() == TLS_MODE_MODERN
+    	projectName = "j2objc";
+    	gitURI = projectPathRoot2 + File.separator + projectName;
+    	path = "jre_emul/android/external/okhttp/android/main/java/com/squareup/okhttp/internal/http/RouteSelector.java";
+    	shaId = "058af38fe3c8929662c52fc483b6e46b9703bba4";
+    	
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
