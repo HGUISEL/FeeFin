@@ -17,7 +17,7 @@ public class BugPatternTemplate extends Bug {
 	@Override
 	public ArrayList<DetectionRecord> detect() {
 		// Detection results are stored in this ArrayList
-		ArrayList<DetectionRecord> detRec = new ArrayList<DetectionRecord>();
+		ArrayList<DetectionRecord> listDetRec = new ArrayList<DetectionRecord>();
 		
 		// An example loop to get some AST nodes to analyze
 		for(ClassInstanceCreation cInstCre:wholeCodeAST.getClassInstanceCreations()){
@@ -42,7 +42,7 @@ public class BugPatternTemplate extends Bug {
 				//		isAlreadyFixed: currently not using set as false
 				//		isAliveInHEAD: currently not using set as false
 				
-				detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, cInstCre.getParent().toString(), false, false));
+				listDetRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, cInstCre.getParent().toString(), false, false));
 				
 				// (2) DetectionRecord with nine arguments
 				//		patternName
@@ -59,6 +59,6 @@ public class BugPatternTemplate extends Bug {
 			}
 		}
 		
-		return detRec;
+		return listDetRec;
 	}
 }

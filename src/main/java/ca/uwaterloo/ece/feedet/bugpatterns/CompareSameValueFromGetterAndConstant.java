@@ -24,14 +24,14 @@ public class CompareSameValueFromGetterAndConstant extends Bug {
 	@Override
 	public ArrayList<DetectionRecord> detect() {
 		// Detection results are stored in this ArrayList
-		ArrayList<DetectionRecord> detRec = new ArrayList<DetectionRecord>();
+		ArrayList<DetectionRecord> listDetRec = new ArrayList<DetectionRecord>();
 		
 		// get all getters
-		HashMap<String,MethodDeclaration> getters = new HashMap<String,MethodDeclaration>();
+		HashMap<String,MethodDeclaration> mapGetters = new HashMap<String,MethodDeclaration>();
 		
 		for(MethodDeclaration methodDec:wholeCodeAST.getMethodDeclarations()){
 			if(methodDec.getReturnType2() != null && methodDec.parameters().size() ==0) // getter
-				getters.put(methodDec.getName().toString(),methodDec);
+				mapGetters.put(methodDec.getName().toString(),methodDec);
 		}
 		
 	
@@ -39,7 +39,7 @@ public class CompareSameValueFromGetterAndConstant extends Bug {
 			
 			String methodName = methodInv.getName().toString();
 			
-			if(!getters.containsKey(methodName)) continue;
+			if(!mapGetters.containsKey(methodName)) continue;
 			
 			boolean returnSameValue = false;
 			
@@ -49,7 +49,7 @@ public class CompareSameValueFromGetterAndConstant extends Bug {
 				if(inFixExp.getOperator() != InfixExpression.Operator.EQUALS)
 					continue;
 				
-				ArrayList<ReturnStatement> returnStatements = getReturnStatements(getters.get(methodName));
+				ArrayList<ReturnStatement> returnStatements = getReturnStatements(mapGetters.get(methodName));
 				
 				// Q1
 				for(ReturnStatement returnStmt:returnStatements){
@@ -75,11 +75,11 @@ public class CompareSameValueFromGetterAndConstant extends Bug {
 			if(returnSameValue){				
 				// get Line number
 				int lineNum = wholeCodeAST.getLineNum(methodInv.getStartPosition());
-				detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, methodInv.getParent().toString(), methodInv.getParent().getParent().toString() + "\n" +getters.get(methodName).toString(), false, false));
+				listDetRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, methodInv.getParent().toString(), methodInv.getParent().getParent().toString() + "\n" +mapGetters.get(methodName).toString(), false, false));
 			}
 		}
 		
-		return detRec;
+		return listDetRec;
 	}
 
 	private ArrayList<ReturnStatement> getReturnStatements(MethodDeclaration methodDeclaration) {
@@ -87,22 +87,22 @@ public class CompareSameValueFromGetterAndConstant extends Bug {
 		if(methodDeclaration.getBody()==null) return new ArrayList<ReturnStatement>();
 		
 		@SuppressWarnings("unchecked")		
-		List<Statement> statements = methodDeclaration.getBody().statements();
+		List<Statement> listStatements = methodDeclaration.getBody().statements();
 		
-		final ArrayList<ReturnStatement> returnStmts = new ArrayList<ReturnStatement>();
+		final ArrayList<ReturnStatement> listReturnStmts = new ArrayList<ReturnStatement>();
 		
 		methodDeclaration.accept(new ASTVisitor() {
 			public boolean visit(ReturnStatement node) {
-				returnStmts.add(node);
+				listReturnStmts.add(node);
 				return super.visit(node);
 			}
 		});	
 		
-		for(Statement stmt:statements){
+		for(Statement stmt:listStatements){
 			if(stmt instanceof ReturnStatement)
-				returnStmts.add((ReturnStatement)stmt);
+				listReturnStmts.add((ReturnStatement)stmt);
 		}
 		
-		return returnStmts;
+		return listReturnStmts;
 	}
 }
