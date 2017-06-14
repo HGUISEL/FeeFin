@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.ReturnStatement;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jgit.lib.Repository;
 
@@ -72,12 +74,16 @@ public class CompareSameValueFromGetterAndField extends Bug {
 				
 				if(inFixExp.getLeftOperand() instanceof MethodInvocation && ((MethodInvocation) inFixExp.getLeftOperand()).getName().toString().equals(methodName)){
 					String operand = inFixExp.getRightOperand().toString();
-					if(returnValue.equals(operand))
+					if(returnValue.equals(operand)
+							&& !isLocaVariable(mapGetters.get(methodName),returnValue)
+							&& !isLocaVariable((MethodDeclaration)getMethodDeclaration(inFixExp),operand))
 						returnSameValue = true;
 					
 				}else{
 					String operand = inFixExp.getLeftOperand().toString();
-					if(returnValue.equals(operand))
+					if(returnValue.equals(operand)
+							&& !isLocaVariable(mapGetters.get(methodName),returnValue)
+							&& !isLocaVariable((MethodDeclaration)getMethodDeclaration(inFixExp),operand))
 						returnSameValue = true;
 				}
 			}
@@ -90,6 +96,41 @@ public class CompareSameValueFromGetterAndField extends Bug {
 		}
 		
 		return listDetRec;
+	}
+
+	private ASTNode getMethodDeclaration(ASTNode inFixExp) {
+		
+		if(inFixExp.getParent() instanceof MethodDeclaration)
+			return inFixExp.getParent();
+		
+		return getMethodDeclaration(inFixExp.getParent());
+	}
+
+	private boolean isLocaVariable(MethodDeclaration methodDeclaration, String simpleName) {
+		
+		ArrayList<VariableDeclarationFragment> varDecFrags = new ArrayList<VariableDeclarationFragment>();
+		ArrayList<SingleVariableDeclaration> singleVarDecs = new ArrayList<SingleVariableDeclaration>();
+		
+		methodDeclaration.accept(new ASTVisitor() {
+			public boolean visit(VariableDeclarationFragment node) {
+				varDecFrags.add(node);
+				return super.visit(node);
+			}
+			public boolean visit(SingleVariableDeclaration node) {
+				singleVarDecs.add(node);
+				return super.visit(node);
+			}
+		});	
+		
+		for(VariableDeclarationFragment frag:varDecFrags){
+			if(frag.getName().toString().equals(simpleName)) return true;
+		}
+		
+		for(SingleVariableDeclaration varDec:singleVarDecs){
+			if(varDec.getName().toString().equals(simpleName)) return true;
+		}
+		
+		return false;
 	}
 
 	private ArrayList<ReturnStatement> getReturnStatements(MethodDeclaration methodDeclaration) {
