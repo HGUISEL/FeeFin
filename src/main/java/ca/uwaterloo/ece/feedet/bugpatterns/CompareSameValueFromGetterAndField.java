@@ -108,8 +108,8 @@ public class CompareSameValueFromGetterAndField extends Bug {
 
 	private boolean isLocaVariable(MethodDeclaration methodDeclaration, String simpleName) {
 		
-		ArrayList<VariableDeclarationFragment> varDecFrags = new ArrayList<VariableDeclarationFragment>();
-		ArrayList<SingleVariableDeclaration> singleVarDecs = new ArrayList<SingleVariableDeclaration>();
+		final ArrayList<VariableDeclarationFragment> varDecFrags = new ArrayList<VariableDeclarationFragment>();
+		final ArrayList<SingleVariableDeclaration> singleVarDecs = new ArrayList<SingleVariableDeclaration>();
 		
 		methodDeclaration.accept(new ASTVisitor() {
 			public boolean visit(VariableDeclarationFragment node) {
