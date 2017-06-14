@@ -77,6 +77,23 @@ public class TestBugCompareSameValueFromGetterAndConstant {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     	
+    	// FP lucene-solr	Alive	b426838e8f2427cec07133ebfb49b267b570fbc1	lucene/core/src/java/org/apache/lucene/search/BooleanQuery.java	469	hashCode == computeHashCode()
+    	projectName = "lucene-solr";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "lucene/core/src/java/org/apache/lucene/search/BooleanQuery.java";
+    	shaId = "b426838e8f2427cec07133ebfb49b267b570fbc1";
+    	
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP calcite	Alive	05a57992a45f9aa66db31355aa7733cfadafa1e1	core/src/main/java/org/apache/calcite/rel/AbstractRelNode.java	128	traitSet == getTraitSet()
+    	projectName = "calcite";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "core/src/main/java/org/apache/calcite/rel/AbstractRelNode.java";
+    	shaId = "05a57992a45f9aa66db31355aa7733cfadafa1e1";
+    	
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
