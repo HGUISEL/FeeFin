@@ -10,6 +10,7 @@ import org.eclipse.jgit.lib.Repository;
 
 import ca.uwaterloo.ece.feedet.DetectionRecord;
 import ca.uwaterloo.ece.feedet.utils.JavaASTParser;
+import ca.uwaterloo.ece.feedet.utils.Utils;
 
 public class WrongLogicForNullChecker extends Bug {
 
@@ -68,12 +69,12 @@ public class WrongLogicForNullChecker extends Bug {
 		// (1)
 		if(operator.equals(InfixExpression.Operator.EQUALS)){
 			
-			if(strThenExp.contains(targetObj)) return true;
+			if(Utils.isWordInStatement(targetObj, strThenExp)) return true;
 		}
 		
 		// (2)
 		if(operator.equals(InfixExpression.Operator.NOT_EQUALS)){
-			if(strElseExp.contains(targetObj)) return true;
+			if(Utils.isWordInStatement(targetObj,strElseExp)) return true;
 		}
 		
 		return false;
