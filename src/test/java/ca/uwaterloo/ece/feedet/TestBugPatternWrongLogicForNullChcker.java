@@ -70,6 +70,16 @@ public class TestBugPatternWrongLogicForNullChcker {
 		
 		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
 		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
+		// FP cassandra       ca40d11c72225d036f864d40c251a74e0803fdc2        3623ea437ee4b22f450a25e670cffe6c00001cb0        src/java/org/apache/cassandra/config/CFMetaData.java
+		// 1657    comment == null ? DeletedColumn.create(ldt,timestamp,cfName,"comment") : Column.create(comment,timestamp,cfName,"comment")
+		projectName = "cassandra";
+		gitURI = projectPathRoot1 + File.separator + projectName;
+		path = "src/java/org/apache/cassandra/config/CFMetaData.java";
+		shaId = "3623ea437ee4b22f450a25e670cffe6c00001cb0";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
 	}
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
