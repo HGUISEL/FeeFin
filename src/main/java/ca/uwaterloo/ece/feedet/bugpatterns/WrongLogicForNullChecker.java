@@ -94,7 +94,7 @@ public class WrongLogicForNullChecker extends Bug {
 	private boolean casesToBeIgnored(Expression targetExp, String targetObj, String strExp) {
 		
 		if(strExp.contains("." + targetObj)
-			|| strExp.contains("\"" + targetObj)
+			|| strExp.matches(".*\"[^\"]*" + targetObj+".*\".*")
 			|| targetExp instanceof StringLiteral
 			|| (targetExp instanceof ParenthesizedExpression
 				 && ((ParenthesizedExpression)targetExp).getExpression() instanceof Assignment

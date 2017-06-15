@@ -80,6 +80,16 @@ public class TestBugPatternWrongLogicForNullChcker {
 		
 		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
 		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
+		// FP windowtester    Alive   3e98c40ebbf5931a0d3f9b7a3f4a1e17263c5e53        com.windowtester.runtime/abbot/src/abbot/script/ComponentReference.java
+		// 718     id != null ? id : (cname + " (no id yet)")
+		projectName = "windowtester";
+		gitURI = projectPathRoot2 + File.separator + projectName;
+		path = "com.windowtester.runtime/abbot/src/abbot/script/ComponentReference.java";
+		shaId = "3e98c40ebbf5931a0d3f9b7a3f4a1e17263c5e53";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
 	}
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
