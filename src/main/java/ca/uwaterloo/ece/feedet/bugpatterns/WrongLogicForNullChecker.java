@@ -6,6 +6,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ConditionalExpression;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.NullLiteral;
+import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jgit.lib.Repository;
 
 import ca.uwaterloo.ece.feedet.DetectionRecord;
@@ -69,12 +70,16 @@ public class WrongLogicForNullChecker extends Bug {
 		// (1)
 		if(operator.equals(InfixExpression.Operator.EQUALS)){
 			
-			if(Utils.isWordInStatement(targetObj, strThenExp) && !strThenExp.contains("." + targetObj)) return true;
+			if(Utils.isWordInStatement(targetObj, strThenExp)
+					&& !strThenExp.contains("." + targetObj)
+					&& !(condExp.getThenExpression() instanceof StringLiteral)) return true;
 		}
 		
 		// (2)
 		if(operator.equals(InfixExpression.Operator.NOT_EQUALS)){
-			if(Utils.isWordInStatement(targetObj,strElseExp) && !strElseExp.contains("." + targetObj)) return true;
+			if(Utils.isWordInStatement(targetObj,strElseExp)
+					&& !strElseExp.contains("." + targetObj)
+					&& !(condExp.getThenExpression() instanceof StringLiteral)) return true;
 		}
 		
 		return false;
