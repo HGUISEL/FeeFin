@@ -69,12 +69,12 @@ public class WrongLogicForNullChecker extends Bug {
 		// (1)
 		if(operator.equals(InfixExpression.Operator.EQUALS)){
 			
-			if(Utils.isWordInStatement(targetObj, strThenExp)) return true;
+			if(Utils.isWordInStatement(targetObj, strThenExp) && !strThenExp.contains("." + targetObj)) return true;
 		}
 		
 		// (2)
 		if(operator.equals(InfixExpression.Operator.NOT_EQUALS)){
-			if(Utils.isWordInStatement(targetObj,strElseExp)) return true;
+			if(Utils.isWordInStatement(targetObj,strElseExp) && !strElseExp.contains("." + targetObj)) return true;
 		}
 		
 		return false;

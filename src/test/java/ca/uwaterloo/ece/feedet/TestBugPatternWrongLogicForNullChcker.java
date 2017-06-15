@@ -22,40 +22,50 @@ import java.util.HashSet;
  * @author j22nam, @date 27/05/16 5:45 PM
  */
 public class TestBugPatternWrongLogicForNullChcker {
-	
+
 	HashSet<DetectionRecord> identifiedPotentialBug = new HashSet<DetectionRecord>();
-	
-    @Test public void testSomeLibraryMethod() {
-    	
-    	String projectPathRoot1 = System.getProperty("user.home") + "/Documents/githubProjects/apache"; //System.getProperty("user.home") + "/X"; // "/Volumes/Faith/githubProjects/apache"; //System.getProperty("user.home") + "/Documents/githubProjects/apache";
-    	// String projectPathRoot2 = System.getProperty("user.home") + "/Documents/githubProjects/google";
-    	
-    	int numOfTPs = 0;
-    	
-    	// TP hbase-server/src/main/java/org/apache/hadoop/hbase/regionserver/wal/ProtobufLogReader.java a90a187d484445823cbbd9987f0329e1dbe68ce4~1
-    	String projectName = "hbase";
-    	String gitURI = projectPathRoot1 + File.separator + projectName;
-    	String path = "hbase-server/src/main/java/org/apache/hadoop/hbase/regionserver/wal/ProtobufLogReader.java";
-    	String shaId = "a90a187d484445823cbbd9987f0329e1dbe68ce4~1";
- 
-    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-    	assertEquals(++numOfTPs,identifiedPotentialBug.size());    	
-    }
+
+	@Test public void testSomeLibraryMethod() {
+
+		String projectPathRoot1 = System.getProperty("user.home") + "/Documents/githubProjects/apache"; //System.getProperty("user.home") + "/X"; // "/Volumes/Faith/githubProjects/apache"; //System.getProperty("user.home") + "/Documents/githubProjects/apache";
+		String projectPathRoot2 = System.getProperty("user.home") + "/Documents/githubProjects/google";
+
+		int numOfTPs = 0;
+
+		// TP hbase-server/src/main/java/org/apache/hadoop/hbase/regionserver/wal/ProtobufLogReader.java a90a187d484445823cbbd9987f0329e1dbe68ce4~1
+		String projectName = "hbase";
+		String gitURI = projectPathRoot1 + File.separator + projectName;
+		String path = "hbase-server/src/main/java/org/apache/hadoop/hbase/regionserver/wal/ProtobufLogReader.java";
+		String shaId = "a90a187d484445823cbbd9987f0329e1dbe68ce4~1";
+
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(++numOfTPs,identifiedPotentialBug.size());    
+
+		// FP iosched   c6531a72a84501db79e89647986e69345caa2808        android/src/main/java/com/google/samples/apps/iosched/explore/data/ItemGroup.java
+		// 79 mId != null ? mId.equals(itemGroup.mId) : itemGroup.mId == null
+		projectName = "iosched";
+		gitURI = projectPathRoot2 + File.separator + projectName;
+		path = "android/src/main/java/com/google/samples/apps/iosched/explore/data/ItemGroup.java";
+		shaId = "c6531a72a84501db79e89647986e69345caa2808";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
+	}
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
 		try {
-    		Git git;
+			Git git;
 			git = Git.open( new File(gitURI) );
 			Repository repo = git.getRepository();
-			
+
 			String fileSource=Utils.fetchBlob(repo, shaId, path);
-			
+
 			fileSource = Utils.removeComments(fileSource);
-			
+
 			JavaASTParser preFixWholeCodeAST = new JavaASTParser(fileSource);
-			
+
 			process(prjName,new WrongLogicForNullChecker(prjName,preFixWholeCodeAST,shaId,path,repo).detect());
-			
+
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -73,6 +83,6 @@ public class TestBugPatternWrongLogicForNullChcker {
 				System.out.println(detRec.getCode() + "\n");
 			}
 		}
-		
+
 	}
 }
