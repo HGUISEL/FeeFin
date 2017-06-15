@@ -3,9 +3,12 @@ package ca.uwaterloo.ece.feedet.bugpatterns;
 import java.util.ArrayList;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.ConditionalExpression;
+import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.NullLiteral;
+import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jgit.lib.Repository;
 
@@ -70,17 +73,34 @@ public class WrongLogicForNullChecker extends Bug {
 		// (1)
 		if(operator.equals(InfixExpression.Operator.EQUALS)){
 			
-			if(Utils.isWordInStatement(targetObj, strThenExp)
-					&& !strThenExp.contains("." + targetObj)
-					&& !(condExp.getThenExpression() instanceof StringLiteral)) return true;
+			// cases that must be ignored
+			if(casesToBeIgnored(condExp.getThenExpression(),targetObj,strThenExp)) return false;
+			
+			if(Utils.isWordInStatement(targetObj, strThenExp)) return true;
 		}
 		
 		// (2)
 		if(operator.equals(InfixExpression.Operator.NOT_EQUALS)){
-			if(Utils.isWordInStatement(targetObj,strElseExp)
-					&& !strElseExp.contains("." + targetObj)
-					&& !(condExp.getThenExpression() instanceof StringLiteral)) return true;
+			
+			// cases that must be ignored
+			if(casesToBeIgnored(condExp.getElseExpression(),targetObj,strElseExp)) return false;
+						
+			if(Utils.isWordInStatement(targetObj,strElseExp)) return true;
 		}
+		
+		return false;
+	}
+
+	private boolean casesToBeIgnored(Expression targetExp, String targetObj, String strExp) {
+		
+		if(strExp.contains("." + targetObj) 
+			|| targetExp instanceof StringLiteral
+			|| (targetExp instanceof ParenthesizedExpression
+				 && ((ParenthesizedExpression)targetExp).getExpression() instanceof Assignment
+				 && ((Assignment)((ParenthesizedExpression)targetExp).getExpression()).getLeftHandSide().toString().equals(targetObj)
+			   )
+		)
+			return true;
 		
 		return false;
 	}

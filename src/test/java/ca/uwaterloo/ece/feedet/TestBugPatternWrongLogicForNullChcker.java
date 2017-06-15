@@ -60,6 +60,16 @@ public class TestBugPatternWrongLogicForNullChcker {
 		
 		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
 		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
+		// FP cassandra       a2e2c03435d453306446d19c1000a95089fd8d22        a6cd2727d02a88a10c910b4b62267aba82367efd        src/java/org/apache/cassandra/service/StorageLoadBalancer.java
+		// 173     instance_ == null ? (instance_=new StorageLoadBalancer()) : instance_
+		projectName = "cassandra";
+		gitURI = projectPathRoot1 + File.separator + projectName;
+		path = "src/java/org/apache/cassandra/service/StorageLoadBalancer.java";
+		shaId = "a6cd2727d02a88a10c910b4b62267aba82367efd";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
 	}
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
