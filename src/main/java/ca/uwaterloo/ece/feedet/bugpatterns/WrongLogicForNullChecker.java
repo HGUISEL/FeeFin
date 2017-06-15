@@ -7,6 +7,7 @@ import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.ConditionalExpression;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.InfixExpression;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.StringLiteral;
@@ -34,6 +35,8 @@ public class WrongLogicForNullChecker extends Bug {
 			
 			InfixExpression infixExp = (InfixExpression)condExp.getExpression();
 			
+			if(!isNullChecker(infixExp)) continue;
+			
 			if(!loadKnownNull(infixExp)) continue;
 			
 			// get Line number
@@ -45,15 +48,22 @@ public class WrongLogicForNullChecker extends Bug {
 		return listDetRec;
 	}
 
+	private boolean isNullChecker(InfixExpression infixExp) {
+		
+		InfixExpression.Operator operator = infixExp.getOperator();
+		
+		if(!(operator.equals(InfixExpression.Operator.EQUALS)
+				|| operator.equals(InfixExpression.Operator.NOT_EQUALS)))
+			return false;
+		
+		return true;
+	}
+	
 	private boolean loadKnownNull(InfixExpression infixExp) {
 		
 		InfixExpression.Operator operator = infixExp.getOperator();
 		ASTNode leftOperand = infixExp.getLeftOperand();
 		ASTNode rightOperand = infixExp.getRightOperand();
-		
-		if(!(operator.equals(InfixExpression.Operator.EQUALS)
-				|| operator.equals(InfixExpression.Operator.NOT_EQUALS)))
-			return false;
 		
 		if(!(leftOperand instanceof NullLiteral || rightOperand instanceof NullLiteral)) return false;
 		
@@ -76,6 +86,9 @@ public class WrongLogicForNullChecker extends Bug {
 			// cases that must be ignored
 			if(casesToBeIgnored(condExp.getThenExpression(),targetObj,strThenExp)) return false;
 			
+			// Q2
+			if(intentionallyLoadKnownNull(targetObj,strThenExp,condExp.getElseExpression())) return false;
+			
 			if(Utils.isWordInStatement(targetObj, strThenExp)) return true;
 		}
 		
@@ -84,11 +97,39 @@ public class WrongLogicForNullChecker extends Bug {
 			
 			// cases that must be ignored
 			if(casesToBeIgnored(condExp.getElseExpression(),targetObj,strElseExp)) return false;
+			
+			// Q2
+			if(intentionallyLoadKnownNull(targetObj,strElseExp,condExp.getThenExpression())) return false;
 						
 			if(Utils.isWordInStatement(targetObj,strElseExp)) return true;
 		}
 		
 		return false;
+	}
+
+	// Q2: intentionally return null object? (e.g. v == null ? v : v.getObject() or v != null ? v.getObject() : v)
+	private boolean intentionallyLoadKnownNull(String targetObj, String strExp, Expression exp) {
+		
+		if(!(exp instanceof MethodInvocation)) return false;
+		
+		String caller = getCaller((MethodInvocation) exp);
+		
+		if(targetObj.equals(strExp)
+				&& caller.equals(targetObj))
+			return true;
+		
+		return false;
+	}
+
+	private String getCaller(MethodInvocation methodInv) {
+		
+		MethodInvocation currentMethodInv = methodInv ;
+		
+		while(currentMethodInv.getExpression() instanceof MethodInvocation){
+			currentMethodInv = (MethodInvocation) methodInv.getExpression();
+		}
+		
+		return currentMethodInv.getExpression().toString();
 	}
 
 	private boolean casesToBeIgnored(Expression targetExp, String targetObj, String strExp) {

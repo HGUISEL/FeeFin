@@ -90,6 +90,28 @@ public class TestBugPatternWrongLogicForNullChcker {
 		
 		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
 		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
+		// FP hive    Alive   70842969439a495a14b2534ba4f301660233569f        accumulo-handler/src/java/org/apache/hadoop/hive/accumulo/LazyAccumuloMap.java
+		// 133     v == null ? v : v.getObject()
+		// Q2
+		projectName = "hive";
+		gitURI = projectPathRoot1 + File.separator + projectName;
+		path = "accumulo-handler/src/java/org/apache/hadoop/hive/accumulo/LazyAccumuloMap.java";
+		shaId = "70842969439a495a14b2534ba4f301660233569f";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
+		// FP hive    Alive   adbc0ab6aeff848dbcee83d565febd40797300c2        spark-client/src/main/java/org/apache/hive/spark/client/rpc/KryoMessageCodec.java
+		// 99      msg != null ? msg.getClass().getName() : msg
+		projectName = "hive";
+		gitURI = projectPathRoot1 + File.separator + projectName;
+		path = "spark-client/src/main/java/org/apache/hive/spark/client/rpc/KryoMessageCodec.java";
+		shaId = "adbc0ab6aeff848dbcee83d565febd40797300c2";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
 	}
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
