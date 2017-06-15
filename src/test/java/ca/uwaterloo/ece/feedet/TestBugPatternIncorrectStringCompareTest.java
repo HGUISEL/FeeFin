@@ -1,4 +1,4 @@
-package ca.uwaterloo.ece.bicer;
+package ca.uwaterloo.ece.feedet;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
 import org.junit.Test;

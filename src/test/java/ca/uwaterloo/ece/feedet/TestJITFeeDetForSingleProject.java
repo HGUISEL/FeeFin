@@ -1,4 +1,4 @@
-package ca.uwaterloo.ece.bicer;
+package ca.uwaterloo.ece.feedet;
 
 import org.junit.Test;
 
@@ -15,9 +15,9 @@ import java.io.File;
 public class TestJITFeeDetForSingleProject {
 	@Test public void testSomeLibraryMethod() {
 
-		String project = "kafka";
-		String patternName = "WrongReturnType";
-		String rootPath = System.getProperty("user.home") + "/Documents/githubProjects/apache";//"/j22nam/projects/apache"};//,"/local/j22nam/projects/google"};//System.getProperty("user.home") + "/Documents/githubProjects/apache"};
+		String project = "j2objc";
+		String patternName = "CompareSameValueFromGetterAndField";
+		String rootPath = System.getProperty("user.home") + "/Documents/githubProjects/google";//"/j22nam/projects/apache"};//,"/local/j22nam/projects/google"};//System.getProperty("user.home") + "/Documents/githubProjects/apache"};
 
 		BuggyChangeDetectorAndValidator runner = new BuggyChangeDetectorAndValidator();
 

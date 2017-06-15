@@ -1,4 +1,4 @@
-package ca.uwaterloo.ece.bicer;
+package ca.uwaterloo.ece.feedet;
 
 import static org.junit.Assert.*;
 
