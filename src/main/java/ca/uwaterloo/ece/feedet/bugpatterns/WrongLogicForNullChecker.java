@@ -126,7 +126,7 @@ public class WrongLogicForNullChecker extends Bug {
 		MethodInvocation currentMethodInv = methodInv ;
 		
 		while(currentMethodInv.getExpression() instanceof MethodInvocation){
-			currentMethodInv = (MethodInvocation) methodInv.getExpression();
+			currentMethodInv = (MethodInvocation) currentMethodInv.getExpression();
 		}
 		
 		if(currentMethodInv.getExpression()==null)
