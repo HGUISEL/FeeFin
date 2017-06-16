@@ -109,14 +109,14 @@ public class WrongLogicForNullChecker extends Bug {
 	}
 
 	// Q2: intentionally return null object? (e.g. v == null ? v : v.getObject() or v != null ? v.getObject() : v)
+	// other e.g., uri == null ? ((base == null) ? "" : base) + uri : uri.toString()
 	private boolean intentionallyLoadKnownNull(String targetObj, String strExp, Expression exp) {
 		
 		if(!(exp instanceof MethodInvocation || exp instanceof QualifiedName )) return false;
 		
 		String caller = exp instanceof MethodInvocation? getCaller((MethodInvocation) exp):((QualifiedName) exp).getQualifier().toString();
 		
-		if(targetObj.equals(strExp)
-				&& caller.equals(targetObj))
+		if(caller.equals(targetObj)) // not null case is fine, then null case may intentionally use targetObj to return null
 			return true;
 		
 		return false;

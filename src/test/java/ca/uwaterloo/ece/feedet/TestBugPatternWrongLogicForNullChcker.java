@@ -132,6 +132,16 @@ public class TestBugPatternWrongLogicForNullChcker {
 		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
 		assertEquals(numOfTPs,identifiedPotentialBug.size());
 		
+		//  j2objc  Alive   277e7dcb5d90374ca61920b39f6dcc17250d3c03        xalan/third_party/android/platform/external/apache-xml/src/main/java/org/apache/xalan/templates/FuncDocument.java
+		// 364     uri == null ? ((base == null) ? "" : base) + uri : uri.toString()
+		projectName = "j2objc";
+		gitURI = projectPathRoot2 + File.separator + projectName;
+		path = "xalan/third_party/android/platform/external/apache-xml/src/main/java/org/apache/xalan/templates/FuncDocument.java";
+		shaId = "277e7dcb5d90374ca61920b39f6dcc17250d3c03";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
 	}
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
