@@ -150,6 +150,7 @@ public class WrongLogicForNullChecker extends Bug {
 				 && ((ParenthesizedExpression)targetExp).getExpression() instanceof Assignment
 				 && ((Assignment)((ParenthesizedExpression)targetExp).getExpression()).getLeftHandSide().toString().equals(targetObj)
 			   )
+			|| targetExp instanceof Assignment
 		)
 			return true;
 		

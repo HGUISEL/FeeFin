@@ -112,6 +112,26 @@ public class TestBugPatternWrongLogicForNullChcker {
 		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
 		assertEquals(numOfTPs,identifiedPotentialBug.size());
 		
+		// FP WrongLogicForNullChecker        error-prone-javac       path_deleted    55ef15a9c31c57b6ab1f53d0196e96f9224e4651        src/share/classes/com/sun/tools/javac/comp/Resolve.java 746
+		// trees != null ? trees.tail : trees
+		projectName = "error-prone-javac";
+		gitURI = projectPathRoot2 + File.separator + projectName;
+		path = "src/share/classes/com/sun/tools/javac/comp/Resolve.java";
+		shaId = "55ef15a9c31c57b6ab1f53d0196e96f9224e4651";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
+		// FP google-authenticator    Alive   6649dd33687c5561663fb242a05f6949cf4d543f        mobile/blackberry/src/com/google/authenticator/blackberry/Uri.java
+		// 1053    ssp == null ? ssp=Part.fromEncoded(makeSchemeSpecificPart()) : ssp
+		projectName = "google-authenticator";
+		gitURI = projectPathRoot2 + File.separator + projectName;
+		path = "mobile/blackberry/src/com/google/authenticator/blackberry/Uri.java";
+		shaId = "6649dd33687c5561663fb242a05f6949cf4d543f";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
 	}
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
