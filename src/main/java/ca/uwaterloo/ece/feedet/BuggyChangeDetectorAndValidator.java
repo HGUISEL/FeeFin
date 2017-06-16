@@ -50,6 +50,7 @@ public class BuggyChangeDetectorAndValidator {
 	private String strEndDate;
 	private Date startDate;
 	private Date endDate;
+	private boolean verbose = false;
 
 	private Git git;
 	private Repository repo;
@@ -89,6 +90,8 @@ public class BuggyChangeDetectorAndValidator {
 				// get a list of files in the commit
 				//if(rev.getParentCount()<1) continue;
 				RevCommit parent = rev.getParentCount()==0?null:rev.getParent(0);
+				
+				if(verbose) System.out.println("processing: " + rev.name());
 				
 				if(parent==null){ // for the first commit
 					// get all initial files
@@ -142,7 +145,7 @@ public class BuggyChangeDetectorAndValidator {
 		if(newPath.indexOf("/test")>=0) return;
 
 		String id =  rev.name() + "";
-
+		
 		// get preFixSource and fixSource without comments
 		//String prevFileSource=Utils.removeComments(Utils.fetchBlob(repo, id +  "~1", oldPath));
 		String fileSource;
@@ -315,6 +318,10 @@ public class BuggyChangeDetectorAndValidator {
 				.hasArg()
 				.argName("End date")
 				.build());
+		
+		options.addOption(Option.builder("v").longOpt("verbose")
+				.desc("Verbose")
+				.build());
 
 		options.addOption(Option.builder("h").longOpt("help")
 				.desc("Help")
@@ -335,7 +342,7 @@ public class BuggyChangeDetectorAndValidator {
 			help = cmd.hasOption("h");
 			projectName = cmd.getOptionValue("p");
 			patternName = cmd.hasOption("n")?cmd.getOptionValue("n"):"";
-			//verbose = cmd.hasOption("v");
+			verbose = cmd.hasOption("v");
 
 			if(cmd.hasOption("s")){
 				strStartDate = cmd.getOptionValue("s");
