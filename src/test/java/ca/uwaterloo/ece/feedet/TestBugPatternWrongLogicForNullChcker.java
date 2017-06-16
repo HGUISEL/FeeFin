@@ -163,6 +163,16 @@ public class TestBugPatternWrongLogicForNullChcker {
 		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
 		assertEquals(numOfTPs,identifiedPotentialBug.size());
 		
+		// Exception usergrid 021fcba68c013414261f3e123d7ec6db8dc938fe
+		// Path stack/core/src/main/java/org/apache/usergrid/batch/job/OnlyOnceJob.java
+		projectName = "usergrid";
+		gitURI = projectPathRoot1 + File.separator + projectName;
+		path = "stack/core/src/main/java/org/apache/usergrid/batch/job/OnlyOnceJob.java";
+		shaId = "021fcba68c013414261f3e123d7ec6db8dc938fe";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
 	}
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

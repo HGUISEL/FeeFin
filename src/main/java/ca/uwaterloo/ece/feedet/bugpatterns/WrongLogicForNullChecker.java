@@ -59,7 +59,7 @@ public class WrongLogicForNullChecker extends Bug {
 		
 		ASTNode targetNode = infixExp.getRightOperand() instanceof NullLiteral? infixExp.getLeftOperand():infixExp.getRightOperand();
 		
-		if(targetNode instanceof InfixExpression) // this can't be a target object "Failed to send join request message [addr=" + addr + ", msg="+ ioe != null
+		if(targetNode instanceof InfixExpression || targetNode instanceof StringLiteral) // this can't be a target object "Failed to send join request message [addr=" + addr + ", msg="+ ioe != null
 			return false; // ignore the target object is not SimpleName
 		
 		if(!(operator.equals(InfixExpression.Operator.EQUALS)
