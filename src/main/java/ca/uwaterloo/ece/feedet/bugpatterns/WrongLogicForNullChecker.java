@@ -121,18 +121,23 @@ public class WrongLogicForNullChecker extends Bug {
 		return false;
 	}
 
-	private String getCaller(MethodInvocation methodInv) {
+	private String getCaller(ASTNode methodInv) {
 		
-		MethodInvocation currentMethodInv = methodInv ;
+		ASTNode currentNode = methodInv ;
 		
-		while(currentMethodInv.getExpression() instanceof MethodInvocation){
-			currentMethodInv = (MethodInvocation) currentMethodInv.getExpression();
+		while(true){
+			
+			if(currentNode instanceof MethodInvocation)
+				currentNode = ((MethodInvocation) currentNode).getExpression();
+			else
+				break;
 		}
 		
-		if(currentMethodInv.getExpression()==null)
+		// now current node is not a method invocation
+		if(currentNode==null)
 			return "";
 		
-		return currentMethodInv.getExpression().toString();
+		return currentNode.toString();
 	}
 
 	private boolean casesToBeIgnored(Expression targetExp, String targetObj, String strExp) {
