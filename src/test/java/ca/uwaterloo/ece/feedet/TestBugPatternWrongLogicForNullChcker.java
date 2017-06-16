@@ -154,6 +154,15 @@ public class TestBugPatternWrongLogicForNullChcker {
 		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
 		assertEquals(numOfTPs,identifiedPotentialBug.size());
 		
+		// Exception 8a6a7cb6695093783346a3f88ff854cfff25a6db~1
+		projectName = "ignite";
+		gitURI = projectPathRoot1 + File.separator + projectName;
+		path = "modules/core/src/main/java/org/apache/ignite/spi/discovery/tcp/TcpDiscoverySpi.java";
+		shaId = "8a6a7cb6695093783346a3f88ff854cfff25a6db";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
 	}
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

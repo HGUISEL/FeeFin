@@ -23,7 +23,7 @@ public class TestJITFeeDetForSingleProject {
 		BuggyChangeDetectorAndValidator runner = new BuggyChangeDetectorAndValidator();
 
 		System.out.println("=================\n" + project + "\n=================");
-		String [] args ={"-g",rootPath + File.separator + project,"-p", project,"-n",patternName, verbose};//, "-s", "2010-12-10 00:00:00", "-e", "2011-07-10 00:00:00"};
+		String [] args ={"-g",rootPath + File.separator + project,"-p", project,"-n",patternName, verbose,"-s", "2014-06-10 00:00:00","-e", "2015-06-10 00:00:00"};//, "-s", "2010-12-10 00:00:00", "-e", "2011-07-10 00:00:00"};
 
 		runner.run(args);
 	}

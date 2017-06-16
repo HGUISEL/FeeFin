@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -138,6 +140,8 @@ public class BuggyChangeDetectorAndValidator {
 	private void process(String path,RevCommit rev){
 		String newPath = path;
 		
+		if(verbose) System.out.println("path: " + path);
+		
 		// ignore when no previous revision of a file, Test files, and non-java files.
 		if(newPath.indexOf("Test")>=0  || !newPath.endsWith(".java") || Utils.isWordInStatement("test", newPath)) return;
 
@@ -213,6 +217,11 @@ public class BuggyChangeDetectorAndValidator {
 			// keep this commit and path to find a fix commit
 			mapSha1ByPath.put(newPath,id);
 			
+		} catch (PatternSyntaxException e) {
+			e.printStackTrace();
+			System.err.println("Path " + id);
+			System.err.println("Path " + newPath);
+			System.exit(0);
 		} catch (RevisionSyntaxException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
