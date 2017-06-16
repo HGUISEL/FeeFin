@@ -1,6 +1,7 @@
 package ca.uwaterloo.ece.feedet.bugpatterns;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Assignment;
@@ -88,7 +89,7 @@ public class WrongLogicForNullChecker extends Bug {
 			if(casesToBeIgnored(condExp.getThenExpression(),targetObj,strThenExp)) return false;
 			
 			// Q2
-			if(intentionallyLoadKnownNull(targetObj,strThenExp,condExp.getElseExpression())) return false;
+			if(intentionallyLoadKnownNull(targetObj,condExp.getElseExpression())) return false;
 			
 			if(Utils.isWordInStatement(targetObj, strThenExp)) return true;
 		}
@@ -100,7 +101,7 @@ public class WrongLogicForNullChecker extends Bug {
 			if(casesToBeIgnored(condExp.getElseExpression(),targetObj,strElseExp)) return false;
 			
 			// Q2
-			if(intentionallyLoadKnownNull(targetObj,strElseExp,condExp.getThenExpression())) return false;
+			if(intentionallyLoadKnownNull(targetObj,condExp.getThenExpression())) return false;
 						
 			if(Utils.isWordInStatement(targetObj,strElseExp)) return true;
 		}
@@ -110,14 +111,32 @@ public class WrongLogicForNullChecker extends Bug {
 
 	// Q2: intentionally return null object? (e.g. v == null ? v : v.getObject() or v != null ? v.getObject() : v)
 	// other e.g., uri == null ? ((base == null) ? "" : base) + uri : uri.toString()
-	private boolean intentionallyLoadKnownNull(String targetObj, String strExp, Expression exp) {
+	// value != null ? URLEncoder.encode(value,encoding) : value
+	private boolean intentionallyLoadKnownNull(String targetObj, Expression expForNotNull) {
 		
-		if(!(exp instanceof MethodInvocation || exp instanceof QualifiedName )) return false;
+		if(!(expForNotNull instanceof MethodInvocation || expForNotNull instanceof QualifiedName )) return false;
 		
-		String caller = exp instanceof MethodInvocation? getCaller((MethodInvocation) exp):((QualifiedName) exp).getQualifier().toString();
+		String caller = expForNotNull instanceof MethodInvocation? getCaller((MethodInvocation) expForNotNull):((QualifiedName) expForNotNull).getQualifier().toString();
 		
-		if(caller.equals(targetObj)) // not null case is fine, then null case may intentionally use targetObj to return null
+		if( // if not null case is fine, then null case may intentionally use targetObj to return null
+				 targetObjUsedInNotNullCase(targetObj,expForNotNull,caller)) 
 			return true;
+		
+		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	private boolean targetObjUsedInNotNullCase(String targetObj, Expression expForNotNull, String caller) {
+		
+		// check if caller is same as targetObj, and then return true
+		if(caller.equals(targetObj)) return true;
+		
+		if(expForNotNull instanceof MethodInvocation){
+			for(ASTNode argument:(List<ASTNode>)((MethodInvocation)expForNotNull).arguments()){
+				if(argument.toString().equals(targetObj)) return true;
+			}
+		}
+		
 		
 		return false;
 	}

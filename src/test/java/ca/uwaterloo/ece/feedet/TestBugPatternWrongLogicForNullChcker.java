@@ -143,6 +143,17 @@ public class TestBugPatternWrongLogicForNullChcker {
 		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
 		assertEquals(numOfTPs,identifiedPotentialBug.size());
 		
+		// FP geode   Alive   09d7b5ce2817bcd1ae7e7b09f32dce995b9cfcf5        geode-core/src/main/java/org/apache/geode/management/internal/web/util/UriUtils.java
+		// 180     value != null ? URLEncoder.encode(value,encoding) : value
+		// intentionally load null to return null
+		projectName = "geode";
+		gitURI = projectPathRoot1 + File.separator + projectName;
+		path = "geode-core/src/main/java/org/apache/geode/management/internal/web/util/UriUtils.java";
+		shaId = "09d7b5ce2817bcd1ae7e7b09f32dce995b9cfcf5";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
 	}
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
