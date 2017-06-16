@@ -10,6 +10,7 @@ import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.ParenthesizedExpression;
+import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jgit.lib.Repository;
 
@@ -110,9 +111,9 @@ public class WrongLogicForNullChecker extends Bug {
 	// Q2: intentionally return null object? (e.g. v == null ? v : v.getObject() or v != null ? v.getObject() : v)
 	private boolean intentionallyLoadKnownNull(String targetObj, String strExp, Expression exp) {
 		
-		if(!(exp instanceof MethodInvocation)) return false;
+		if(!(exp instanceof MethodInvocation || exp instanceof QualifiedName )) return false;
 		
-		String caller = getCaller((MethodInvocation) exp);
+		String caller = exp instanceof MethodInvocation? getCaller((MethodInvocation) exp):((QualifiedName) exp).getQualifier().toString();
 		
 		if(targetObj.equals(strExp)
 				&& caller.equals(targetObj))
