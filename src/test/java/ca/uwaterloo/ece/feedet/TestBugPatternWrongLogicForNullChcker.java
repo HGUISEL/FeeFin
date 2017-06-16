@@ -33,6 +33,7 @@ public class TestBugPatternWrongLogicForNullChcker {
 		int numOfTPs = 0;
 
 		// TP hbase-server/src/main/java/org/apache/hadoop/hbase/regionserver/wal/ProtobufLogReader.java a90a187d484445823cbbd9987f0329e1dbe68ce4~1
+		// realEofEx != null ? ex : realEofEx
 		String projectName = "hbase";
 		String gitURI = projectPathRoot1 + File.separator + projectName;
 		String path = "hbase-server/src/main/java/org/apache/hadoop/hbase/regionserver/wal/ProtobufLogReader.java";
