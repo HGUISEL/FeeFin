@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.ConditionalExpression;
 import org.eclipse.jdt.core.dom.Expression;
@@ -178,8 +179,38 @@ public class WrongLogicForNullChecker extends Bug {
 				 && ((Assignment)((ParenthesizedExpression)targetExp).getExpression()).getLeftHandSide().toString().equals(targetObj)
 			   )
 			|| targetExp instanceof Assignment
+			|| onlySameNameMethodCall(targetExp,targetObj)
 		)
 			return true;
+		
+		return false;
+	}
+
+	// Q3
+	private boolean onlySameNameMethodCall(Expression targetExp, String targetObj) {
+		
+		final ArrayList<MethodInvocation> methodInvs = new ArrayList<MethodInvocation>();
+		
+		targetExp.accept(new ASTVisitor() {
+			
+			public boolean visit(MethodInvocation node) {
+				methodInvs.add(node);
+				return super.visit(node);
+			}
+			
+		});
+		
+		// TODO count the string of targetObj in targetExp
+		// int numStrTargetObjInTargetExp = StringUtils.
+		
+		// 
+		int numSameNameMethodCallAsTargetOjb = 0;
+		for(MethodInvocation methodInv:methodInvs){
+			if(methodInv.getName().toString().equals(targetObj))
+				numSameNameMethodCallAsTargetOjb++;
+		}
+		
+		if(numSameNameMethodCallAsTargetOjb>=1) return true;
 		
 		return false;
 	}

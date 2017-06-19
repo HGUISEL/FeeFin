@@ -173,6 +173,15 @@ public class TestBugPatternWrongLogicForNullChcker {
 		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
 		assertEquals(numOfTPs,identifiedPotentialBug.size());
 		
+		// FP ignite	011d925a976b47278eb3d531e1834c6ae321c142	376eb293361a1771a43d79a259cbee3d09d26767	modules/core/src/main/java/org/apache/ignite/internal/processors/cache/transactions/IgniteTxManager.java	
+		// 632	tx != null ? (T)tx : (T)tx(Thread.currentThread().getId())
+		projectName = "ignite";
+		gitURI = projectPathRoot1 + File.separator + projectName;
+		path = "modules/core/src/main/java/org/apache/ignite/internal/processors/cache/transactions/IgniteTxManager.java";
+		shaId = "376eb293361a1771a43d79a259cbee3d09d26767";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
 	}
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
