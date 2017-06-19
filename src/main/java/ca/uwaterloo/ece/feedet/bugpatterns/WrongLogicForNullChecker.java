@@ -1,7 +1,6 @@
 package ca.uwaterloo.ece.feedet.bugpatterns;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -13,6 +12,7 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.QualifiedName;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jgit.lib.Repository;
 
@@ -121,52 +121,26 @@ public class WrongLogicForNullChecker extends Bug {
 	// Q2: intentionally return null object? (e.g. v == null ? v : v.getObject() or v != null ? v.getObject() : v)
 	// other e.g., uri == null ? ((base == null) ? "" : base) + uri : uri.toString()
 	// value != null ? URLEncoder.encode(value,encoding) : value
+	// result == null ? result : result + filename
 	private boolean intentionallyLoadKnownNull(String targetObj, Expression expForNotNull) {
 		
-		if(!(expForNotNull instanceof MethodInvocation || expForNotNull instanceof QualifiedName )) return false;
+		if(!(expForNotNull instanceof MethodInvocation 
+				|| expForNotNull instanceof QualifiedName 
+				||  expForNotNull instanceof InfixExpression)) return false;
 		
-		String caller = expForNotNull instanceof MethodInvocation? getCaller((MethodInvocation) expForNotNull):((QualifiedName) expForNotNull).getQualifier().toString();
-		
-		if( // if not null case is fine, then null case may intentionally use targetObj to return null
-				 targetObjUsedInNotNullCase(targetObj,expForNotNull,caller)) 
-			return true;
-		
-		return false;
+		return sameAsAnySimpleNameInExpForNotNull(expForNotNull,targetObj);
 	}
 
-	@SuppressWarnings("unchecked")
-	private boolean targetObjUsedInNotNullCase(String targetObj, Expression expForNotNull, String caller) {
-		
-		// check if caller is same as targetObj, and then return true
-		if(caller.equals(targetObj)) return true;
-		
-		if(expForNotNull instanceof MethodInvocation){
-			for(ASTNode argument:(List<ASTNode>)((MethodInvocation)expForNotNull).arguments()){
-				if(argument.toString().equals(targetObj)) return true;
-			}
-		}
-		
-		
-		return false;
-	}
+	private boolean sameAsAnySimpleNameInExpForNotNull(Expression exp, String targetObj) {
 
-	private String getCaller(ASTNode methodInv) {
+		ArrayList<SimpleName> simpleNames = wholeCodeAST.getSimpleNames(exp);
 		
-		ASTNode currentNode = methodInv ;
-		
-		while(true){
-			
-			if(currentNode instanceof MethodInvocation)
-				currentNode = ((MethodInvocation) currentNode).getExpression();
-			else
-				break;
+		for(SimpleName name:simpleNames){
+			if(name.toString().equals(targetObj))
+				return true;
 		}
-		
-		// now current node is not a method invocation
-		if(currentNode==null)
-			return "";
-		
-		return currentNode.toString();
+
+		return false;
 	}
 
 	private boolean casesToBeIgnored(Expression targetExp, String targetObj, String strExp) {

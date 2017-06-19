@@ -182,6 +182,16 @@ public class TestBugPatternWrongLogicForNullChcker {
 		
 		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
 		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
+		// FP cocoon	74e8b8e0ff1c4fc23b6b63b4e064522098c273d3	0fd1fb636739c167c94f9f098dd5102e9db86ef8	core/cocoon-core/src/main/java/org/apache/cocoon/components/modules/input/LocateResource.java
+		// 180	result == null ? result : result + filename
+		projectName = "cocoon";
+		gitURI = projectPathRoot1 + File.separator + projectName;
+		path = "core/cocoon-core/src/main/java/org/apache/cocoon/components/modules/input/LocateResource.java";
+		shaId = "0fd1fb636739c167c94f9f098dd5102e9db86ef8";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
 	}
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
