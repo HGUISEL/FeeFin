@@ -973,4 +973,20 @@ public class JavaASTParser {
 		
 		return getTypeOfSimpleName(astNode.getParent(),name);
 	}
+
+	public ArrayList<SimpleName> getSimpleNames(Expression exp) {
+		
+		final ArrayList<SimpleName> simpleNames = new ArrayList<SimpleName>();
+		
+		exp.accept(new ASTVisitor() {
+			
+			public boolean visit(SimpleName node) {
+				simpleNames.add(node);
+				return super.visit(node);
+			}
+			
+		});
+		
+		return simpleNames;
+	}
 }
