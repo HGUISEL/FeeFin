@@ -28,11 +28,12 @@ public class JITFeeDetSimulator {
 		
 		System.out.println("Threadpool size=" + threadPoolSize );
 		
+		int i = 0;
 		for(String project:projects){
 			//System.out.println((i++) + "=================\n" + project + "\n=================");
 			//String [] args ={"-d","data/exampleBIChanges.txt", "-g", System.getProperty("user.home") + "/git/BICER"};
 			String [] arguments ={"-g",rootPath + File.separator + project,"-p",project,"-n",patternName};
-			Runnable runner = new BuggyChangeDetectorAndValidator(arguments);
+			Runnable runner = new BuggyChangeDetectorAndValidator(arguments,++i);
 			executor.execute(runner);
 			//runner.run(arguments);
 		}

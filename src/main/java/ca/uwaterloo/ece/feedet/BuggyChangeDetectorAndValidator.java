@@ -58,6 +58,7 @@ public class BuggyChangeDetectorAndValidator implements Runnable{
 	private Repository repo;
 	
 	private String[] mArgs;
+	private int mProjectSequence;
 
 	HashSet<DetectionRecord> identifiedPotentialBug = new HashSet<DetectionRecord>();
 	HashMap<String,String> mapSha1ByPath = new HashMap<String,String>(); // key: path value: String for the fix sha1.
@@ -67,6 +68,11 @@ public class BuggyChangeDetectorAndValidator implements Runnable{
 	}
 	
 	public BuggyChangeDetectorAndValidator(String[] args){
+		mArgs = args;
+	}
+	
+	public BuggyChangeDetectorAndValidator(String[] args, int sequence){
+		mProjectSequence = sequence;
 		mArgs = args;
 	}
 
@@ -391,6 +397,7 @@ public class BuggyChangeDetectorAndValidator implements Runnable{
 
 	@Override
 	public void run() {
+		System.out.println("Executing Project " + mProjectSequence);
 		run(mArgs);
 	}
 }
