@@ -1019,4 +1019,19 @@ public class JavaASTParser {
 		
 		return methodInvocations;
 	}
+
+	public ArrayList<InfixExpression> getInfixExpressions(Expression exp) {
+		final ArrayList<InfixExpression> infixExps = new ArrayList<InfixExpression>();
+		
+		exp.accept(new ASTVisitor() {
+			
+			public boolean visit(InfixExpression node) {
+				infixExps.add(node);
+				return super.visit(node);
+			}
+			
+		});
+		
+		return infixExps;
+	}
 }
