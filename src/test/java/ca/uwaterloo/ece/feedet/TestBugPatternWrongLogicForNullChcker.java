@@ -202,6 +202,15 @@ public class TestBugPatternWrongLogicForNullChcker {
 		
 		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
 		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
+		// FP httpcore	d6136e38d1225823df3da38de84845b1adb0a981	17a910b1004b618d2d8a1c8a44c85c4e4c23a596	httpcore-nio/src/main/java/org/apache/http/impl/nio/reactor/IOSessionImpl.java
+		projectName = "httpcore";
+		gitURI = projectPathRoot1 + File.separator + projectName;
+		path = "httpcore-nio/src/main/java/org/apache/http/impl/nio/reactor/IOSessionImpl.java";
+		shaId = "17a910b1004b618d2d8a1c8a44c85c4e4c23a596";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
 	}
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

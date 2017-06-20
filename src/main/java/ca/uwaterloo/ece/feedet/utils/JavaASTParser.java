@@ -991,7 +991,7 @@ public class JavaASTParser {
 	}
 
 	public ArrayList<QualifiedName> getQualifiedNames(Expression exp) {
-final ArrayList<QualifiedName> qualifiedNames = new ArrayList<QualifiedName>();
+		final ArrayList<QualifiedName> qualifiedNames = new ArrayList<QualifiedName>();
 		
 		exp.accept(new ASTVisitor() {
 			
@@ -1003,5 +1003,20 @@ final ArrayList<QualifiedName> qualifiedNames = new ArrayList<QualifiedName>();
 		});
 		
 		return qualifiedNames;
+	}
+
+	public ArrayList<MethodInvocation> getMethodInvocations(Expression exp) {
+		final ArrayList<MethodInvocation> methodInvocations = new ArrayList<MethodInvocation>();
+		
+		exp.accept(new ASTVisitor() {
+			
+			public boolean visit(MethodInvocation node) {
+				methodInvocations.add(node);
+				return super.visit(node);
+			}
+			
+		});
+		
+		return methodInvocations;
 	}
 }

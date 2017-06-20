@@ -119,9 +119,10 @@ public class WrongLogicForNullChecker extends Bug {
 	}
 
 	// Q2: intentionally return null object? (e.g. v == null ? v : v.getObject() or v != null ? v.getObject() : v)
-	// other e.g., uri == null ? ((base == null) ? "" : base) + uri : uri.toString()
-	// value != null ? URLEncoder.encode(value,encoding) : value
-	// result == null ? result : result + filename
+	// other e.g., uri == null ? ((base == null) ? "" : base) + uri : uri.toString() => ExpForNotNull: MethodInvocation
+	// value != null ? URLEncoder.encode(value,encoding) : value => ExpForNotNull: MethodInvocation
+	// trees != null ? trees.tail : trees ==> ExpForNotNull: QualfiedName
+	// result == null ? result : result + filename ==> ExpForNotNull: InfixExpression
 	private boolean intentionallyLoadKnownNull(String targetObj, Expression expForNotNull,Expression expForNull) {
 		
 		if(!(expForNotNull instanceof MethodInvocation 
@@ -131,17 +132,14 @@ public class WrongLogicForNullChecker extends Bug {
 		)
 			return false;
 		
-		/*if(sameAsAnySimpleNameInExpForNotNull(expForNotNull,targetObj)){
-			
-		}*/
-		// e
-		return sameAsAnySimpleNameInExpForNotNull(expForNotNull,targetObj);
+		return DoesSomethingInExpForNotNullSameAsTargtObj(expForNotNull,targetObj);
 	}
 
-	private boolean sameAsAnySimpleNameInExpForNotNull(Expression exp, String targetObj) {
+	private boolean DoesSomethingInExpForNotNullSameAsTargtObj(Expression exp, String targetObj) {
 
 		ArrayList<SimpleName> simpleNames = wholeCodeAST.getSimpleNames(exp);
 		ArrayList<QualifiedName> qualifiedNames = wholeCodeAST.getQualifiedNames(exp);
+		ArrayList<MethodInvocation> methodInvocations = wholeCodeAST.getMethodInvocations(exp);
 		
 		for(SimpleName name:simpleNames){
 			if(name.toString().equals(targetObj))
@@ -151,6 +149,13 @@ public class WrongLogicForNullChecker extends Bug {
 		// to deal with this example: r.lowerBound == null ? r.lowerBound == lowerBound : r.lowerBound.equals(lowerBound)
 		// targetObj is a QualifiedName
 		for(QualifiedName name:qualifiedNames){
+			if(name.toString().equals(targetObj))
+				return true;
+		}
+		
+		// to deal with trgetObj is a method invocation
+		// remote.getAddress() != null ? remote.getAddress().getHostAddress() : remote.getAddress()
+		for(MethodInvocation name:methodInvocations){
 			if(name.toString().equals(targetObj))
 				return true;
 		}
