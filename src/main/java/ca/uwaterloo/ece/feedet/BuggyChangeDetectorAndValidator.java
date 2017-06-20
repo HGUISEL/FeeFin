@@ -42,7 +42,7 @@ import ca.uwaterloo.ece.feedet.bugpatterns.WrongIncrementer;
 import ca.uwaterloo.ece.feedet.utils.JavaASTParser;
 import ca.uwaterloo.ece.feedet.utils.Utils;
 
-public class BuggyChangeDetectorAndValidator {
+public class BuggyChangeDetectorAndValidator implements Runnable{
 
 	private String gitURI;
 	private String projectName;
@@ -56,9 +56,19 @@ public class BuggyChangeDetectorAndValidator {
 
 	private Git git;
 	private Repository repo;
+	
+	private String[] mArgs;
 
 	HashSet<DetectionRecord> identifiedPotentialBug = new HashSet<DetectionRecord>();
 	HashMap<String,String> mapSha1ByPath = new HashMap<String,String>(); // key: path value: String for the fix sha1.
+	
+	public BuggyChangeDetectorAndValidator(){
+		
+	}
+	
+	public BuggyChangeDetectorAndValidator(String[] args){
+		mArgs = args;
+	}
 
 	public static void main(String[] args) {
 		new BuggyChangeDetectorAndValidator().run(args);
@@ -377,5 +387,10 @@ public class BuggyChangeDetectorAndValidator {
 		String header = "Execute Buggy Change Collector. On Windows, use BCDetector.bat instead of ./BCDetector";
 		String footer ="\nPlease report issues at https://github.com/lifove/BICER/issues";
 		formatter.printHelp( "./BCDetector", header, options, footer, true);
+	}
+
+	@Override
+	public void run() {
+		run(mArgs);
 	}
 }
