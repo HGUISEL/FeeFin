@@ -43,6 +43,9 @@ public class JITFeeDetSimulator {
 		while (!executor.isTerminated()) {
 			// waiting
         }
+		
+		System.out.println("Finished!");
+		
 	}
 
 }
