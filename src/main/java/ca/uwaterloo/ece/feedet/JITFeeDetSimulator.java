@@ -26,6 +26,8 @@ public class JITFeeDetSimulator {
 
 		ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
 		
+		System.out.println("Threadpool size=" + threadPoolSize );
+		
 		for(String project:projects){
 			//System.out.println((i++) + "=================\n" + project + "\n=================");
 			//String [] args ={"-d","data/exampleBIChanges.txt", "-g", System.getProperty("user.home") + "/git/BICER"};
