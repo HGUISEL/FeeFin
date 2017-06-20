@@ -211,6 +211,16 @@ public class TestBugPatternWrongLogicForNullChcker {
 		
 		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
 		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
+		// FP hbase 80fa33698fc4c6aed02c2fd33b150e1eb543cfe1        542bff9b3bd59784d866bea89675e5015d21d7a2        src/java/org/apache/hadoop/hbase/regionserver/HRegion.java      
+		// 1760    filter     != null ? (RowFilterInterface)WritableUtils.clone(filter,conf) : filter
+		projectName = "hbase";
+		gitURI = projectPathRoot1 + File.separator + projectName;
+		path = "src/java/org/apache/hadoop/hbase/regionserver/HRegion.java";
+		shaId = "542bff9b3bd59784d866bea89675e5015d21d7a2";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
 	}
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

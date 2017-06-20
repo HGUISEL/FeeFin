@@ -123,15 +123,17 @@ public class WrongLogicForNullChecker extends Bug {
 	// value != null ? URLEncoder.encode(value,encoding) : value => ExpForNotNull: MethodInvocation
 	// trees != null ? trees.tail : trees ==> ExpForNotNull: QualfiedName
 	// result == null ? result : result + filename ==> ExpForNotNull: InfixExpression
+	// 
 	private boolean intentionallyLoadKnownNull(String targetObj, Expression expForNotNull,Expression expForNull) {
 		
-		if(!(expForNotNull instanceof MethodInvocation 
+		/*if(!(expForNotNull instanceof MethodInvocation 
 				|| expForNotNull instanceof QualifiedName 
 				||  expForNotNull instanceof InfixExpression
 			)
 		)
-			return false;
+			return false;*/
 		
+		// So, if the target object is used in exp for not null case, then using the target object in exp for null is intended.
 		return DoesSomethingInExpForNotNullSameAsTargtObj(expForNotNull,targetObj);
 	}
 
