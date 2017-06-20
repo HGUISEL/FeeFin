@@ -989,4 +989,19 @@ public class JavaASTParser {
 		
 		return simpleNames;
 	}
+
+	public ArrayList<QualifiedName> getQualifiedNames(Expression exp) {
+final ArrayList<QualifiedName> qualifiedNames = new ArrayList<QualifiedName>();
+		
+		exp.accept(new ASTVisitor() {
+			
+			public boolean visit(QualifiedName node) {
+				qualifiedNames.add(node);
+				return super.visit(node);
+			}
+			
+		});
+		
+		return qualifiedNames;
+	}
 }

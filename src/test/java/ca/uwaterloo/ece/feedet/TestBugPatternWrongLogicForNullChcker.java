@@ -192,6 +192,16 @@ public class TestBugPatternWrongLogicForNullChcker {
 		
 		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
 		assertEquals(numOfTPs,identifiedPotentialBug.size());
+		
+		// FP incubator-edgent	520d3268e12e7724812f67e39222b42267114cf3	190bd5ec398fece882af447f43f4e1f5f8fe6fd7	analytics/sensors/src/main/java/quarks/analytics/sensors/Range.java
+		// 191	r.lowerBound == null ? r.lowerBound == lowerBound : r.lowerBound.equals(lowerBound)
+		projectName = "incubator-edgent";
+		gitURI = projectPathRoot1 + File.separator + projectName;
+		path = "analytics/sensors/src/main/java/quarks/analytics/sensors/Range.java";
+		shaId = "190bd5ec398fece882af447f43f4e1f5f8fe6fd7";
+		
+		detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+		assertEquals(numOfTPs,identifiedPotentialBug.size());
 	}
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

@@ -98,7 +98,7 @@ public class WrongLogicForNullChecker extends Bug {
 			if(casesToBeIgnored(condExp.getThenExpression(),targetObj,strThenExp)) return false;
 			
 			// Q2
-			if(intentionallyLoadKnownNull(targetObj,condExp.getElseExpression())) return false;
+			if(intentionallyLoadKnownNull(targetObj,condExp.getElseExpression(),condExp.getThenExpression())) return false;
 			
 			if(Utils.isWordInStatement(targetObj, strThenExp)) return true;
 		}
@@ -110,7 +110,7 @@ public class WrongLogicForNullChecker extends Bug {
 			if(casesToBeIgnored(condExp.getElseExpression(),targetObj,strElseExp)) return false;
 			
 			// Q2
-			if(intentionallyLoadKnownNull(targetObj,condExp.getThenExpression())) return false;
+			if(intentionallyLoadKnownNull(targetObj,condExp.getThenExpression(),condExp.getElseExpression())) return false;
 						
 			if(Utils.isWordInStatement(targetObj,strElseExp)) return true;
 		}
@@ -122,20 +122,35 @@ public class WrongLogicForNullChecker extends Bug {
 	// other e.g., uri == null ? ((base == null) ? "" : base) + uri : uri.toString()
 	// value != null ? URLEncoder.encode(value,encoding) : value
 	// result == null ? result : result + filename
-	private boolean intentionallyLoadKnownNull(String targetObj, Expression expForNotNull) {
+	private boolean intentionallyLoadKnownNull(String targetObj, Expression expForNotNull,Expression expForNull) {
 		
 		if(!(expForNotNull instanceof MethodInvocation 
 				|| expForNotNull instanceof QualifiedName 
-				||  expForNotNull instanceof InfixExpression)) return false;
+				||  expForNotNull instanceof InfixExpression
+			)
+		)
+			return false;
 		
+		/*if(sameAsAnySimpleNameInExpForNotNull(expForNotNull,targetObj)){
+			
+		}*/
+		// e
 		return sameAsAnySimpleNameInExpForNotNull(expForNotNull,targetObj);
 	}
 
 	private boolean sameAsAnySimpleNameInExpForNotNull(Expression exp, String targetObj) {
 
 		ArrayList<SimpleName> simpleNames = wholeCodeAST.getSimpleNames(exp);
+		ArrayList<QualifiedName> qualifiedNames = wholeCodeAST.getQualifiedNames(exp);
 		
 		for(SimpleName name:simpleNames){
+			if(name.toString().equals(targetObj))
+				return true;
+		}
+		
+		// to deal with this example: r.lowerBound == null ? r.lowerBound == lowerBound : r.lowerBound.equals(lowerBound)
+		// targetObj is a QualifiedName
+		for(QualifiedName name:qualifiedNames){
 			if(name.toString().equals(targetObj))
 				return true;
 		}
