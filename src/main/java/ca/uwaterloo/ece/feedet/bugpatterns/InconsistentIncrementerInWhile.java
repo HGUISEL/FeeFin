@@ -76,6 +76,7 @@ public class InconsistentIncrementerInWhile extends Bug {
 	private String getCollectionName(Expression operand) {
 		
 		if(operand instanceof MethodInvocation){
+			if(((MethodInvocation)operand).getExpression() != null)
 			return ((MethodInvocation)operand).getExpression().toString();
 		}
 		return "";
