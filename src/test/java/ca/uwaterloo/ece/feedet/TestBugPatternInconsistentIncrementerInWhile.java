@@ -39,7 +39,8 @@ public class TestBugPatternInconsistentIncrementerInWhile {
         
     	// TP Illogical condition
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-    	assertEquals(identifiedPotentialBug.size(),++numOfTPs);
+    	numOfTPs += 2;
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
