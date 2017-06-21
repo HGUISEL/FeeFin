@@ -37,9 +37,18 @@ public class TestBugPatternInconsistentIncrementerInWhile {
     	String path = "hbase-server/src/main/java/org/apache/hadoop/hbase/rest/RowSpec.java"; //	
     	String shaId = "e7c1acfecc3aad09db8160906b8f4de346d0f5e7~1";
         
-    	// TP Illogical condition
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	numOfTPs += 2;
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
+    	// FP cassandra       Alive   7d266b9e79e0738df25e4f86b5bdccb030a02d88        src/java/org/apache/cassandra/db/commitlog/CommitLogReplayer.java
+    	// 379     while (futures.size() > MAX_OUTSTANDING_REPLAY_COUNT || pendingMutationBytes > MAX_OUTSTANDING_REPLAY_BYTES || (!futures.isEmpty() && futures.peek().isDone())) {
+    	projectName = "cassandra";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "src/java/org/apache/cassandra/db/commitlog/CommitLogReplayer.java"; //	
+    	shaId = "7d266b9e79e0738df25e4f86b5bdccb030a02d88";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(identifiedPotentialBug.size(),numOfTPs);
     }
 
