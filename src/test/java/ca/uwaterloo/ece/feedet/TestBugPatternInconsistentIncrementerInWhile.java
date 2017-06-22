@@ -94,6 +94,16 @@ public class TestBugPatternInconsistentIncrementerInWhile {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(identifiedPotentialBug.size(),numOfTPs);
     	
+    	// FP hive    path_deleted    df9b2b57a05499c4848e95a24a591154640e40fb        druid-handler/src/java/org/apache/hadoop/hive/druid/HiveDruidQueryBasedInputFormat.java
+    	//306     startTime=intervals.get(++posIntervals).getStartMillis();
+    	projectName = "hive";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "druid-handler/src/java/org/apache/hadoop/hive/druid/HiveDruidQueryBasedInputFormat.java";
+    	shaId = "df9b2b57a05499c4848e95a24a591154640e40fb";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
     	// FP incubator-asterixdb-hyracks     path_deleted    140614731b4e0a1b06ea2989ecc1e1c655b6a2ad        hyracks-storage-am-btree/src/main/java/edu/uci/ics/hyracks/storage/am/btree/compressors/FieldPrefixCompressor.java
     	// use of a local index would be fine.
     	//128     while (keyPartitions.size() >= numberKeyPartitions) {

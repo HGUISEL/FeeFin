@@ -118,8 +118,13 @@ public class InconsistentIncrementerInWhile extends Bug {
 			
 			//
 			for(Object argument:(List<?>)methodInv.arguments()){
-				if(argument.toString().equals(incrementer))
-						return true;
+				
+				ArrayList<SimpleName> simpleNames = wholeCodeAST.getSimpleNames((ASTNode)argument);
+				
+				for(SimpleName simpleName:simpleNames){
+					if(simpleName.toString().equals(incrementer))
+							return true;
+				}
 			}
 			
 			if(!(methodInv.getName().toString().equals("get") || methodInv.getName().toString().equals("charAt")))
