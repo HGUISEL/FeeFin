@@ -1049,4 +1049,19 @@ public class JavaASTParser {
 		
 		return arrayAccesses;
 	}
+
+	public ArrayList<ExpressionStatement> getExpressionStatements(ASTNode node) {
+		final ArrayList<ExpressionStatement> expStmts = new ArrayList<ExpressionStatement>();
+		
+		node.accept(new ASTVisitor() {
+			
+			public boolean visit(ExpressionStatement node) {
+				expStmts.add(node);
+				return super.visit(node);
+			}
+			
+		});
+		
+		return expStmts;
+	}
 }
