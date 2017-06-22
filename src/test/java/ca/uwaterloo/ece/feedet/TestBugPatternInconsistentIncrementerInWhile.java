@@ -61,6 +61,28 @@ public class TestBugPatternInconsistentIncrementerInWhile {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(identifiedPotentialBug.size(),numOfTPs);
     	
+    	// FP hbase   Alive   b53f354763f96d81ce15d7bded6f1bfd97aee68b        hbase-server/src/main/java/org/apache/hadoop/hbase/util/RegionSplitter.java
+    	// 568     while (outstanding.size() >= MAX_OUTSTANDING) {
+    	projectName = "hbase";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "hbase-server/src/main/java/org/apache/hadoop/hbase/util/RegionSplitter.java"; //	
+    	shaId = "b53f354763f96d81ce15d7bded6f1bfd97aee68b";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
+    	// FP hadoop  Alive   99c2bbd337942e4bc7b246a88dff53f98e530651        hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/src/main/java/org/apache/hadoop/mapreduce/v2/hs/HistoryFileManager.java
+    	// 234     while (cache.size() > maxSize && keys.hasNext()) {
+    	//  JobId key=keys.next();
+    	//  HistoryFileInfo firstValue=cache.get(key);
+    	projectName = "hadoop";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/src/main/java/org/apache/hadoop/mapreduce/v2/hs/HistoryFileManager.java"; //	
+    	shaId = "99c2bbd337942e4bc7b246a88dff53f98e530651";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

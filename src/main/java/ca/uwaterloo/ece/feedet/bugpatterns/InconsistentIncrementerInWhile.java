@@ -81,6 +81,9 @@ public class InconsistentIncrementerInWhile extends Bug {
 		if(simpleName.getParent() instanceof MethodInvocation){
 			MethodInvocation methodInv = (MethodInvocation)simpleName.getParent();
 			
+			if(methodInv.getExpression()==null || !methodInv.getExpression().toString().equals(simpleName.toString()))
+					return true;
+			
 			// no arguments? then no need to worry about incorrect incrementer
 			if(methodInv.arguments().size()==0) return true;
 			
@@ -89,7 +92,12 @@ public class InconsistentIncrementerInWhile extends Bug {
 				if(argument.toString().equals(incrementer))
 						return true;
 			}
+			
+			if(!(methodInv.getName().toString().equals("get") || methodInv.getName().toString().equals("charAt")))
+					return true;
 		}
+		
+		// TODO need to deal with array
 		
 		return false;
 	}
@@ -112,6 +120,14 @@ public class InconsistentIncrementerInWhile extends Bug {
 		
 		String potentialRangeChecker = simpleNameInLeft? (infixExp.getRightOperand().toString()):infixExp.getLeftOperand().toString();
 		
+		
+		String potentialIncrementer = "";
+		
+		if(simpleNameInLeft)  potentialIncrementer = infixExp.getLeftOperand().toString();
+		if(simpleNameInRight)  potentialIncrementer = infixExp.getRightOperand().toString();
+		
+		if(potentialIncrementer.toLowerCase().contains("max") || potentialIncrementer.toLowerCase().contains("min"))
+			return false;
 		
 		if((potentialRangeChecker.contains("length") || potentialRangeChecker.contains("size"))
 				&& (
