@@ -53,16 +53,19 @@ public class InconsistentIncrementerInWhile extends Bug {
 			
 			if(statement instanceof Block) {
 				boolean existIncrementer = false;
-				boolean existTargetCollection = false;
+				boolean existTargetCollectionWithWrongIncrementer = false;
 				for(Statement stmt:(List<Statement>)((Block)statement).statements()){
 					ArrayList<SimpleName> simpleNames = wholeCodeAST.getSimpleNames(stmt);
 					for(SimpleName simpleName:simpleNames){
 						if(simpleName.toString().equals(incrementer))
 							existIncrementer = true;
-						if(simpleName.toString().equals(targetCollection))
-							existTargetCollection = true;
+						if(simpleName.toString().equals(targetCollection)){
+							
+							if(!useCorrectIncrementer(simpleName,incrementer))
+								existTargetCollectionWithWrongIncrementer = true;
+						}
 					}
-					if((existTargetCollection) && !(existIncrementer && existTargetCollection)){
+					if((existTargetCollectionWithWrongIncrementer) && !(existIncrementer && existTargetCollectionWithWrongIncrementer)){
 						// get Line number
 						int lineNum = wholeCodeAST.getLineNum(whileStmt.getStartPosition());	
 						listDetRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, whileStmt.toString(), false, false));
@@ -71,6 +74,24 @@ public class InconsistentIncrementerInWhile extends Bug {
 			}	
 		}
 		return listDetRec;
+	}
+
+	private boolean useCorrectIncrementer(SimpleName simpleName, String incrementer) {
+		
+		if(simpleName.getParent() instanceof MethodInvocation){
+			MethodInvocation methodInv = (MethodInvocation)simpleName.getParent();
+			
+			// no arguments? then no need to worry about incorrect incrementer
+			if(methodInv.arguments().size()==0) return true;
+			
+			//
+			for(Object argument:(List<?>)methodInv.arguments()){
+				if(argument.toString().equals(incrementer))
+						return true;
+			}
+		}
+		
+		return false;
 	}
 
 	private String getCollectionName(Expression operand) {
