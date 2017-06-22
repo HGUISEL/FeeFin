@@ -107,8 +107,19 @@ public class InconsistentIncrementerInWhile extends Bug {
 		
 		if(!(infixExp.getLeftOperand() instanceof SimpleName || infixExp.getRightOperand() instanceof SimpleName)) return false;
 		
-		String potentialRangeChecker = infixExp.getLeftOperand() instanceof SimpleName? (infixExp.getRightOperand().toString()):infixExp.getLeftOperand().toString();
-		if(potentialRangeChecker.contains("length") || potentialRangeChecker.contains("size"))
+		boolean simpleNameInLeft = infixExp.getLeftOperand() instanceof SimpleName;
+		boolean simpleNameInRight = infixExp.getRightOperand() instanceof SimpleName;
+		
+		String potentialRangeChecker = simpleNameInLeft? (infixExp.getRightOperand().toString()):infixExp.getLeftOperand().toString();
+		
+		
+		if((potentialRangeChecker.contains("length") || potentialRangeChecker.contains("size"))
+				&& (
+						(simpleNameInLeft && infixExp.getOperator() != InfixExpression.Operator.GREATER)
+						||
+						(simpleNameInRight && infixExp.getOperator() != InfixExpression.Operator.LESS)
+					)
+		  )
 			return true;
 		return false;
 	}

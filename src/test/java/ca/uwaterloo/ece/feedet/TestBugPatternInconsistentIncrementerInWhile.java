@@ -50,6 +50,17 @@ public class TestBugPatternInconsistentIncrementerInWhile {
         
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
+    	// FP incubator-joshua        d8c4986e46bf289be2c76a96b7fd584eff0f9e0a        caa8a0c6122f80d44e1846afd80b8c984e3ac1ff        src/joshua/corpus/syntax/ArraySyntaxTree.java
+    	// 104     while (!nt_stack.isEmpty() && labels.size() < MAX_LABELS) {
+    	projectName = "incubator-joshua";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "src/joshua/corpus/syntax/ArraySyntaxTree.java"; //	
+    	shaId = "caa8a0c6122f80d44e1846afd80b8c984e3ac1ff";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
