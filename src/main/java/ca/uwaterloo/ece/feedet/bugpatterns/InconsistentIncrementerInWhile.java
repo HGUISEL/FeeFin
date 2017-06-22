@@ -149,8 +149,17 @@ public class InconsistentIncrementerInWhile extends Bug {
 			return false;
 		}
 		
-		// TODO need to deal with array
-		//if()
+		if(targetCollection.getParent() instanceof ArrayAccess){
+			ArrayAccess arrayAccess = (ArrayAccess) targetCollection.getParent();
+			ArrayList<SimpleName> simpleNames = wholeCodeAST.getSimpleNames(arrayAccess);
+			
+			for(SimpleName simpleName:simpleNames){
+				if(simpleName.toString().equals(incrementer))
+					return true;
+			}
+			return false;
+		}
+		
 		return true;
 	}
 

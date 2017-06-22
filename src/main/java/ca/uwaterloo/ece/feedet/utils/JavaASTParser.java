@@ -1034,4 +1034,19 @@ public class JavaASTParser {
 		
 		return infixExps;
 	}
+
+	public ArrayList<ArrayAccess> getArrayAccesses(ASTNode node) {
+		final ArrayList<ArrayAccess> arrayAccesses = new ArrayList<ArrayAccess>();
+		
+		node.accept(new ASTVisitor() {
+			
+			public boolean visit(ArrayAccess node) {
+				arrayAccesses.add(node);
+				return super.visit(node);
+			}
+			
+		});
+		
+		return arrayAccesses;
+	}
 }

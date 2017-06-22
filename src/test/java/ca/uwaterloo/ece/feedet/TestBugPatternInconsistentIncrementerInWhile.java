@@ -28,6 +28,7 @@ public class TestBugPatternInconsistentIncrementerInWhile {
     @Test public void testSomeLibraryMethod() {
     	
     	String projectPathRoot1 = System.getProperty("user.home") + "/Documents/githubProjects/apache"; // "/Volumes/Faith/githubProjects/apache"; //System.getProperty("user.home") + "/Documents/githubProjects/apache";
+    	//String projectPathRoot2 = System.getProperty("user.home") + "/Documents/githubProjects/google"; // "/Volumes/Faith/githubProjects/apache"; //System.getProperty("user.home") + "/Documents/githubProjects/apache";
 
     	int numOfTPs = 0;
     	
@@ -92,6 +93,33 @@ public class TestBugPatternInconsistentIncrementerInWhile {
         
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
+    	// FP incubator-asterixdb-hyracks     path_deleted    140614731b4e0a1b06ea2989ecc1e1c655b6a2ad        hyracks-storage-am-btree/src/main/java/edu/uci/ics/hyracks/storage/am/btree/compressors/FieldPrefixCompressor.java
+    	// use of a local index would be fine.
+    	//128     while (keyPartitions.size() >= numberKeyPartitions) {
+    	//  int lastIndex=keyPartitions.size() - 1; 
+    	//  KeyPartition kp=keyPartitions.get(lastIndex);
+    	/*projectName = "incubator-asterixdb-hyracks";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "hyracks-storage-am-btree/src/main/java/edu/uci/ics/hyracks/storage/am/btree/compressors/FieldPrefixCompressor.java";
+    	shaId = "140614731b4e0a1b06ea2989ecc1e1c655b6a2ad";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);*/
+    	
+    	// FP j2objc  Alive   bb0c824276d0e783516264879eba8c0e0869867e        jre_emul/android/libcore/luni/src/main/java/libcore/icu/NativeIDN.java
+    	
+    	// 63      while (h < s.length()) {
+    	//  int m=Integer.MAX_VALUE;
+    	//  for (int i=0; i < s.length(); i++) {
+    	//    int c=s.charAt(i);
+    	/*projectName = "j2objc";
+    	gitURI = projectPathRoot2 + File.separator + projectName;
+    	path = "jre_emul/android/libcore/luni/src/main/java/libcore/icu/NativeIDN.java";
+    	shaId = "bb0c824276d0e783516264879eba8c0e0869867e";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);*/
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
@@ -121,7 +149,8 @@ public class TestBugPatternInconsistentIncrementerInWhile {
 						+ projectName + "\t"
 						+ detRec.getRevID() + "\t"
 						+ detRec.getPath());
-				System.out.println(detRec.getCode() + "\n");
+				System.out.println(detRec.getLineNum() + " " + detRec.getCode() + "\n");
+				System.out.println(detRec.getSurroundCode() + "\n");
 			}
 		}
 		
