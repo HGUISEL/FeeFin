@@ -95,11 +95,13 @@ public class InconsistentIncrementerInWhile extends Bug {
 			
 			if(!(methodInv.getName().toString().equals("get") || methodInv.getName().toString().equals("charAt")))
 					return true;
+			
+			return false;
 		}
 		
 		// TODO need to deal with array
 		
-		return false;
+		return true;
 	}
 
 	private String getCollectionName(Expression operand) {

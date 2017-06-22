@@ -83,6 +83,15 @@ public class TestBugPatternInconsistentIncrementerInWhile {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(identifiedPotentialBug.size(),numOfTPs);
     	
+    	// FP kafka   d9ae33d4c0473ef53a9ea560536467333136c0a0        403158b54b18cabf93eb15d4c4dd8ab66604bf9f        clients/src/main/java/org/apache/kafka/common/security/kerberos/KerberosRule.java
+    	// 118     while (start < format.length() && match.find(start)) {
+    	projectName = "kafka";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "clients/src/main/java/org/apache/kafka/common/security/kerberos/KerberosRule.java";
+    	shaId = "403158b54b18cabf93eb15d4c4dd8ab66604bf9f";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
