@@ -3,12 +3,16 @@ package ca.uwaterloo.ece.feedet.bugpatterns;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.WhileStatement;
 import org.eclipse.jgit.lib.Repository;
 
@@ -21,7 +25,6 @@ public class InconsistentIncrementerInWhile extends Bug {
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<DetectionRecord> detect() {
 		// Detection results are stored in this ArrayList
@@ -33,55 +36,102 @@ public class InconsistentIncrementerInWhile extends Bug {
 			if(infixExps.size()==0) continue;
 			
 			String incrementer = "";
-			String targetCollection = "";
+			ASTNode targetCollection = null;
 			for(InfixExpression infixExp:infixExps){
 				if(isRangeChecker(infixExp)){
 					if(infixExp.getLeftOperand() instanceof SimpleName){
 						incrementer = infixExp.getLeftOperand().toString();
-						targetCollection = getCollectionName(infixExp.getRightOperand());
+						targetCollection = getCollection(infixExp.getRightOperand());
 					}
 					else if(infixExp.getRightOperand() instanceof SimpleName){
 						incrementer = infixExp.getRightOperand().toString();
-						targetCollection = getCollectionName(infixExp.getLeftOperand());
+						targetCollection = getCollection(infixExp.getLeftOperand());
 					}
 				}
 			}
 			
-			if(targetCollection.isEmpty()) continue;
+			if(targetCollection == null) continue;
 			
 			Statement statement = whileStmt.getBody();
 			
-			if(statement instanceof Block) {
-				boolean existIncrementer = false;
-				boolean existTargetCollectionWithWrongIncrementer = false;
-				for(Statement stmt:(List<Statement>)((Block)statement).statements()){
-					ArrayList<SimpleName> simpleNames = wholeCodeAST.getSimpleNames(stmt);
-					for(SimpleName simpleName:simpleNames){
-						if(simpleName.toString().equals(incrementer))
-							existIncrementer = true;
-						if(simpleName.toString().equals(targetCollection)){
-							
-							if(!useCorrectIncrementer(simpleName,incrementer))
-								existTargetCollectionWithWrongIncrementer = true;
-						}
-					}
-					if((existTargetCollectionWithWrongIncrementer) && !(existIncrementer && existTargetCollectionWithWrongIncrementer)){
-						// get Line number
-						int lineNum = wholeCodeAST.getLineNum(whileStmt.getStartPosition());	
-						listDetRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, whileStmt.toString(), false, false));
-					}
-				}
-			}	
+			anyIssueUsingIncrementer(statement,targetCollection,incrementer,listDetRec);
 		}
 		return listDetRec;
 	}
 
-	private boolean useCorrectIncrementer(SimpleName simpleName, String incrementer) {
+	@SuppressWarnings("unchecked")
+	private void anyIssueUsingIncrementer(Statement statement, ASTNode targetCollection, String incrementer,ArrayList<DetectionRecord> listDetRec) {
 		
-		if(simpleName.getParent() instanceof MethodInvocation){
-			MethodInvocation methodInv = (MethodInvocation)simpleName.getParent();
+		// ignore inner while to avoid redundant detection
+		if(statement instanceof WhileStatement) return;
+		
+		if(statement instanceof Block || statement instanceof SwitchStatement){
 			
-			if(methodInv.getExpression()==null || !methodInv.getExpression().toString().equals(simpleName.toString()))
+			List<Statement> statements = statement instanceof Block?((Block)statement).statements():((SwitchStatement)statement).statements();
+			for(Statement stmt:statements){
+				
+				if(stmt instanceof Block || stmt instanceof SwitchStatement || stmt instanceof WhileStatement){
+					anyIssueUsingIncrementer(stmt,targetCollection, incrementer,listDetRec);
+				}else{
+					if( anyIssueUsingIncrementer(targetCollection, incrementer,stmt)){
+						// get Line number
+						int lineNum = wholeCodeAST.getLineNum(stmt.getStartPosition());	
+						listDetRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, stmt.toString(),getWhileStmt(stmt), false, false));
+					}
+				}
+			}
+		}else{
+			if( anyIssueUsingIncrementer(targetCollection, incrementer,statement)){
+				// get Line number
+				int lineNum = wholeCodeAST.getLineNum(statement.getStartPosition());	
+				listDetRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, statement.toString(),getWhileStmt(statement), false, false));
+			}
+		}
+	}
+
+	private String getWhileStmt(ASTNode stmt) {
+		
+		if(stmt.getParent() instanceof WhileStatement){
+			return stmt.getParent().toString();
+		}
+		return getWhileStmt(stmt.getParent());
+	}
+
+	private boolean anyIssueUsingIncrementer(ASTNode targetCollection, String incrementer, Statement stmt) {
+		
+		//boolean existTargetCollectionWithWrongIncrementer = false;
+		if(targetCollection instanceof Expression){ // for collection
+			ArrayList<SimpleName> simpleNames = wholeCodeAST.getSimpleNames(stmt);
+			
+			for(SimpleName simpleName:simpleNames){
+				//if(simpleName.toString().equals(incrementer))
+				//	existIncrementer = true;
+				if(simpleName.toString().equals(targetCollection.toString())){
+					if(!useCorrectIncrementer(simpleName,incrementer))
+						return true;
+				}
+			}
+		}else{ // for array
+			ArrayList<ArrayAccess> arrayAccessed = wholeCodeAST.getArrayAccesses(stmt);
+			for(ArrayAccess arrayAccess:arrayAccessed){
+				//if(arrayAccess.toString().equals(incrementer))
+				//	existIncrementer = true;
+				if(arrayAccess.toString().equals(targetCollection.toString())){
+					if(!useCorrectIncrementer(arrayAccess,incrementer))
+						return true; //existTargetCollectionWithWrongIncrementer = true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
+	private boolean useCorrectIncrementer(ASTNode targetCollection, String incrementer) {
+		
+		if(targetCollection.getParent() instanceof MethodInvocation){
+			MethodInvocation methodInv = (MethodInvocation)targetCollection.getParent();
+			
+			if(methodInv.getExpression()==null || !methodInv.getExpression().toString().equals(targetCollection.toString()))
 					return true;
 			
 			// no arguments? then no need to worry about incorrect incrementer
@@ -100,17 +150,22 @@ public class InconsistentIncrementerInWhile extends Bug {
 		}
 		
 		// TODO need to deal with array
-		
+		//if()
 		return true;
 	}
 
-	private String getCollectionName(Expression operand) {
+	private ASTNode getCollection(Expression operand) {
 		
 		if(operand instanceof MethodInvocation){
 			if(((MethodInvocation)operand).getExpression() != null)
-			return ((MethodInvocation)operand).getExpression().toString();
+			return ((MethodInvocation)operand).getExpression();
 		}
-		return "";
+		
+		if(operand instanceof QualifiedName){
+			return ((QualifiedName)operand).getQualifier();
+		}
+		
+		return null;
 	}
 
 	private boolean isRangeChecker(InfixExpression infixExp) {
