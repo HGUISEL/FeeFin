@@ -5,14 +5,13 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ArrayAccess;
-import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.WhileStatement;
 import org.eclipse.jgit.lib.Repository;
 
@@ -52,35 +51,15 @@ public class InconsistentIncrementerInWhile extends Bug {
 			
 			if(targetCollection == null) continue;
 			
-			Statement statement = whileStmt.getBody();
+			ArrayList<ExpressionStatement> expStmts = wholeCodeAST.getExpressionStatements(whileStmt);
 			
-			anyIssueUsingIncrementer(statement,targetCollection,incrementer,listDetRec);
+			anyIssueUsingIncrementer(expStmts,targetCollection,incrementer,listDetRec);
 		}
 		return listDetRec;
 	}
 
-	@SuppressWarnings("unchecked")
-	private void anyIssueUsingIncrementer(Statement statement, ASTNode targetCollection, String incrementer,ArrayList<DetectionRecord> listDetRec) {
-		
-		// ignore inner while to avoid redundant detection
-		if(statement instanceof WhileStatement) return;
-		
-		if(statement instanceof Block || statement instanceof SwitchStatement){
-			
-			List<Statement> statements = statement instanceof Block?((Block)statement).statements():((SwitchStatement)statement).statements();
-			for(Statement stmt:statements){
-				
-				if(stmt instanceof Block || stmt instanceof SwitchStatement || stmt instanceof WhileStatement){
-					anyIssueUsingIncrementer(stmt,targetCollection, incrementer,listDetRec);
-				}else{
-					if( anyIssueUsingIncrementer(targetCollection, incrementer,stmt)){
-						// get Line number
-						int lineNum = wholeCodeAST.getLineNum(stmt.getStartPosition());	
-						listDetRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, stmt.toString(),getWhileStmt(stmt), false, false));
-					}
-				}
-			}
-		}else{
+	private void anyIssueUsingIncrementer(ArrayList<ExpressionStatement> expStmts, ASTNode targetCollection, String incrementer,ArrayList<DetectionRecord> listDetRec) {
+		for(ExpressionStatement statement:expStmts){
 			if( anyIssueUsingIncrementer(targetCollection, incrementer,statement)){
 				// get Line number
 				int lineNum = wholeCodeAST.getLineNum(statement.getStartPosition());	
