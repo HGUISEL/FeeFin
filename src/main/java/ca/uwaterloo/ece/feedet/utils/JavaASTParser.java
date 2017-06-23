@@ -1064,4 +1064,19 @@ public class JavaASTParser {
 		
 		return expStmts;
 	}
+
+	public ArrayList<VariableDeclarationFragment> getVariableDeclarationFragments(ASTNode node) {
+		final ArrayList<VariableDeclarationFragment> varDecFrags = new ArrayList<VariableDeclarationFragment>();
+		
+		node.accept(new ASTVisitor() {
+			
+			public boolean visit(VariableDeclarationFragment node) {
+				varDecFrags.add(node);
+				return super.visit(node);
+			}
+			
+		});
+		
+		return varDecFrags;
+	}
 }

@@ -12,6 +12,7 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.WhileStatement;
 import org.eclipse.jgit.lib.Repository;
 
@@ -52,20 +53,42 @@ public class InconsistentIncrementerInWhile extends Bug {
 			if(targetCollection == null) continue;
 			
 			ArrayList<ExpressionStatement> expStmts = wholeCodeAST.getExpressionStatements(whileStmt);
+			ArrayList<VariableDeclarationFragment> vardecFrags = wholeCodeAST.getVariableDeclarationFragments(whileStmt);
 			
-			anyIssueUsingIncrementer(expStmts,targetCollection,incrementer,listDetRec);
+			anyIssueUsingIncrementer(expStmts,vardecFrags,targetCollection,incrementer,listDetRec);
 		}
 		return listDetRec;
 	}
 
-	private void anyIssueUsingIncrementer(ArrayList<ExpressionStatement> expStmts, ASTNode targetCollection, String incrementer,ArrayList<DetectionRecord> listDetRec) {
+	private void anyIssueUsingIncrementer(ArrayList<ExpressionStatement> expStmts, ArrayList<VariableDeclarationFragment> varDecFrags, ASTNode targetCollection, String incrementer,ArrayList<DetectionRecord> listDetRec) {
+		
+		ArrayList<SimpleName> localVarNamesInWhileStmt = getLocalVarNamesInWhileStmt(varDecFrags);
+		
 		for(ExpressionStatement statement:expStmts){
-			if( anyIssueUsingIncrementer(targetCollection, incrementer,statement)){
+			if( anyIssueUsingIncrementer(targetCollection, incrementer,statement,localVarNamesInWhileStmt)){
 				// get Line number
 				int lineNum = wholeCodeAST.getLineNum(statement.getStartPosition());	
 				listDetRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, statement.toString(),getWhileStmt(statement), false, false));
 			}
 		}
+		
+		for(VariableDeclarationFragment varDecFrag:varDecFrags){
+			if( anyIssueUsingIncrementer(targetCollection, incrementer,varDecFrag,localVarNamesInWhileStmt)){
+				// get Line number
+				int lineNum = wholeCodeAST.getLineNum(varDecFrag.getStartPosition());	
+				listDetRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, varDecFrag.toString(),getWhileStmt(varDecFrag), false, false));
+			}
+		}
+	}
+
+	private ArrayList<SimpleName> getLocalVarNamesInWhileStmt(ArrayList<VariableDeclarationFragment> varDecFrags) {
+		
+		ArrayList<SimpleName> simpleNames = new ArrayList<SimpleName>();
+		for(VariableDeclarationFragment varDecFrag:varDecFrags){
+			simpleNames.add(varDecFrag.getName());
+		}
+		
+		return simpleNames;
 	}
 
 	private String getWhileStmt(ASTNode stmt) {
@@ -76,7 +99,7 @@ public class InconsistentIncrementerInWhile extends Bug {
 		return getWhileStmt(stmt.getParent());
 	}
 
-	private boolean anyIssueUsingIncrementer(ASTNode targetCollection, String incrementer, Statement stmt) {
+	private boolean anyIssueUsingIncrementer(ASTNode targetCollection, String incrementer, ASTNode stmt, ArrayList<SimpleName> localVarNamesInWhileStmt) {
 		
 		//boolean existTargetCollectionWithWrongIncrementer = false;
 		if(targetCollection instanceof Expression){ // for collection
@@ -86,7 +109,7 @@ public class InconsistentIncrementerInWhile extends Bug {
 				//if(simpleName.toString().equals(incrementer))
 				//	existIncrementer = true;
 				if(simpleName.toString().equals(targetCollection.toString())){
-					if(!useCorrectIncrementer(simpleName,incrementer))
+					if(!useCorrectIncrementer(simpleName,incrementer,localVarNamesInWhileStmt))
 						return true;
 				}
 			}
@@ -96,7 +119,7 @@ public class InconsistentIncrementerInWhile extends Bug {
 				//if(arrayAccess.toString().equals(incrementer))
 				//	existIncrementer = true;
 				if(arrayAccess.toString().equals(targetCollection.toString())){
-					if(!useCorrectIncrementer(arrayAccess,incrementer))
+					if(!useCorrectIncrementer(arrayAccess,incrementer,localVarNamesInWhileStmt))
 						return true; //existTargetCollectionWithWrongIncrementer = true;
 				}
 			}
@@ -105,7 +128,7 @@ public class InconsistentIncrementerInWhile extends Bug {
 		return false;
 	}
 
-	private boolean useCorrectIncrementer(ASTNode targetCollection, String incrementer) {
+	private boolean useCorrectIncrementer(ASTNode targetCollection, String incrementer, ArrayList<SimpleName> localVarNamesInWhileStmt) {
 		
 		if(targetCollection.getParent() instanceof MethodInvocation){
 			MethodInvocation methodInv = (MethodInvocation)targetCollection.getParent();
@@ -116,7 +139,7 @@ public class InconsistentIncrementerInWhile extends Bug {
 			// no arguments? then no need to worry about incorrect incrementer
 			if(methodInv.arguments().size()==0) return true;
 			
-			//
+
 			for(Object argument:(List<?>)methodInv.arguments()){
 				
 				ArrayList<SimpleName> simpleNames = wholeCodeAST.getSimpleNames((ASTNode)argument);
@@ -124,6 +147,12 @@ public class InconsistentIncrementerInWhile extends Bug {
 				for(SimpleName simpleName:simpleNames){
 					if(simpleName.toString().equals(incrementer))
 							return true;
+				}
+				
+				// if local variable is used as an indexer, the it is acceptable.
+				for(SimpleName localVarName:localVarNamesInWhileStmt){
+					if(localVarName.toString().equals(argument.toString()))
+						return true;
 				}
 			}
 			
