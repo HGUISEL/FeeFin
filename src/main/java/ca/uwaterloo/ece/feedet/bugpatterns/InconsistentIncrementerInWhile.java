@@ -150,8 +150,10 @@ public class InconsistentIncrementerInWhile extends Bug {
 				
 				// if local variable is used as an indexer, the it is acceptable.
 				for(SimpleName localVarName:localVarNamesInWhileStmt){
-					if(localVarName.toString().equals(argument.toString()))
-						return true;
+					for(SimpleName simpleName:simpleNames){
+						if(localVarName.toString().equals(simpleName.toString()))
+							return true;
+					}
 				}
 			}
 			
@@ -169,6 +171,15 @@ public class InconsistentIncrementerInWhile extends Bug {
 				if(simpleName.toString().equals(incrementer))
 					return true;
 			}
+			
+			// if local variable is used as an indexer, the it is acceptable.
+			for(SimpleName localVarName:localVarNamesInWhileStmt){
+				for(SimpleName simpleName:simpleNames){
+					if(localVarName.toString().equals(simpleName.toString()))
+						return true;
+				}
+			}
+			
 			return false;
 		}
 		

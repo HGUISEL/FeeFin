@@ -1079,4 +1079,24 @@ public class JavaASTParser {
 		
 		return varDecFrags;
 	}
+
+	public ArrayList<VariableDeclaration> getVariableDeclaration(ASTNode node) {
+		final ArrayList<VariableDeclaration> varDecs = new ArrayList<VariableDeclaration>();
+		
+		node.accept(new ASTVisitor() {
+			
+			public boolean visit(VariableDeclarationFragment node) {
+				varDecs.add(node);
+				return super.visit(node);
+			}
+			
+			public boolean visit(SingleVariableDeclaration node) {
+				varDecs.add(node);
+				return super.visit(node);
+			}
+			
+		});
+		
+		return varDecs;
+	}
 }

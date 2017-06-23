@@ -118,7 +118,6 @@ public class TestBugPatternInconsistentIncrementerInWhile {
     	assertEquals(identifiedPotentialBug.size(),numOfTPs);
     	
     	// FP j2objc  Alive   bb0c824276d0e783516264879eba8c0e0869867e        jre_emul/android/libcore/luni/src/main/java/libcore/icu/NativeIDN.java
-    	
     	// 63      while (h < s.length()) {
     	//  int m=Integer.MAX_VALUE;
     	//  for (int i=0; i < s.length(); i++) {
@@ -127,6 +126,16 @@ public class TestBugPatternInconsistentIncrementerInWhile {
     	gitURI = projectPathRoot2 + File.separator + projectName;
     	path = "jre_emul/android/libcore/luni/src/main/java/libcore/icu/NativeIDN.java";
     	shaId = "bb0c824276d0e783516264879eba8c0e0869867e";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
+    	// FP ExoPlayer       Alive   e6778c90a1607da01feeba4d4bbf9a514655ed3c        library/src/main/java/com/google/android/exoplayer2/text/webvtt/WebvttCueParser.java
+    	// 165     isClosingTag=markup.charAt(l    tPos + 1) == CHAR_SLASH
+    	projectName = "ExoPlayer";
+    	gitURI = projectPathRoot2 + File.separator + projectName;
+    	path = "library/src/main/java/com/google/android/exoplayer2/text/webvtt/WebvttCueParser.java";
+    	shaId = "e6778c90a1607da01feeba4d4bbf9a514655ed3c";
         
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(identifiedPotentialBug.size(),numOfTPs);
