@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ArrayAccess;
+import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.InfixExpression;
@@ -61,7 +62,7 @@ public class InconsistentIncrementerInWhile extends Bug {
 
 	private void anyIssueUsingIncrementer(ArrayList<ExpressionStatement> expStmts, ArrayList<VariableDeclarationFragment> varDecFrags, ASTNode targetCollection, String incrementer,ArrayList<DetectionRecord> listDetRec) {
 		
-		ArrayList<SimpleName> localVarNamesInWhileStmt = getLocalVarNamesInWhileStmt(varDecFrags);
+		ArrayList<SimpleName> localVarNamesInWhileStmt = getLocalVarNamesInWhileStmt(varDecFrags,expStmts,targetCollection);
 		
 		for(ExpressionStatement statement:expStmts){
 			if( anyIssueUsingIncrementer(targetCollection, incrementer,statement,localVarNamesInWhileStmt)){
@@ -80,11 +81,27 @@ public class InconsistentIncrementerInWhile extends Bug {
 		}
 	}
 
-	private ArrayList<SimpleName> getLocalVarNamesInWhileStmt(ArrayList<VariableDeclarationFragment> varDecFrags) {
+	private ArrayList<SimpleName> getLocalVarNamesInWhileStmt(ArrayList<VariableDeclarationFragment> varDecFrags,
+			ArrayList<ExpressionStatement> expStmts,
+			ASTNode targetCollection) {
 		
 		ArrayList<SimpleName> simpleNames = new ArrayList<SimpleName>();
 		for(VariableDeclarationFragment varDecFrag:varDecFrags){
 			simpleNames.add(varDecFrag.getName());
+		}
+		
+		for(ExpressionStatement expStmt:expStmts){
+			if(expStmt.getExpression() instanceof Assignment){
+				Assignment assginement = (Assignment) expStmt.getExpression();
+				ArrayList<SimpleName> assignedVars = wholeCodeAST.getSimpleNames(assginement.getLeftHandSide());	
+				ArrayList<SimpleName> assiningVars = wholeCodeAST.getSimpleNames(assginement.getRightHandSide());
+				
+				for(SimpleName assiningVar:assiningVars){
+					if(assiningVar.toString().equals(targetCollection.toString())){
+						simpleNames.addAll(assignedVars);
+					}
+				}
+			}
 		}
 		
 		return simpleNames;

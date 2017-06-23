@@ -139,6 +139,25 @@ public class TestBugPatternInconsistentIncrementerInWhile {
         
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
+    	// FP tuscany-sca-1.x path_deleted    7319ca5ea97c2949bae8cf7eae84e57e3cce0eaf        services/persistence/store.journal/src/main/java/org/apache/tuscany/persistence/store/journal/SerializationHelper.java  86      stream.write(bytes[i]);
+    	projectName = "tuscany-sca-1.x";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "services/persistence/store.journal/src/main/java/org/apache/tuscany/persistence/store/journal/SerializationHelper.java";
+    	shaId = "7319ca5ea97c2949bae8cf7eae84e57e3cce0eaf";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
+    	// FP tomcat  Alive   915b1453ebc76494bfdbc42f797d1890d43b2bdb        java/org/apache/catalina/valves/rewrite/Substitution.java
+    	// 166     newElement.n=Character.digit(sub.charAt(dollarPos + 1),10); 
+    	projectName = "tomcat";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "java/org/apache/catalina/valves/rewrite/Substitution.java";
+    	shaId = "915b1453ebc76494bfdbc42f797d1890d43b2bdb";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
