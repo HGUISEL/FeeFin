@@ -35,9 +35,21 @@ public class InconsistentIncrementerInWhile extends Bug {
 			ArrayList<InfixExpression> infixExps = wholeCodeAST.getInfixExpressions(whileStmt.getExpression());
 			if(infixExps.size()==0) continue;
 			
+			ArrayList<ExpressionStatement> expStmts = wholeCodeAST.getExpressionStatements(whileStmt);
+			ArrayList<VariableDeclarationFragment> vardecFrags = wholeCodeAST.getVariableDeclarationFragments(whileStmt);
+			
 			String incrementer = "";
 			ASTNode targetCollection = null;
 			for(InfixExpression infixExp:infixExps){
+				
+				if(!(infixExp.getOperator() == InfixExpression.Operator.GREATER
+					|| infixExp.getOperator() == InfixExpression.Operator.GREATER_EQUALS
+					|| infixExp.getOperator() == InfixExpression.Operator.LESS
+					|| infixExp.getOperator() == InfixExpression.Operator.LESS_EQUALS
+					)
+				)
+					continue;
+				
 				if(isRangeChecker(infixExp)){
 					if(infixExp.getLeftOperand() instanceof SimpleName){
 						incrementer = infixExp.getLeftOperand().toString();
@@ -48,14 +60,15 @@ public class InconsistentIncrementerInWhile extends Bug {
 						targetCollection = getCollection(infixExp.getLeftOperand());
 					}
 				}
+				
+				if(targetCollection !=null && !incrementer.isEmpty()){
+					anyIssueUsingIncrementer(expStmts,vardecFrags,targetCollection,incrementer,listDetRec);
+				}else{
+					// initiate
+					targetCollection = null;
+					incrementer = "";
+				}
 			}
-			
-			if(targetCollection == null) continue;
-			
-			ArrayList<ExpressionStatement> expStmts = wholeCodeAST.getExpressionStatements(whileStmt);
-			ArrayList<VariableDeclarationFragment> vardecFrags = wholeCodeAST.getVariableDeclarationFragments(whileStmt);
-			
-			anyIssueUsingIncrementer(expStmts,vardecFrags,targetCollection,incrementer,listDetRec);
 		}
 		return listDetRec;
 	}

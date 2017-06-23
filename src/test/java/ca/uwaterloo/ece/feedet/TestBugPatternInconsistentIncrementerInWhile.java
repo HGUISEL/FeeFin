@@ -168,6 +168,17 @@ public class TestBugPatternInconsistentIncrementerInWhile {
         
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
+    	// FP activemq        Alive   d54d046b8a8f2e9e5c0a28e1f8c7634b3c8b18e4        activemq-client/src/main/java/org/apache/activemq/openwire/OpenWireFormat.java
+    	// both expressions in while condition contains size and/or length. should be ignored
+    	//  499     marshallCacheMap.remove(marshallCache[nextMarshallCacheEvictionIndex]);
+    	projectName = "activemq";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "activemq-client/src/main/java/org/apache/activemq/openwire/OpenWireFormat.java";
+    	shaId = "d54d046b8a8f2e9e5c0a28e1f8c7634b3c8b18e4";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
