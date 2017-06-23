@@ -10,6 +10,8 @@ import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.PostfixExpression;
+import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
@@ -115,6 +117,15 @@ public class InconsistentIncrementerInWhile extends Bug {
 						simpleNames.addAll(assignedVars);
 					}
 				}
+			} else if(expStmt.getExpression() instanceof PostfixExpression){			
+				PostfixExpression postfixExp = (PostfixExpression) expStmt.getExpression();
+				ArrayList<SimpleName> simpleNameInOperands = wholeCodeAST.getSimpleNames(postfixExp);
+				simpleNames.addAll(simpleNameInOperands);
+				
+			} else if(expStmt.getExpression() instanceof PrefixExpression){
+				PrefixExpression prefixExp = (PrefixExpression) expStmt.getExpression();
+				ArrayList<SimpleName> simpleNameInOperands = wholeCodeAST.getSimpleNames(prefixExp);
+				simpleNames.addAll(simpleNameInOperands);
 			}
 		}
 		

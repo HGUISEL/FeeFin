@@ -179,6 +179,16 @@ public class TestBugPatternInconsistentIncrementerInWhile {
         
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
+    	// FP manifoldcf      2b63a437410404431c4c1071363085431caf3d91        fd2571556cc40736439ec30d8960ce9cf1c82cb8        connectors/hdfs/connector/src/main/java/org/apache/manifoldcf/crawler/connectors/hdfs/HDFSRepositoryConnector.java
+    	// 1474    Logging.connectors.debug("Seed = '" + ids[j] + "'");
+    	projectName = "manifoldcf";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "connectors/hdfs/connector/src/main/java/org/apache/manifoldcf/crawler/connectors/hdfs/HDFSRepositoryConnector.java";
+    	shaId = "fd2571556cc40736439ec30d8960ce9cf1c82cb8";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
