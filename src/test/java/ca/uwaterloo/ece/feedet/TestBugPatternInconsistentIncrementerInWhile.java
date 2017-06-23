@@ -158,6 +158,16 @@ public class TestBugPatternInconsistentIncrementerInWhile {
         
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
+    	// FP hive    Alive   23e703f96935ecd6c7daf6316329f305ccac6615        serde/src/java/org/apache/hadoop/hive/serde2/typeinfo/TypeInfoUtils.java
+    	// 306     t.isType=isTypeChar(typeInfoString.charAt(begin));
+    	projectName = "hive";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "serde/src/java/org/apache/hadoop/hive/serde2/typeinfo/TypeInfoUtils.java";
+    	shaId = "23e703f96935ecd6c7daf6316329f305ccac6615";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

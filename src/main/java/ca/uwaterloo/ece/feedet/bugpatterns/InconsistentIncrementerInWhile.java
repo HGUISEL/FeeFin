@@ -62,7 +62,7 @@ public class InconsistentIncrementerInWhile extends Bug {
 
 	private void anyIssueUsingIncrementer(ArrayList<ExpressionStatement> expStmts, ArrayList<VariableDeclarationFragment> varDecFrags, ASTNode targetCollection, String incrementer,ArrayList<DetectionRecord> listDetRec) {
 		
-		ArrayList<SimpleName> localVarNamesInWhileStmt = getLocalVarNamesInWhileStmt(varDecFrags,expStmts,targetCollection);
+		ArrayList<SimpleName> localVarNamesInWhileStmt = getLocalVarNamesInWhileStmt(varDecFrags,expStmts,targetCollection,incrementer);
 		
 		for(ExpressionStatement statement:expStmts){
 			if( anyIssueUsingIncrementer(targetCollection, incrementer,statement,localVarNamesInWhileStmt)){
@@ -83,7 +83,8 @@ public class InconsistentIncrementerInWhile extends Bug {
 
 	private ArrayList<SimpleName> getLocalVarNamesInWhileStmt(ArrayList<VariableDeclarationFragment> varDecFrags,
 			ArrayList<ExpressionStatement> expStmts,
-			ASTNode targetCollection) {
+			ASTNode targetCollection,
+			String incrementer) {
 		
 		ArrayList<SimpleName> simpleNames = new ArrayList<SimpleName>();
 		for(VariableDeclarationFragment varDecFrag:varDecFrags){
@@ -97,7 +98,7 @@ public class InconsistentIncrementerInWhile extends Bug {
 				ArrayList<SimpleName> assiningVars = wholeCodeAST.getSimpleNames(assginement.getRightHandSide());
 				
 				for(SimpleName assiningVar:assiningVars){
-					if(assiningVar.toString().equals(targetCollection.toString())){
+					if(assiningVar.toString().equals(targetCollection.toString()) || assiningVar.toString().equals(incrementer)){
 						simpleNames.addAll(assignedVars);
 					}
 				}
