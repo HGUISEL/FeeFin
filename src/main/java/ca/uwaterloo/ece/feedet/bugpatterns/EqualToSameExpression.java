@@ -57,7 +57,7 @@ public class EqualToSameExpression extends Bug {
 				if(IsCacheRelated(exp)) continue;
 				
 				int lineNum = wholeCodeAST.getLineNum(exp.getStartPosition());
-				detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, exp.toString(), false, false));
+				detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, exp.toString(), false, false));
 			}			
 		}
 		

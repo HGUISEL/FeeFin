@@ -27,7 +27,7 @@ public class MissingThrow extends Bug {
 		for(ClassInstanceCreation cInstCre:wholeCodeAST.getClassInstanceCreations()){
 			if(cInstCre.getParent() instanceof ExpressionStatement && cInstCre.getType().toString().endsWith("Exception")){
 				int lineNum = wholeCodeAST.getLineNum(cInstCre.getStartPosition());
-				detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, cInstCre.getParent().toString(), false, false));
+				detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, cInstCre.getParent().toString(), false, false));
 			}
 		}
 		

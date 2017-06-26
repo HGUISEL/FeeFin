@@ -45,7 +45,7 @@ public class MissingArrayLengthCheck extends Bug {
 			if(doesLengthCheckerExist(strLengthExpession,ifStmt)) continue;
 			
 			int lineNum = wholeCodeAST.getLineNum(exp.getStartPosition());
-			detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, exp.toString(), ifStmt.toString(), false, false));
+			detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, exp.toString(), ifStmt.toString(), false, false));
 		}
 		
 		return detRec;

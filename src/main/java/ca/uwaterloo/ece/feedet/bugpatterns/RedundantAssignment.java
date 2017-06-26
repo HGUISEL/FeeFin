@@ -69,7 +69,7 @@ public class RedundantAssignment extends Bug {
 				
 				if(assigns.get(a).getLeftHandSide().toString().equals(assigns.get(a+1).getLeftHandSide().toString())){
 					int lineNum = wholeCodeAST.getLineNum(assigns.get(a).getStartPosition());
-					 detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, assigns.get(a).toString() + ";" + assigns.get(a+1).toString(),assigns.get(a).getParent().getParent().toString(), false, false));
+					 detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, assigns.get(a).toString() + ";" + assigns.get(a+1).toString(),assigns.get(a).getParent().getParent().toString(), false, false));
 				}
 			}
 		}

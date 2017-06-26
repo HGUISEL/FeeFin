@@ -48,7 +48,7 @@ public class IncorrectMapIterator extends Bug {
 							String itrName = varDecFrag.getName().toString();
 							if(Utils.containsStringByRegex("\\(\\s*Map\\.Entry\\s*\\)\\s*" + itrName + "\\.next\\(\\)", forStmt.getBody().toString())){
 								int lineNum = wholeCodeAST.getLineNum(forStmt.getStartPosition());
-								detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, forStmt.toString(), false, false));
+								detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, forStmt.toString(), false, false));
 							}		
 						}
 					}

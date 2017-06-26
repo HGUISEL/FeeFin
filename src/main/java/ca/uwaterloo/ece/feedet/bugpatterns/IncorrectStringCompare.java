@@ -36,7 +36,7 @@ public class IncorrectStringCompare extends Bug {
 						
 					int lineNum = wholeCodeAST.getLineNum(infixExp.getStartPosition());
 				
-					detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, infixExp.toString(), false, false));
+					detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, infixExp.toString(), false, false));
 			
 				}
 			}

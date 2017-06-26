@@ -40,7 +40,7 @@ public class IncorrectDirectorySlash extends Bug {
 
 			Matcher m = r.matcher(sVD);
 			if(m.find()){
-				detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, sVD.toString(), false, false));
+				detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, sVD.toString(), false, false));
 			}
 		}
 		

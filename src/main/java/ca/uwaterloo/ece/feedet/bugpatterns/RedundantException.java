@@ -125,7 +125,7 @@ public class RedundantException extends Bug {
 							lineNum = wholeCodeAST.getLineNum(varDec.getParent().getStartPosition());
 						}
 						// mD.toString()
-						detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, buggyCode.replace("\n", ""), mD.toString(), false, false));
+						detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, buggyCode.replace("\n", ""), mD.toString(), false, false));
 					}
 				}
 			}

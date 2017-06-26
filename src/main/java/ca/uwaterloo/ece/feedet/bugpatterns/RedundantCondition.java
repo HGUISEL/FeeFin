@@ -31,7 +31,7 @@ public class RedundantCondition extends Bug {
 				
 				if(exp.getLeftOperand().toString().equals(exp.getRightOperand().toString())){
 					int lineNum = wholeCodeAST.getLineNum(exp.getStartPosition());
-					detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, exp.getParent().toString(), false, false));
+					detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, exp.getParent().toString(), false, false));
 				}
 			}
 		}

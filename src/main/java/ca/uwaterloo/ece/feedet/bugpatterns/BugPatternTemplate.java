@@ -47,7 +47,7 @@ public class BugPatternTemplate extends Bug {
 				//		isAlreadyFixed: currently not using set as false
 				//		isAliveInHEAD: currently not using set as false
 				
-				listDetRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, cInstCre.getParent().toString(), false, false));
+				listDetRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, cInstCre.getParent().toString(), false, false));
 				
 				// (2) DetectionRecord with nine arguments
 				//		patternName

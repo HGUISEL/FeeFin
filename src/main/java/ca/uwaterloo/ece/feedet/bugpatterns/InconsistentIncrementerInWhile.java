@@ -88,7 +88,7 @@ public class InconsistentIncrementerInWhile extends Bug {
 			if( anyIssueUsingIncrementer(targetCollection, incrementer,statement,localVarNamesInWhileStmt)){
 				// get Line number
 				int lineNum = wholeCodeAST.getLineNum(statement.getStartPosition());	
-				listDetRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, statement.toString(),getWhileStmt(statement), false, false));
+				listDetRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, statement.toString(),getWhileStmt(statement), false, false));
 			}
 		}
 		
@@ -96,7 +96,7 @@ public class InconsistentIncrementerInWhile extends Bug {
 			if( anyIssueUsingIncrementer(targetCollection, incrementer,varDecFrag,localVarNamesInWhileStmt)){
 				// get Line number
 				int lineNum = wholeCodeAST.getLineNum(varDecFrag.getStartPosition());	
-				listDetRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, varDecFrag.toString(),getWhileStmt(varDecFrag), false, false));
+				listDetRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, varDecFrag.toString(),getWhileStmt(varDecFrag), false, false));
 			}
 		}
 	}

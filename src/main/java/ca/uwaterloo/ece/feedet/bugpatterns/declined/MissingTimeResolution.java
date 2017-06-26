@@ -33,7 +33,7 @@ public class MissingTimeResolution extends Bug {
 					MethodInvocation parentMI = (MethodInvocation) mI.getParent();
 					if(parentMI.getName().toString().equals("setLastModified")){
 						int lineNum = wholeCodeAST.getLineNum(parentMI.getStartPosition());
-						detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, parentMI.toString(), false, false));
+						detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, parentMI.toString(), false, false));
 					}
 				}
 			}

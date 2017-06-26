@@ -95,7 +95,7 @@ public class InconsistentNullChecker extends Bug {
 				if(!ifStatement.getThenStatement().toString().contains(objName)){
 					
 					int lineNum = wholeCodeAST.getLineNum(ifStatement.getStartPosition());
-					detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, ifStatement.toString(), false, false));
+					detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, ifStatement.toString(), false, false));
 				}
 			}
 		}

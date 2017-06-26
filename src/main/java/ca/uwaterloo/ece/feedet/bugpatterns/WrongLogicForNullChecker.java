@@ -50,7 +50,7 @@ public class WrongLogicForNullChecker extends Bug {
 			// get Line number
 			int lineNum = wholeCodeAST.getLineNum(condExp.getStartPosition());
 			
-			listDetRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, condExp.toString(), false, false));	
+			listDetRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, condExp.toString(), false, false));	
 		}
 		
 		return listDetRec;

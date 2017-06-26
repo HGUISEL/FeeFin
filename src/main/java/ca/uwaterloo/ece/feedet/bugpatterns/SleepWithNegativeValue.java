@@ -43,7 +43,7 @@ public class SleepWithNegativeValue extends Bug {
 				// get Line number
 				int lineNum = wholeCodeAST.getLineNum(methodInv.getStartPosition());
 		
-				detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, methodInv.getParent().toString(), false, false));
+				detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, methodInv.getParent().toString(), false, false));
 			}
 		}
 		

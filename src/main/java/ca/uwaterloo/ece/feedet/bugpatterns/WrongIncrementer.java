@@ -156,7 +156,7 @@ public class WrongIncrementer extends Bug {
 		while(m.find()){
 			String forLine = "for(" + forStmt.initializers().get(0) + ";" + forStmt.getExpression() + ";" + forStmt.updaters().get(0) + ") >> ";
 			int lineNum = wholeCodeAST.getLineNum(forStmt.getStartPosition());
-			detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, forLine + line.trim(), false, false));
+			detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, forLine + line.trim(), false, false));
 		}
 	}
 	

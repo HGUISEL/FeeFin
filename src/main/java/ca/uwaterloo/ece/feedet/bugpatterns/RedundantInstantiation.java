@@ -52,7 +52,7 @@ public class RedundantInstantiation extends Bug {
 							&& varName.equals(varNameForInstCre) && !Utils.isWordInStatement(varName,instCre.toString())){
 						
 						int lineNum = wholeCodeAST.getLineNum(varDec.getParent().getStartPosition());;
-						detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, varDec.getParent().toString() + instCre.getParent(), false, false));
+						detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, varDec.getParent().toString() + instCre.getParent(), false, false));
 					}
 				}
 			}

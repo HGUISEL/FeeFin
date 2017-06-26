@@ -64,7 +64,7 @@ public class InconsistentReturnType extends Bug {
 					
 					if(!verify(retype, st)){
 						int lineNum = wholeCodeAST.getLineNum(methodDec.getStartPosition());
-						listDetRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, methodDec.getParent().toString(), false, false));
+						listDetRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, methodDec.getParent().toString(), false, false));
 					}
 				}
 			}

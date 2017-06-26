@@ -65,7 +65,7 @@ public class IllogicalCondition extends Bug {
 									
 									if(param.toString().equals(objectNameinLOperand)){
 										int lineNum = wholeCodeAST.getLineNum(exp.getStartPosition());
-										detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, exp.toString(), false, false));
+										detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, exp.toString(), false, false));
 										break;
 									}
 									
@@ -73,7 +73,7 @@ public class IllogicalCondition extends Bug {
 									if(param instanceof MethodInvocation){
 										if(((MethodInvocation) param).getExpression().toString().equals(objectNameinLOperand)){
 											int lineNum = wholeCodeAST.getLineNum(exp.getStartPosition());
-											detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, exp.toString(), false, false));
+											detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, exp.toString(), false, false));
 										}
 									}
 								}

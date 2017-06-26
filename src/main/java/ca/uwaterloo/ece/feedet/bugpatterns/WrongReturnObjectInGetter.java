@@ -79,7 +79,7 @@ public class WrongReturnObjectInGetter extends Bug {
 						String retValue = exp.toString();
 
 						if(!similar(mName, retValue)){
-							detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, mdec.toString(), false, false));	
+							detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, mdec.toString(), false, false));	
 						}
 					}
 				}

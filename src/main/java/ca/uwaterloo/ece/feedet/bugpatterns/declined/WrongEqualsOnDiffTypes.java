@@ -64,14 +64,14 @@ public class WrongEqualsOnDiffTypes extends Bug{
 					Name a = (Name) exp;
 					Name b = (Name) argument;
 					if(rtVariable(a)!=null && rtVariable(b)!=null &&!(rtVariable(a).equals(rtVariable(b)))){
-					 detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, methodInvo.getParent().toString(), false, false));	
+					 detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, methodInvo.getParent().toString(), false, false));	
 					}
 				}
 				if((exp instanceof Name) && (argument instanceof MethodInvocation)){
 					Name a = (Name) exp;
 					MethodInvocation b = (MethodInvocation) argument;
 					if(rtVariable(a)!=null && rtMethod(b)!=null &&!(rtVariable(a).equals(rtMethod(b)))){
-						 detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, methodInvo.getParent().toString(), false, false));	
+						 detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, methodInvo.getParent().toString(), false, false));	
 						}
 					}
 			/*
@@ -82,7 +82,7 @@ public class WrongEqualsOnDiffTypes extends Bug{
 					MethodInvocation a = (MethodInvocation) exp;
 					Name b = (Name) argument;
 					if(rtMethod(a)!=null && rtVariable(b)!=null &&!(rtMethod(a).equals(rtVariable(b)))){
-						 detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, methodInvo.getParent().toString(), false, false));	
+						 detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, methodInvo.getParent().toString(), false, false));	
 						}
 					}
 			/*
@@ -93,7 +93,7 @@ public class WrongEqualsOnDiffTypes extends Bug{
 					MethodInvocation a = (MethodInvocation) exp;
 					MethodInvocation b = (MethodInvocation) argument;
 					if(rtMethod(a)!=null && rtMethod(b)!=null &&!(rtMethod(a).equals(rtMethod(b)))){
-						 detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, methodInvo.getParent().toString(), false, false));	
+						 detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, methodInvo.getParent().toString(), false, false));	
 						}
 					}
 			}

@@ -3,6 +3,7 @@ package ca.uwaterloo.ece.feedet;
 public class DetectionRecord {
 
 	String patternName = "";
+	String description = "";
 	String projectName = "";
 	String recentRevisionBugAlive = "";
 	String path = "";
@@ -12,8 +13,9 @@ public class DetectionRecord {
 	boolean isAlreadyFixed = false;
 	boolean isAliveInHEAD = false;
 	
-	public DetectionRecord(String pName,String prjName,String rcntRevBugAlive,String path,int lineNum, String code,String surroundingCode,boolean alreadyFixed,boolean aliveinHead){
+	public DetectionRecord(String pName,String dscritption, String prjName,String rcntRevBugAlive,String path,int lineNum, String code,String surroundingCode,boolean alreadyFixed,boolean aliveinHead){
 		patternName = pName;
+		description = dscritption;
 		projectName = prjName;
 		recentRevisionBugAlive = rcntRevBugAlive;
 		this.path = path;
@@ -24,7 +26,7 @@ public class DetectionRecord {
 		isAliveInHEAD = aliveinHead;
 	}
 	
-	public DetectionRecord(String pName,String prjName,String rcntRevBugAlive,String path,int lineNum,String code,boolean alreadyFixed,boolean aliveinHead){
+	public DetectionRecord(String pName, String descirption, String prjName,String rcntRevBugAlive,String path,int lineNum,String code,boolean alreadyFixed,boolean aliveinHead){
 		patternName = pName;
 		projectName = prjName;
 		recentRevisionBugAlive = rcntRevBugAlive;
@@ -89,5 +91,8 @@ public class DetectionRecord {
 
 	public String getPatternName() {
 		return patternName;
+	}
+	public String getDescription() {
+		return description;
 	}
 }

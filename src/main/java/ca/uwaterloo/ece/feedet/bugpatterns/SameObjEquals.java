@@ -65,7 +65,7 @@ public class SameObjEquals extends Bug {
 						continue;
 					
 					int lineNum = wholeCodeAST.getLineNum(methodInv.getStartPosition());
-					detRec.add(new DetectionRecord(bugName, projectName, id, path, lineNum, methodInv.toString(), false, false));
+					detRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, methodInv.toString(), false, false));
 				}
 			}
 		}
