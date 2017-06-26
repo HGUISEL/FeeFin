@@ -189,6 +189,16 @@ public class TestBugPatternInconsistentIncrementerInWhile {
         
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
+    	// FP fop	577736560357ca7b51b18a53444bb958ec421419	0b84f177d753d08d65c62d11a41fe3aa71d60cf3	src/java/org/apache/fop/layoutmgr/inline/TextLayoutManager.java
+    	// 591	previous=textArray[prevAi.breakIndex - 1]
+    	projectName = "fop";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "src/java/org/apache/fop/layoutmgr/inline/TextLayoutManager.java";
+    	shaId = "0b84f177d753d08d65c62d11a41fe3aa71d60cf3";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),++numOfTPs);
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

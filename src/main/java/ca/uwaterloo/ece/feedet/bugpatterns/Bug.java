@@ -7,15 +7,15 @@ import ca.uwaterloo.ece.feedet.DetectionRecord;
 import ca.uwaterloo.ece.feedet.utils.JavaASTParser;
 
 public abstract class Bug {
-	String projectName = "";
-	String bugName = "";
-	String sourceCode = "";
-	JavaASTParser wholeCodeAST;
-	String id = "";
-	String path = "";
+	protected String projectName = "";
+	protected String bugName = "";
+	protected String sourceCode = "";
+	protected JavaASTParser wholeCodeAST;
+	protected String id = "";
+	protected String path = "";
 	Repository repo;
 	
-	void initialize(String prjName,JavaASTParser ast, String id, String path, Repository repo,String bugName){
+	protected void initialize(String prjName,JavaASTParser ast, String id, String path, Repository repo,String bugName){
 		projectName = prjName;
 		wholeCodeAST = ast;
 		this.id = id;

@@ -1,4 +1,4 @@
-package ca.uwaterloo.ece.feedet.bugpatterns;
+package ca.uwaterloo.ece.feedet.bugpatterns.declined;
 
 import java.util.ArrayList;
 
@@ -11,6 +11,7 @@ import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jgit.lib.Repository;
 
 import ca.uwaterloo.ece.feedet.DetectionRecord;
+import ca.uwaterloo.ece.feedet.bugpatterns.Bug;
 import ca.uwaterloo.ece.feedet.utils.JavaASTParser;
 
 public class InconsistentNullChecker extends Bug {
