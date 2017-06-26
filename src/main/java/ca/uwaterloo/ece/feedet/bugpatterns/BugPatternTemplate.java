@@ -15,6 +15,11 @@ public class BugPatternTemplate extends Bug {
 	}
 	
 	@Override
+	protected String getDescription() {
+		return "Description for Bug Pattern Template";
+	}
+	
+	@Override
 	public ArrayList<DetectionRecord> detect() {
 		// Detection results are stored in this ArrayList
 		ArrayList<DetectionRecord> listDetRec = new ArrayList<DetectionRecord>();

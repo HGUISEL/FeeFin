@@ -16,6 +16,11 @@ public class IncorrectMapIterator extends Bug {
 	public IncorrectMapIterator(String prjName,JavaASTParser ast, String id, String path, Repository repo){
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
 	}
+	
+	@Override
+	protected String getDescription() {
+		return "Map interator contains an error. Check whether the interation should be conducted by a list of keys or values.";
+	}
 
 	@Override
 	public ArrayList<DetectionRecord> detect() {

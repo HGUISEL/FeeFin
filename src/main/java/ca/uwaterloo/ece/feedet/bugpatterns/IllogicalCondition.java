@@ -17,6 +17,11 @@ public class IllogicalCondition extends Bug {
 	public IllogicalCondition(String prjName,JavaASTParser ast, String id, String path, Repository repo){
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
 	}
+	
+	@Override
+	protected String getDescription() {
+		return "Condition contains a logical error.";
+	}
 
 	@Override
 	public ArrayList<DetectionRecord> detect() {

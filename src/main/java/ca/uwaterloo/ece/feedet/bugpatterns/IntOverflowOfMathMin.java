@@ -22,6 +22,11 @@ public class IntOverflowOfMathMin extends Bug {
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
 	}
 	
+	@Override
+	protected String getDescription() {
+		return "Potential integer overflow when using Math.min.";
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<DetectionRecord> detect() {

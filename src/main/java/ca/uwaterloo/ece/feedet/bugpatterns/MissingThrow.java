@@ -15,6 +15,11 @@ public class MissingThrow extends Bug {
 	}
 	
 	@Override
+	protected  String getDescription() {
+		return "Exception should be thrown.";
+	}
+	
+	@Override
 	public ArrayList<DetectionRecord> detect() {
 		
 		ArrayList<DetectionRecord> detRec = new ArrayList<DetectionRecord>();

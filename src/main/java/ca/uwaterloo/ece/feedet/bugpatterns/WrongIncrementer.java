@@ -28,6 +28,11 @@ public class WrongIncrementer extends Bug {
 	public WrongIncrementer(String prjName,JavaASTParser ast, String id, String path, Repository repo){
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
 	}
+	
+	@Override
+	protected String getDescription() {
+		return "Incrementer might be wrong between an inner loop and an outer loop.";
+	}
 
 	@Override
 	public ArrayList<DetectionRecord> detect() {

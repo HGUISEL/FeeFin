@@ -19,6 +19,11 @@ public class InconsistentNullChecker extends Bug {
 	public InconsistentNullChecker(String prjName,JavaASTParser ast, String id, String path, Repository repo){
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
 	}
+	
+	@Override
+	protected String getDescription() {
+		return "Inconsistent null checker.";
+	}
 
 	@Override
 	public ArrayList<DetectionRecord> detect() {

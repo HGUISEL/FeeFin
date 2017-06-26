@@ -14,6 +14,11 @@ public class RedundantCondition extends Bug {
 	}
 	
 	@Override
+	protected String getDescription() {
+		return "Redundant conditions that may be mistakenly not modified from a copy/paste.";
+	}
+	
+	@Override
 	public ArrayList<DetectionRecord> detect() {
 		
 		ArrayList<DetectionRecord> detRec = new ArrayList<DetectionRecord>();

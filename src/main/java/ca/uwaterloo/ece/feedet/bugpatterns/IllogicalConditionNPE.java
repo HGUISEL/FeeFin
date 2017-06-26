@@ -15,6 +15,11 @@ public class IllogicalConditionNPE extends Bug {
 	public IllogicalConditionNPE(String prjName,JavaASTParser ast, String id, String path, Repository repo){
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
 	}
+	
+	@Override
+	protected String getDescription() {
+		return "Condition contains a logicall error that could cause NPE.";
+	}
 
 	@Override
 	public ArrayList<DetectionRecord> detect() {

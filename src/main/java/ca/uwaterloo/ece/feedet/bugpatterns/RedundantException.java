@@ -32,6 +32,11 @@ public class RedundantException extends Bug {
 	}
 	
 	@Override
+	protected String getDescription() {
+		return "Redundant exception that may lead to memory leak. (Close an object propoerly rather than throwing an exception.)";
+	}
+	
+	@Override
 	public ArrayList<DetectionRecord> detect() {
 		
 		ArrayList<DetectionRecord> detRec = new ArrayList<DetectionRecord>();

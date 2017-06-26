@@ -27,6 +27,11 @@ public class WrongLogicForNullChecker extends Bug {
 	}
 	
 	@Override
+	protected String getDescription() {
+		return "There is a logical error in null checker.";
+	}
+	
+	@Override
 	public ArrayList<DetectionRecord> detect() {
 		// Detection results are stored in this ArrayList
 		ArrayList<DetectionRecord> listDetRec = new ArrayList<DetectionRecord>();

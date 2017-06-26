@@ -18,6 +18,11 @@ public class EqualToSameExpression extends Bug {
 	public EqualToSameExpression(String prjName,JavaASTParser ast, String id, String path, Repository repo){
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
 	}
+	
+	@Override
+	protected String getDescription() {
+		return "Applied equals for the same expression";
+	}
 
 	@Override
 	public ArrayList<DetectionRecord> detect() {

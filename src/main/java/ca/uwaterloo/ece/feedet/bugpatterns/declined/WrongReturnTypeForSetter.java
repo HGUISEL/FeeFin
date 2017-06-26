@@ -15,6 +15,11 @@ public class WrongReturnTypeForSetter extends Bug {
 	}
 	
 	@Override
+	protected String getDescription() {
+		return "Setter returns something.";
+	}
+	
+	@Override
 	public ArrayList<DetectionRecord> detect() {
 		// Detection results are stored in this ArrayList
 		ArrayList<DetectionRecord> listDetRec = new ArrayList<DetectionRecord>();

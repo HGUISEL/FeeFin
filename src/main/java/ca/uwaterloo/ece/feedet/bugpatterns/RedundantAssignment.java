@@ -30,6 +30,11 @@ public class RedundantAssignment extends Bug {
 	}
 	
 	@Override
+	protected String getDescription() {
+		return "Redundant assignment that may lead to performance issues.";
+	}
+	
+	@Override
 	public ArrayList<DetectionRecord> detect() {
 		// Detection results are stored in this ArrayList
 		ArrayList<DetectionRecord> detRec = new ArrayList<DetectionRecord>();

@@ -28,6 +28,11 @@ public class InconsistentIncrementerInWhile extends Bug {
 	}
 	
 	@Override
+	protected String getDescription() {
+		return "Incrementer used in While block may be incorrect.";
+	}
+	
+	@Override
 	public ArrayList<DetectionRecord> detect() {
 		// Detection results are stored in this ArrayList
 		ArrayList<DetectionRecord> listDetRec = new ArrayList<DetectionRecord>();

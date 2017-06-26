@@ -18,6 +18,11 @@ public class NegativeTimeValue extends Bug {
 	}
 	
 	@Override
+	protected String getDescription() {
+		return "Time value may be negative.";
+	}
+	
+	@Override
 	public ArrayList<DetectionRecord> detect() {
 		// Detection results are stored in this ArrayList
 		ArrayList<DetectionRecord> listDetRec = new ArrayList<DetectionRecord>();

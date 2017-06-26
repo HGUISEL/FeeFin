@@ -18,6 +18,11 @@ public class IncorrectStringCompare extends Bug {
 	}
 	
 	@Override
+	protected String getDescription() {
+		return "String variables incorrectly conampared. (Consider to use equals rather than ==.)";
+	}
+	
+	@Override
 	public ArrayList<DetectionRecord> detect() {
 		// Detection results are stored in this ArrayList
 		ArrayList<DetectionRecord> detRec = new ArrayList<DetectionRecord>();

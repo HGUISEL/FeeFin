@@ -1,4 +1,4 @@
-package ca.uwaterloo.ece.feedet.bugpatterns;
+package ca.uwaterloo.ece.feedet.bugpatterns.declined;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +15,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jgit.lib.Repository;
 
 import ca.uwaterloo.ece.feedet.DetectionRecord;
+import ca.uwaterloo.ece.feedet.bugpatterns.Bug;
 import ca.uwaterloo.ece.feedet.utils.JavaASTParser;
 
 public class WrongEqualsOnDiffTypes extends Bug{
@@ -28,6 +29,11 @@ public class WrongEqualsOnDiffTypes extends Bug{
 	 */
 	public WrongEqualsOnDiffTypes(String prjName,JavaASTParser ast, String id, String path, Repository repo){
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
+	}
+	
+	@Override
+	protected String getDescription() {
+		return "Equals compares different types.";
 	}
 	
 	@Override

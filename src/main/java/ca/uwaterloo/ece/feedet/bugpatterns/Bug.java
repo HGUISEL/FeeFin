@@ -29,4 +29,6 @@ public abstract class Bug {
 	String getName(){
 		return bugName;
 	}
+	
+	abstract protected String getDescription();
 }

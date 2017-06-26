@@ -24,6 +24,11 @@ public class CompareSameValueFromGetterAndField extends Bug {
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
 	}
 	
+	@Override
+	protected String getDescription() {
+		return "Compared the same value of the filed as the getter returns the same field.";
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<DetectionRecord> detect() {

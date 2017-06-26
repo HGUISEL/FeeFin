@@ -14,6 +14,11 @@ public class SleepWithNegativeValue extends Bug {
 	}
 	
 	@Override
+	protected String getDescription() {
+		return "Thread may sleep with a negative sleep time value.";
+	}
+	
+	@Override
 	public ArrayList<DetectionRecord> detect() {
 		// Detection results are stored in this ArrayList
 		ArrayList<DetectionRecord> detRec = new ArrayList<DetectionRecord>();

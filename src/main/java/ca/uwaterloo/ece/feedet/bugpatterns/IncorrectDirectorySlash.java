@@ -14,6 +14,11 @@ public class IncorrectDirectorySlash extends Bug {
 	public IncorrectDirectorySlash(String prjName,JavaASTParser ast, String id, String path, Repository repo){
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
 	}
+	
+	@Override
+	protected String getDescription() {
+		return "Missing directory slash may return a wrong path.";
+	}
 
 	@Override
 	public ArrayList<DetectionRecord> detect() {

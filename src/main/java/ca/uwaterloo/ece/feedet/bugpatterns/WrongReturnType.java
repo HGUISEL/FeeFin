@@ -14,6 +14,11 @@ public class WrongReturnType extends Bug {
 	}
 	
 	@Override
+	protected String getDescription() {
+		return "The getter returns a wrong type aginst its name.";
+	}
+	
+	@Override
 	public ArrayList<DetectionRecord> detect() {
 		// Detection results are stored in this ArrayList
 		ArrayList<DetectionRecord> detRec = new ArrayList<DetectionRecord>();

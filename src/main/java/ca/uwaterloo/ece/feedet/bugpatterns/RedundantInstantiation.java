@@ -17,6 +17,11 @@ public class RedundantInstantiation extends Bug {
 	public RedundantInstantiation(String prjName, JavaASTParser ast, String id, String path, Repository repo){
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
 	}
+	
+	@Override
+	protected String getDescription() {
+		return "Redundant instantiation that may lead to performance issues.";
+	}
 
 	@Override
 	public ArrayList<DetectionRecord> detect() {

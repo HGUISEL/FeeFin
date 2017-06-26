@@ -19,6 +19,11 @@ public class SameObjEquals extends Bug {
 	public SameObjEquals(String prjName,JavaASTParser ast, String id, String path, Repository repo){
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
 	}
+	
+	@Override
+	protected String getDescription() {
+		return "The same objects were compared by equals.";
+	}
 
 	@Override
 	public ArrayList<DetectionRecord> detect() {

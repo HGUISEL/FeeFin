@@ -26,6 +26,11 @@ public class WrongReturnObjectInGetter extends Bug {
 	public WrongReturnObjectInGetter(String prjName,JavaASTParser ast, String id, String path, Repository repo){
 		initialize(prjName,ast,id,path,repo,this.getClass().getSimpleName());
 	}
+	
+	@Override
+	protected String getDescription() {
+		return "It might be that a getter returns a wrong field when considering their names.";
+	}
 
 	@Override
 	public ArrayList<DetectionRecord> detect() {
