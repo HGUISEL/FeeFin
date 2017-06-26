@@ -19,10 +19,11 @@ public class TestFeeDetAPI {
     @Test
     public void testDetect() {
     	
-    	ArrayList<DetectionRecord> detRecords = FeeDetAPI.detect(System.getProperty("user.home") + "/Documents/githubProjects/apache/lucene-solr/lucene/core/src/java/org/apache/lucene/search");
+    	ArrayList<DetectionRecord> detRecords = FeeDetAPI.detectEntireProject(System.getProperty("user.home") + "/Documents/githubProjects/apache/lucene-solr/lucene/core/src/java/org/apache/lucene/search");
     	
     	for(DetectionRecord detRecord:detRecords){
     		System.out.println(detRecord.getPatternName() + "\n" + detRecord.getPath() + "\n" + detRecord.getLineNum() + "\n" + detRecord.getCode());
+    		System.out.println(detRecord.getDescription() + "\n");
     		System.out.println(detRecord.getSurroundCode());
     	}
     }
@@ -35,10 +36,11 @@ public class TestFeeDetAPI {
     	135
     	!clause.getField().equals(field)*/
     	ArrayList<DetectionRecord> detRecords
-    	  = FeeDetAPI.detectBugsInAFileForASpecifiedBugPattern(System.getProperty("user.home") + "/Documents/githubProjects/apache/lucene-solr/lucene/core/src/java/org/apache/lucene/search/spans/SpanNearQuery.java",
-    			"ca.uwaterloo.ece.feedet.bugpatterns.WrongEqualsOnDiffTypes");
+    	  = FeeDetAPI.detectBugsInAFileForASpecifiedBugPattern(System.getProperty("user.home") + "/Documents/githubProjects/apache/lucene-solr/lucene/core/src/java/org/apache/lucene/search/SloppyPhraseScorer.java",
+    			"ca.uwaterloo.ece.feedet.bugpatterns.InconsistentIncrementerInWhile");
     	for(DetectionRecord detRecord:detRecords){
     		System.out.println(detRecord.getPatternName() + "\n" + detRecord.getPath() + "\n" + detRecord.getLineNum() + "\n" + detRecord.getCode());
+    		System.out.println(detRecord.getDescription() + "\n");
     		System.out.println(detRecord.getSurroundCode());
     	}
     }

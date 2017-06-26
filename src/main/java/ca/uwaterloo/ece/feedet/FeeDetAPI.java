@@ -37,7 +37,7 @@ public class FeeDetAPI {
 				//TODO update the list for bug patterns to be ignored as some patterns are working on or declined.
 				if(fullyQualifiedClassName.equals("ca.uwaterloo.ece.feedet.bugpatterns.Bug")
 						|| fullyQualifiedClassName.equals("ca.uwaterloo.ece.feedet.bugpatterns.BugPatternTemplate")
-						|| fullyQualifiedClassName.equals("ca.uwaterloo.ece.feedet.bugpatterns.InconsistentReturnType")
+						|| fullyQualifiedClassName.equals("ca.uwaterloo.ece.feedet.bugpatterns.InconsistentReturnType") // TODO remove when the pattern implementation is done.
 						|| fullyQualifiedClassName.startsWith("ca.uwaterloo.ece.feedet.bugpatterns.declined")
 						)
 					continue;
@@ -51,7 +51,7 @@ public class FeeDetAPI {
 		return patternClassNames;		
 	}
 
-	static public ArrayList<DetectionRecord> detect(String projectPath) {
+	static public ArrayList<DetectionRecord> detectEntireProject(String projectPath) {
 
 		ArrayList<DetectionRecord> detRecords = new ArrayList<DetectionRecord>();
 
