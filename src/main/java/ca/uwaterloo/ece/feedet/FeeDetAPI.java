@@ -72,6 +72,18 @@ public class FeeDetAPI {
 
 		return detRecords;
 	}
+	
+	public static ArrayList<DetectionRecord> detectBugsInAFileForAllBugPatterns(String filePath) {
+		ArrayList<DetectionRecord> detRecords = new ArrayList<DetectionRecord>();
+		
+		ArrayList<String> patternClassNames = getPatternClassNames();
+		
+		for(String patternClassName:patternClassNames){
+			detRecords.addAll(detectBugsInAFileForASpecifiedBugPattern(filePath,patternClassName));
+		}
+		
+		return detRecords;
+	}
 
 	public static ArrayList<DetectionRecord> detectBugsInAFileForAllBugPatterns(String filePath, ArrayList<String> patternClassNames) {
 		ArrayList<DetectionRecord> detRecords = new ArrayList<DetectionRecord>();
