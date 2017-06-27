@@ -39,6 +39,16 @@ public class TestBugMissingCurrentObjectRefThis {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(++numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP hadoop  53358fe680a11c1b66a7f60733d11c1f4efe0232        ab56fcdb1219d03713b408dd3a95d7405635254d        hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/blockmanagement/BlockManager.java
+    	// 746     block.commitBlock(block)
+    	projectName = "hadoop";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/blockmanagement/BlockManager.java";
+    	shaId = "ab56fcdb1219d03713b408dd3a95d7405635254d";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

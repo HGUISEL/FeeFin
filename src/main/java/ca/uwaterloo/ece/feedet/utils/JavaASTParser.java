@@ -1145,4 +1145,30 @@ public class JavaASTParser {
 		
 		return singleVarDecs;
 	}
+	
+	public TypeDeclaration getTypeDeclationOf(ASTNode node) {
+		
+		if(node.getParent() instanceof TypeDeclaration)
+			return (TypeDeclaration) node.getParent();
+		
+		return getTypeDeclationOf(node.getParent());
+	}
+
+	public ArrayList<String> getFieldNames(TypeDeclaration classWhereMethodExists) {
+		ArrayList<String> fieldNames = new ArrayList<String>();
+		
+		for(FieldDeclaration fieldDec:getFieldDeclarations()){
+			
+			if(!fieldDec.getParent().equals(classWhereMethodExists)) continue;
+			
+			@SuppressWarnings("unchecked")
+			List<VariableDeclarationFragment>  varDecFrags = fieldDec.fragments();
+			for(VariableDeclarationFragment varDecFrag:varDecFrags){
+				fieldNames.add(varDecFrag.getName().toString());
+			}
+		}
+		
+		return fieldNames;
+	}
+
 }
