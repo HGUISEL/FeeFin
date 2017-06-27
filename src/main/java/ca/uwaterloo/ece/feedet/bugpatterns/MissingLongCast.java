@@ -2,6 +2,8 @@ package ca.uwaterloo.ece.feedet.bugpatterns;
 
 import java.util.ArrayList;
 import org.eclipse.jdt.core.dom.InfixExpression;
+import org.eclipse.jdt.core.dom.QualifiedName;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jgit.lib.Repository;
 
 import ca.uwaterloo.ece.feedet.DetectionRecord;
@@ -25,6 +27,15 @@ public class MissingLongCast extends Bug {
 
 		// An example loop to get some AST nodes to analyze
 		for(InfixExpression infixExp:wholeCodeAST.getInfixExpressions()){
+			
+			if(!(infixExp.getOperator() == InfixExpression.Operator.TIMES || infixExp.getOperator() == InfixExpression.Operator.PLUS)) continue;
+			
+			if(infixExp.getParent() instanceof InfixExpression) continue;
+			
+			
+			// TODO
+			if(!(infixExp.getLeftOperand() instanceof SimpleName || infixExp.getLeftOperand() instanceof QualifiedName)) continue;
+			if(!(infixExp.getRightOperand() instanceof SimpleName || infixExp.getRightOperand() instanceof QualifiedName)) continue;
 
 			System.out.println(infixExp.toString());
 			
