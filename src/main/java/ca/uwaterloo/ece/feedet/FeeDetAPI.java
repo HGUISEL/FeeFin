@@ -51,6 +51,11 @@ public class FeeDetAPI {
 		return patternClassNames;		
 	}
 
+	/**
+	 * Detect potential bugs by using all bug patterns for an entire project whose directory project is given.
+	 * @param projectPath
+	 * @return Returns ArrayList<DetectionRecord>
+	 */
 	static public ArrayList<DetectionRecord> detectEntireProject(String projectPath) {
 
 		ArrayList<DetectionRecord> detRecords = new ArrayList<DetectionRecord>();
@@ -73,6 +78,11 @@ public class FeeDetAPI {
 		return detRecords;
 	}
 	
+	/**
+	 * Detect potential bugs by using all bug patterns in a specific source file
+	 * @param filePath
+	 * @return
+	 */
 	public static ArrayList<DetectionRecord> detectBugsInAFileForAllBugPatterns(String filePath) {
 		ArrayList<DetectionRecord> detRecords = new ArrayList<DetectionRecord>();
 		
@@ -85,6 +95,12 @@ public class FeeDetAPI {
 		return detRecords;
 	}
 
+	/**
+	 * Detect potential bugs in a specific source file by using a specified list of bug pattern names (fully qualified class names).
+	 * @param filePath
+	 * @param patternClassNames
+	 * @return
+	 */
 	public static ArrayList<DetectionRecord> detectBugsInAFileForAllBugPatterns(String filePath, ArrayList<String> patternClassNames) {
 		ArrayList<DetectionRecord> detRecords = new ArrayList<DetectionRecord>();
 		
@@ -95,6 +111,12 @@ public class FeeDetAPI {
 		return detRecords;
 	}
 
+	/**
+	 * Detect potential bugs in a specific source file by using a specified bug pattern name (fully qualified class name).
+	 * @param filePath
+	 * @param patternClassName
+	 * @return
+	 */
 	static public ArrayList<DetectionRecord> detectBugsInAFileForASpecifiedBugPattern(String filePath,String patternClassName) {
 
 		ArrayList<DetectionRecord> detRecords = new ArrayList<DetectionRecord>();
