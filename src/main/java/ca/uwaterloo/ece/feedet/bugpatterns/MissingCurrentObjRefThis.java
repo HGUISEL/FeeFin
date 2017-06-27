@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jgit.lib.Repository;
@@ -36,7 +37,9 @@ public class MissingCurrentObjRefThis extends Bug {
 			ArrayList<MethodInvocation> methodInvs = wholeCodeAST.getMethodInvocations(methodDec);
 			
 			for(MethodInvocation methodInv:methodInvs){
-				// get Line number
+				
+				if(!(methodInv.getParent() instanceof ExpressionStatement)) continue;
+				
 				if(methodInv.getExpression()==null) continue;
 				
 				String optionalExpName = methodInv.getExpression().toString();
@@ -47,7 +50,7 @@ public class MissingCurrentObjRefThis extends Bug {
 					if(node.toString().equals(optionalExpName)){
 						if(!anyFieldAndVariableWithSameName(optionalExpName,fieldNames,localVarialbleNames)) continue;
 						int lineNum = wholeCodeAST.getLineNum(methodDec.getStartPosition());
-						listDetRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, methodInv.toString(), false, false));
+						listDetRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, methodInv.toString(),methodInv.getParent().toString(), false, false));
 					}
 				}
 			}
