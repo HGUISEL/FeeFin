@@ -21,10 +21,10 @@ import ca.uwaterloo.ece.feedet.utils.Utils;
 
 public class FeeDetAPI {
 
-	static ArrayList<String> patternClassNames = new ArrayList<String>();
-
 	@SuppressWarnings("rawtypes")
 	static private ArrayList<String> getPatternClassNames(){
+		ArrayList<String> patternClassNames = new ArrayList<String>();
+
 		if(patternClassNames.size()==0){
 			Reflections reflections = new Reflections("ca.uwaterloo.ece.feedet.bugpatterns",new SubTypesScanner(false));
 
@@ -57,6 +57,8 @@ public class FeeDetAPI {
 
 		String[] extensions = {"java"};
 		Collection<File> list = FileUtils.listFiles(new File(projectPath), extensions, true);
+		
+		ArrayList<String> patternClassNames = getPatternClassNames();
 
 		for(File path:list){
 			// ignore when no previous revision of a file, Test files, and non-java files.
@@ -65,18 +67,17 @@ public class FeeDetAPI {
 			// ignore all files under test directory
 			if(path.getPath().indexOf("/test")>=0) continue;
 			
-			detRecords.addAll(detectBugsInAFileForAllBugPatterns(path.getPath()));
+			detRecords.addAll(detectBugsInAFileForAllBugPatterns(path.getPath(),patternClassNames));
 		}
 
 		return detRecords;
 	}
 
-	private static ArrayList<DetectionRecord> detectBugsInAFileForAllBugPatterns(String path) {
+	public static ArrayList<DetectionRecord> detectBugsInAFileForAllBugPatterns(String filePath, ArrayList<String> patternClassNames) {
 		ArrayList<DetectionRecord> detRecords = new ArrayList<DetectionRecord>();
-		ArrayList<String> patternClassNames = getPatternClassNames();
 		
 		for(String patternClassName:patternClassNames){
-			detRecords.addAll(detectBugsInAFileForASpecifiedBugPattern(path,patternClassName));
+			detRecords.addAll(detectBugsInAFileForASpecifiedBugPattern(filePath,patternClassName));
 		}
 		
 		return detRecords;
