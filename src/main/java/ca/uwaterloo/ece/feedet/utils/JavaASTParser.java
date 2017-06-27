@@ -1005,10 +1005,10 @@ public class JavaASTParser {
 		return qualifiedNames;
 	}
 
-	public ArrayList<MethodInvocation> getMethodInvocations(Expression exp) {
+	public ArrayList<MethodInvocation> getMethodInvocations(ASTNode node) {
 		final ArrayList<MethodInvocation> methodInvocations = new ArrayList<MethodInvocation>();
 		
-		exp.accept(new ASTVisitor() {
+		node.accept(new ASTVisitor() {
 			
 			public boolean visit(MethodInvocation node) {
 				methodInvocations.add(node);
@@ -1098,5 +1098,51 @@ public class JavaASTParser {
 		});
 		
 		return varDecs;
+	}
+
+	public ArrayList<String> getFieldNames() {
+		
+		ArrayList<String> fieldNames = new ArrayList<String>();
+		
+		for(FieldDeclaration fieldDec:getFieldDeclarations()){
+			@SuppressWarnings("unchecked")
+			List<VariableDeclarationFragment>  varDecFrags = fieldDec.fragments();
+			for(VariableDeclarationFragment varDecFrag:varDecFrags){
+				fieldNames.add(varDecFrag.getName().toString());
+			}
+		}
+		
+		return fieldNames;
+	}
+
+	public ArrayList<String> getVariableNames(ASTNode node) {
+		ArrayList<String> localVarNames = new ArrayList<String>();
+		
+		ArrayList<VariableDeclarationFragment> varDecFrags = getVariableDeclarationFragments(node);		
+		for(VariableDeclarationFragment verDecFrag:varDecFrags){
+			localVarNames.add(verDecFrag.getName().toString());
+		}
+		
+		ArrayList<SingleVariableDeclaration> singleVarDecs = getSingleVariableDeclarations(node);
+		for(SingleVariableDeclaration singleVarDec:singleVarDecs){
+			localVarNames.add(singleVarDec.getName().toString());
+		}
+		
+		return localVarNames;
+	}
+
+	private ArrayList<SingleVariableDeclaration> getSingleVariableDeclarations(ASTNode node) {
+		final ArrayList<SingleVariableDeclaration> singleVarDecs = new ArrayList<SingleVariableDeclaration>();
+		
+		node.accept(new ASTVisitor() {
+			
+			public boolean visit(SingleVariableDeclaration node) {
+				singleVarDecs.add(node);
+				return super.visit(node);
+			}
+			
+		});
+		
+		return singleVarDecs;
 	}
 }
