@@ -1121,6 +1121,8 @@ public class JavaASTParser {
 	public HashMap<String,VariableDeclaration> getMapForVariableDeclaration(ASTNode node) {
 		final HashMap<String, VariableDeclaration> mapVarDecs = new HashMap<String,VariableDeclaration>();
 		
+		if(node==null) return mapVarDecs;
+		
 		node.accept(new ASTVisitor() {
 			
 			public boolean visit(VariableDeclarationFragment node) {
