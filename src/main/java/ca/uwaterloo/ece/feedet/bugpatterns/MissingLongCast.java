@@ -2,14 +2,18 @@ package ca.uwaterloo.ece.feedet.bugpatterns;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ClassInstanceCreation;
+import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
@@ -53,6 +57,8 @@ public class MissingLongCast extends Bug {
 			
 			ArrayList<ASTNode> operands = getAllOperands(infixExp);
 			
+			if(containsLessThanTwoSimpleNamesOrQualfiedNames(operands)) continue;
+			
 			// e.g., a * b * 1024L?
 			if(containsLongNumberLiteral(operands)) continue;
 			
@@ -70,19 +76,77 @@ public class MissingLongCast extends Bug {
 		return listDetRec;
 	}
 
+	private boolean containsLessThanTwoSimpleNamesOrQualfiedNames(ArrayList<ASTNode> operands) {
+		
+		int totalNames = 0;
+		
+		for(ASTNode operand:operands){
+			if(operand instanceof SimpleName) totalNames++;
+			if(operand instanceof QualifiedName) totalNames++;
+		}
+		
+		if(totalNames<2) return true;
+		
+		return false;
+	}
+
 	private boolean assignedToLongType(InfixExpression infixExp) {
 		
 		if(infixExp.getParent() instanceof VariableDeclarationFragment){
-			if(((VariableDeclarationStatement)((VariableDeclarationFragment)infixExp.getParent()).getParent()).getType().toString().toLowerCase().equals("long"))
-				return true;
+			
+			ASTNode parent = ((VariableDeclarationFragment)infixExp.getParent());
+			
+			if(parent.getParent() instanceof VariableDeclarationStatement){
+				if(((VariableDeclarationStatement)parent.getParent()).getType().toString().toLowerCase().equals("long"))
+					return true;
+			}
+			
+			if(parent.getParent() instanceof FieldDeclaration){
+				if(((FieldDeclaration)parent.getParent()).getType().toString().toLowerCase().equals("long"))
+					return true;
+			}
 		}
 		
 		if(infixExp.getParent() instanceof MethodInvocation){
 			if(((MethodInvocation)infixExp.getParent()).getName().toString().equals("sleep"))
 				return true;
+			
+			// check member methods
+			ArrayList<MethodDeclaration> methodDecs = wholeCodeAST.getMethodDeclarations();
+			for(MethodDeclaration methodDec:methodDecs){
+				if(infixExp.getParent().equals(methodDec)){
+					@SuppressWarnings("unchecked")
+					List<SingleVariableDeclaration> parameters = methodDec.parameters();
+					if(((SingleVariableDeclaration)parameters.get(getArgumentIndex(infixExp))).getType().toString().toLowerCase().equals("long"))
+						return true;
+					
+				}
+			}
+			
+			// TODO check methods in another class
+			
+		}
+		
+		// TODO check ClassInstanceCreation in another class
+		if(infixExp.getParent() instanceof ClassInstanceCreation){
+			
 		}
 		
 		return false;
+	}
+
+	private int getArgumentIndex(InfixExpression infixExp) {
+		
+		MethodInvocation methodInv = (MethodInvocation)infixExp.getParent();
+		@SuppressWarnings("unchecked")
+		List<ASTNode> arguments = methodInv.arguments();
+		
+		for(int i=0; i < arguments.size(); i++){
+			if(infixExp.equals(arguments.get(i)))
+				return i;
+		}
+		
+		return -1;
 	}
 
 	private MethodDeclaration getMethodDeclaration(ASTNode node) {
