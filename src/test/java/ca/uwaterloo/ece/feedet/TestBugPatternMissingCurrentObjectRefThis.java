@@ -21,7 +21,7 @@ import java.util.HashSet;
  *
  * @author j22nam, @date 27/05/16 5:45 PM
  */
-public class TestBugMissingCurrentObjectRefThis {
+public class TestBugPatternMissingCurrentObjectRefThis {
 	
 	HashSet<DetectionRecord> identifiedPotentialBug = new HashSet<DetectionRecord>();
 	
