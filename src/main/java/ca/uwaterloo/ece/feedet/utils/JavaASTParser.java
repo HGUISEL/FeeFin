@@ -1184,15 +1184,18 @@ public class JavaASTParser {
 		return singleVarDecs;
 	}
 	
-	public TypeDeclaration getTypeDeclationOf(ASTNode node) {
+	public AbstractTypeDeclaration getTypeDeclationOf(ASTNode node) {
 		
-		if(node.getParent() instanceof TypeDeclaration)
-			return (TypeDeclaration) node.getParent();
+		if(node==null) // null can be happen when there is no TypeDeclaration but EnumDeclaration
+			return null;
+		
+		if(node.getParent() instanceof AbstractTypeDeclaration)
+			return (AbstractTypeDeclaration) node.getParent();
 		
 		return getTypeDeclationOf(node.getParent());
 	}
 
-	public ArrayList<String> getFieldNames(TypeDeclaration classWhereMethodExists) {
+	public ArrayList<String> getFieldNames(AbstractTypeDeclaration classWhereMethodExists) {
 		ArrayList<String> fieldNames = new ArrayList<String>();
 		
 		for(FieldDeclaration fieldDec:getFieldDeclarations()){
