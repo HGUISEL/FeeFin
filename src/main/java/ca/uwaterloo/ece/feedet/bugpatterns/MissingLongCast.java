@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
@@ -58,6 +59,8 @@ public class MissingLongCast extends Bug {
 			// Type of SimpleName or QualifiedName is int or Integer?
 			if(!areAllNamesIntTypes(operands,getMethodDeclaration(infixExp))) continue;
 			
+			if(!assignedToLongType(infixExp)) continue;
+			
 			// get Line number
 			int lineNum = wholeCodeAST.getLineNum(infixExp.getStartPosition());
 			listDetRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, infixExp.getParent().toString(), false, false));
@@ -65,6 +68,21 @@ public class MissingLongCast extends Bug {
 		}
 
 		return listDetRec;
+	}
+
+	private boolean assignedToLongType(InfixExpression infixExp) {
+		
+		if(infixExp.getParent() instanceof VariableDeclarationFragment){
+			if(((VariableDeclarationStatement)((VariableDeclarationFragment)infixExp.getParent()).getParent()).getType().toString().toLowerCase().equals("long"))
+				return true;
+		}
+		
+		if(infixExp.getParent() instanceof MethodInvocation){
+			if(((MethodInvocation)infixExp.getParent()).getName().toString().equals("sleep"))
+				return true;
+		}
+		
+		return false;
 	}
 
 	private MethodDeclaration getMethodDeclaration(ASTNode node) {
