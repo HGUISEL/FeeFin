@@ -41,8 +41,7 @@ public class TestBugPatternMissingLongCast {
     	String shaId = "cb17c7a97a1e2eb0ebd532f614191e4edbb9e49b~1";
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-    	numOfTPs += 2;
-    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	assertEquals(++numOfTPs,identifiedPotentialBug.size());
     	
     	// TP hbase-server/src/main/java/org/apache/hadoop/hbase/snapshot/ExportSnapshot.java	cb17c7a97a1e2eb0ebd532f614191e4edbb9e49b
     	// -        in = new ThrottledInputStream(new BufferedInputStream(in), bandwidthMB * 1024 * 1024);
@@ -65,6 +64,16 @@ public class TestBugPatternMissingLongCast {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(++numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP hbase-server/src/main/java/org/apache/hadoop/hbase/snapshot/ExportSnapshot.java	cb17c7a97a1e2eb0ebd532f614191e4edbb9e49b
+    	// +        in = new ThrottledInputStream(new BufferedInputStream(in), bandwidthMB * 1024 * 1024L);
+    	projectName = "hbase";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "hbase-server/src/main/java/org/apache/hadoop/hbase/snapshot/ExportSnapshot.java";
+    	shaId = "cb17c7a97a1e2eb0ebd532f614191e4edbb9e49b";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

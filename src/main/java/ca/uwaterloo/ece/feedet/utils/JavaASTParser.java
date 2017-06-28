@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -664,6 +665,23 @@ public class JavaASTParser {
 	public ArrayList<FieldDeclaration> getFieldDeclarations() {
 		return lstFieldDeclaration;
 	}
+	
+	public HashMap<String,VariableDeclarationFragment> getMapForFieldDeclarations() {
+		
+		HashMap<String,VariableDeclarationFragment> maps = new HashMap<String,VariableDeclarationFragment>();
+		
+		for(FieldDeclaration fieldDec:lstFieldDeclaration){
+			
+			@SuppressWarnings("unchecked")
+			List<VariableDeclarationFragment> fieldDecFrags = fieldDec.fragments();
+			
+			for(VariableDeclarationFragment varDecFrag:fieldDecFrags){
+				maps.put(varDecFrag.getName().toString(), varDecFrag);
+			}
+		}
+		
+		return maps;
+	}
 
 	public ArrayList<FieldAccess> getFieldAccesses() {
 		return lstFieldAccess;
@@ -1098,6 +1116,26 @@ public class JavaASTParser {
 		});
 		
 		return varDecs;
+	}
+	
+	public HashMap<String,VariableDeclaration> getMapForVariableDeclaration(ASTNode node) {
+		final HashMap<String, VariableDeclaration> mapVarDecs = new HashMap<String,VariableDeclaration>();
+		
+		node.accept(new ASTVisitor() {
+			
+			public boolean visit(VariableDeclarationFragment node) {
+				mapVarDecs.put(node.getName().toString(),node);
+				return super.visit(node);
+			}
+			
+			public boolean visit(SingleVariableDeclaration node) {
+				mapVarDecs.put(node.getName().toString(),node);
+				return super.visit(node);
+			}
+			
+		});
+		
+		return mapVarDecs;
 	}
 
 	public ArrayList<String> getFieldNames() {
