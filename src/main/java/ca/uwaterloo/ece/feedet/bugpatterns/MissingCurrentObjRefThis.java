@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jgit.lib.Repository;
 
 import ca.uwaterloo.ece.feedet.DetectionRecord;
@@ -32,7 +32,7 @@ public class MissingCurrentObjRefThis extends Bug {
 		
 		// An example loop to get some AST nodes to analyze
 		for(MethodDeclaration methodDec:wholeCodeAST.getMethodDeclarations()){
-			TypeDeclaration classWhereMethodExists = wholeCodeAST.getTypeDeclationOf(methodDec);
+			AbstractTypeDeclaration classWhereMethodExists = wholeCodeAST.getTypeDeclationOf(methodDec);
 			ArrayList<String> fieldNames = wholeCodeAST.getFieldNames(classWhereMethodExists);
 			ArrayList<String> localVarialbleNames = wholeCodeAST.getVariableNames(methodDec);
 			ArrayList<MethodInvocation> methodInvs = wholeCodeAST.getMethodInvocations(methodDec);
