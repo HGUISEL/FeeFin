@@ -8,6 +8,7 @@ import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
+import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.PostfixExpression;
@@ -58,11 +59,11 @@ public class InconsistentIncrementerInWhile extends Bug {
 					continue;
 				
 				if(isRangeChecker(infixExp)){
-					if(infixExp.getLeftOperand() instanceof SimpleName){
+					if(infixExp.getLeftOperand() instanceof SimpleName || infixExp.getLeftOperand() instanceof FieldAccess ){
 						incrementer = infixExp.getLeftOperand().toString();
 						targetCollection = getCollection(infixExp.getRightOperand());
 					}
-					else if(infixExp.getRightOperand() instanceof SimpleName){
+					else if(infixExp.getRightOperand() instanceof SimpleName || infixExp.getRightOperand() instanceof FieldAccess ){
 						incrementer = infixExp.getRightOperand().toString();
 						targetCollection = getCollection(infixExp.getLeftOperand());
 					}
@@ -148,8 +149,9 @@ public class InconsistentIncrementerInWhile extends Bug {
 	private boolean anyIssueUsingIncrementer(ASTNode targetCollection, String incrementer, ASTNode stmt, ArrayList<SimpleName> localVarNamesInWhileStmt) {
 		
 		//boolean existTargetCollectionWithWrongIncrementer = false;
-		if(targetCollection instanceof Expression){ // for collection
+		if(targetCollection instanceof Expression){ // for collection, field access
 			ArrayList<SimpleName> simpleNames = wholeCodeAST.getSimpleNames(stmt);
+			ArrayList<FieldAccess> fileAccesses = wholeCodeAST.getFieldAccesses(stmt);
 			
 			for(SimpleName simpleName:simpleNames){
 				//if(simpleName.toString().equals(incrementer))
@@ -159,6 +161,17 @@ public class InconsistentIncrementerInWhile extends Bug {
 						return true;
 				}
 			}
+			
+			for(FieldAccess fieldAccess:fileAccesses){
+				//if(simpleName.toString().equals(incrementer))
+				//	existIncrementer = true;
+				if(fieldAccess.toString().equals(targetCollection.toString())){
+					if(!useCorrectIncrementer(fieldAccess,incrementer.replace("this.", ""),localVarNamesInWhileStmt))
+						return true;
+				}
+			}
+			
+			
 		}else{ // for array
 			ArrayList<ArrayAccess> arrayAccessed = wholeCodeAST.getArrayAccesses(stmt);
 			for(ArrayAccess arrayAccess:arrayAccessed){
@@ -214,12 +227,20 @@ public class InconsistentIncrementerInWhile extends Bug {
 			ArrayAccess arrayAccess = (ArrayAccess) targetCollection.getParent();
 			ArrayList<SimpleName> simpleNames = wholeCodeAST.getSimpleNames(arrayAccess);
 			
+			if(arrayAccess.getIndex() instanceof InfixExpression){
+				InfixExpression indexExp = (InfixExpression) arrayAccess.getIndex();
+				if(indexExp.getLeftOperand() instanceof QualifiedName)
+					return true;
+				if(indexExp.getRightOperand() instanceof QualifiedName)
+					return true;
+			}
+			
 			for(SimpleName simpleName:simpleNames){
 				if(simpleName.toString().equals(incrementer))
 					return true;
 			}
 			
-			// if local variable is used as an indexer, the it is acceptable.
+			// if local variable is used as an indexer, it is acceptable.
 			for(SimpleName localVarName:localVarNamesInWhileStmt){
 				for(SimpleName simpleName:simpleNames){
 					if(localVarName.toString().equals(simpleName.toString()))
@@ -244,32 +265,42 @@ public class InconsistentIncrementerInWhile extends Bug {
 			return ((QualifiedName)operand).getQualifier();
 		}
 		
+		if(operand instanceof FieldAccess){
+			return ((FieldAccess)operand).getExpression();
+		}
+		
 		return null;
 	}
 
 	private boolean isRangeChecker(InfixExpression infixExp) {
 		
-		if(!(infixExp.getLeftOperand() instanceof SimpleName || infixExp.getRightOperand() instanceof SimpleName)) return false;
+		if(!(infixExp.getLeftOperand() instanceof SimpleName 
+				|| infixExp.getRightOperand() instanceof SimpleName
+				|| infixExp.getLeftOperand() instanceof FieldAccess
+				|| infixExp.getRightOperand() instanceof FieldAccess
+				)
+		)
+			return false;
 		
-		boolean simpleNameInLeft = infixExp.getLeftOperand() instanceof SimpleName;
-		boolean simpleNameInRight = infixExp.getRightOperand() instanceof SimpleName;
+		boolean validNameInLeft = infixExp.getLeftOperand() instanceof SimpleName || infixExp.getLeftOperand() instanceof FieldAccess;
+		boolean validNameInRight = infixExp.getRightOperand() instanceof SimpleName || infixExp.getRightOperand() instanceof FieldAccess;
 		
-		String potentialRangeChecker = simpleNameInLeft? (infixExp.getRightOperand().toString()):infixExp.getLeftOperand().toString();
+		String potentialRangeChecker = validNameInLeft? (infixExp.getRightOperand().toString()):infixExp.getLeftOperand().toString();
 		
 		
 		String potentialIncrementer = "";
 		
-		if(simpleNameInLeft)  potentialIncrementer = infixExp.getLeftOperand().toString();
-		if(simpleNameInRight)  potentialIncrementer = infixExp.getRightOperand().toString();
+		if(validNameInLeft)  potentialIncrementer = infixExp.getLeftOperand().toString();
+		if(validNameInRight)  potentialIncrementer = infixExp.getRightOperand().toString();
 		
 		if(potentialIncrementer.toLowerCase().contains("max") || potentialIncrementer.toLowerCase().contains("min"))
 			return false;
 		
 		if((potentialRangeChecker.contains("length") || potentialRangeChecker.contains("size"))
 				&& (
-						(simpleNameInLeft && infixExp.getOperator() != InfixExpression.Operator.GREATER)
+						(validNameInLeft && infixExp.getOperator() != InfixExpression.Operator.GREATER)
 						||
-						(simpleNameInRight && infixExp.getOperator() != InfixExpression.Operator.LESS)
+						(validNameInRight && infixExp.getOperator() != InfixExpression.Operator.LESS)
 					)
 		  )
 			return true;

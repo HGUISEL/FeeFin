@@ -198,7 +198,18 @@ public class TestBugPatternInconsistentIncrementerInWhile {
     	shaId = "0b84f177d753d08d65c62d11a41fe3aa71d60cf3";
         
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-    	assertEquals(identifiedPotentialBug.size(),++numOfTPs);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
+    	// FP lucene-solr	b872f4b5c3c5324711ebb379e6c8e4c705ab3f42	290ae62a44c4e42f9a7e7ddfe7ba4fd813f95546
+    	// lucene/core/src/java/org/apache/lucene/search/SloppyPhraseScorer.java	493	
+    	// bb.get(i).union(bb.get(j));
+    	projectName = "lucene-solr";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "lucene/core/src/java/org/apache/lucene/search/SloppyPhraseScorer.java";
+    	shaId = "290ae62a44c4e42f9a7e7ddfe7ba4fd813f95546";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

@@ -1214,4 +1214,19 @@ public class JavaASTParser {
 		return fieldNames;
 	}
 
+	public ArrayList<FieldAccess> getFieldAccesses(ASTNode node) {
+		final ArrayList<FieldAccess> fieldAccesses = new ArrayList<FieldAccess>();
+		
+		node.accept(new ASTVisitor() {
+			
+			public boolean visit(FieldAccess node) {
+				fieldAccesses.add(node);
+				return super.visit(node);
+			}
+			
+		});
+		
+		return fieldAccesses;
+	}
+
 }
