@@ -85,6 +85,18 @@ public class TestBugPatternMissingLongCast {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP MissingLongCast manifoldcf-integration-solr-3.x path_deleted    3ee0ace1ba6b9bff3ffaa278c0bba07e60064057d
+    	// lucene/backwards/src/java/org/apache/lucene/util/RamUsageEstimator.java
+    	// 174     ONE_GB=ONE_KKB * ONE_MB
+    	projectName = "manifoldcf-integration-solr-3.x";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "lucene/src/java/org/apache/lucene/util/RamUsageEstimator.java";
+    	shaId = "addd1bef5065d240ec653c971f1518e7102349c2";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

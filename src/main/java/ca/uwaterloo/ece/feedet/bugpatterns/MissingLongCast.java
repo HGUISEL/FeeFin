@@ -171,8 +171,9 @@ public class MissingLongCast extends Bug {
 			if(operand instanceof SimpleName){
 				
 				VariableDeclaration varDec = (VariableDeclaration) varDecs.get(operand.toString());
+				VariableDeclarationFragment varDecFragForField = (VariableDeclarationFragment) fields.get(operand.toString());
 				
-				if(varDec==null) continue;
+				if(varDec==null && varDecFragForField==null) continue;
 				
 				if(varDec instanceof VariableDeclarationFragment){
 					if(varDec.getParent() instanceof VariableDeclarationStatement){
@@ -183,8 +184,6 @@ public class MissingLongCast extends Bug {
 					}
 				}
 				
-				VariableDeclarationFragment varDecFragForField = (VariableDeclarationFragment) fields.get(operand.toString());
-				
 				if(varDecFragForField==null) continue;
 				
 				if(varDecFragForField.getParent() instanceof VariableDeclarationStatement){
@@ -193,6 +192,14 @@ public class MissingLongCast extends Bug {
 						return false;
 					}
 				}
+				
+				if(varDecFragForField.getParent() instanceof FieldDeclaration){
+					FieldDeclaration fieldDec = (FieldDeclaration) varDecFragForField.getParent();
+					if(!(fieldDec.getType().toString().equals("int") || fieldDec.getType().toString().equals("Integer"))){
+						return false;
+					}
+				}
+				
 			}
 			
 			// TODO For QualifiedName cases
