@@ -184,6 +184,13 @@ public class MissingLongCast extends Bug {
 					}
 				}
 				
+				if(varDec instanceof SingleVariableDeclaration){
+					SingleVariableDeclaration singleVarDec = (SingleVariableDeclaration) varDec;
+					if(!(singleVarDec.getType().toString().equals("int") || singleVarDec.getType().toString().equals("Integer"))){
+						return false;
+					}
+				}
+				
 				if(varDecFragForField==null) continue;
 				
 				if(varDecFragForField.getParent() instanceof VariableDeclarationStatement){

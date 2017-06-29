@@ -97,6 +97,17 @@ public class TestBugPatternMissingLongCast {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     	
+    	// FP cassandra       Alive   d596a47cf1d2aaa8d1b4e98f886e0042a62cb9af
+    	// src/java/org/apache/cassandra/utils/CoalescingStrategies.java   102     
+    	// sleep=messages * averageGap
+    	projectName = "cassandra";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "src/java/org/apache/cassandra/utils/CoalescingStrategies.java";
+    	shaId = "d596a47cf1d2aaa8d1b4e98f886e0042a62cb9af";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
