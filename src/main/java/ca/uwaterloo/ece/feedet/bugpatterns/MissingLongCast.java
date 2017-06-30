@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
+import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -15,6 +17,7 @@ import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclaration;
+import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jgit.lib.Repository;
@@ -130,6 +133,49 @@ public class MissingLongCast extends Bug {
 		// TODO check ClassInstanceCreation in another class
 		if(infixExp.getParent() instanceof ClassInstanceCreation){
 			
+		}
+		
+		if(infixExp.getParent() instanceof Assignment){
+			Assignment assignment = (Assignment) infixExp.getParent();
+			String nameAssignedTo = assignment.getLeftHandSide().toString().replace("this.", "");
+			
+			// left fieldAccess
+			if(assignment.getLeftHandSide() instanceof FieldAccess){
+				HashMap<String,VariableDeclarationFragment> mapfieldDecs = wholeCodeAST.getMapForFieldDeclarations();
+				if(mapfieldDecs.get(nameAssignedTo).getParent() instanceof FieldDeclaration){
+					FieldDeclaration fieldDec = (FieldDeclaration) mapfieldDecs.get(nameAssignedTo).getParent();
+					if(fieldDec.getType().toString().toLowerCase().equals("long"))
+							return true;
+				}
+			}
+			
+			// left SimpleName (local variable)
+			if(assignment.getLeftHandSide() instanceof SimpleName){
+				String name = assignment.getLeftHandSide().toString();
+				ArrayList<VariableDeclaration> varDecs = wholeCodeAST.getVariableDeclaration(wholeCodeAST.getMethodDec(assignment.getLeftHandSide()));
+				for(VariableDeclaration varDec:varDecs){
+					if(name.equals(varDec.getName().toString())){
+						if(varDec instanceof VariableDeclarationFragment){
+							VariableDeclarationFragment varDecFrag = (VariableDeclarationFragment) varDec;
+							if(varDecFrag.getParent() instanceof VariableDeclarationStatement){
+								if(((VariableDeclarationStatement)varDecFrag.getParent()).getType().toString().toLowerCase().equals("long"))
+									return true;
+							}
+							if(varDecFrag.getParent() instanceof VariableDeclarationExpression){
+								if(((VariableDeclarationExpression)varDecFrag.getParent()).getType().toString().toLowerCase().equals("long"))
+									return true;
+							}
+						}
+						
+					}
+					if(varDec instanceof SingleVariableDeclaration){
+						SingleVariableDeclaration sigleVarDec = (SingleVariableDeclaration) varDec;
+						if(sigleVarDec.getType().toString().toLowerCase().equals("long")){
+							return true;
+						}
+					}
+				}
+			}
 		}
 		
 		return false;

@@ -120,6 +120,17 @@ public class TestBugPatternMissingLongCast {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     	
+    	// TP hbase	d824f0b25fbeea555257dab7e5dca7e96e8f4666
+    	// hbase-server/src/main/java/org/apache/hadoop/hbase/io/hfile/bucket/BucketAllocator.java
+    	// +    this.bucketCapacity = FEWEST_ITEMS_IN_BUCKET * bigItemSize;
+    	projectName = "hbase";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "hbase-server/src/main/java/org/apache/hadoop/hbase/io/hfile/bucket/BucketAllocator.java";
+    	shaId = "d824f0b25fbeea555257dab7e5dca7e96e8f4666";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(++numOfTPs,identifiedPotentialBug.size());
+    	
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
