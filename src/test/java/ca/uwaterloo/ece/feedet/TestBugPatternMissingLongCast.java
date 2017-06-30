@@ -131,6 +131,17 @@ public class TestBugPatternMissingLongCast {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(++numOfTPs,identifiedPotentialBug.size());
     	
+    	// FP drill	ca5a8476fb67d1c6b51472ddd48d7d51bbb3703b	0dd0e833714120c77e3e7ef34de654f5246953b9
+    	// exec/java-exec/src/main/java/org/apache/drill/exec/store/parquet/columnreaders/NullableColumnReader.java	122
+    	// rightBitShift is int
+    	// rightBitShift+=dataTypeLengthInBits * nullsFound
+    	projectName = "drill";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "exec/java-exec/src/main/java/org/apache/drill/exec/store/parquet/columnreaders/NullableColumnReader.java";
+    	shaId = "0dd0e833714120c77e3e7ef34de654f5246953b9";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

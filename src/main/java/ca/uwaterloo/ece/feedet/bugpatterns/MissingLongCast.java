@@ -169,10 +169,12 @@ public class MissingLongCast extends Bug {
 						}
 						
 					}
-					if(varDec instanceof SingleVariableDeclaration){
-						SingleVariableDeclaration sigleVarDec = (SingleVariableDeclaration) varDec;
-						if(sigleVarDec.getType().toString().toLowerCase().equals("long")){
-							return true;
+					if(name.equals(varDec.getName().toString())){
+						if(varDec instanceof SingleVariableDeclaration){
+							SingleVariableDeclaration sigleVarDec = (SingleVariableDeclaration) varDec;
+							if(sigleVarDec.getType().toString().toLowerCase().equals("long")){
+								return true;
+							}
 						}
 					}
 				}
