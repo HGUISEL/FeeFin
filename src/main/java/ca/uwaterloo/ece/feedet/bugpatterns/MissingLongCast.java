@@ -142,7 +142,8 @@ public class MissingLongCast extends Bug {
 			// left fieldAccess
 			if(assignment.getLeftHandSide() instanceof FieldAccess){
 				HashMap<String,VariableDeclarationFragment> mapfieldDecs = wholeCodeAST.getMapForFieldDeclarations();
-				if(mapfieldDecs.get(nameAssignedTo).getParent() instanceof FieldDeclaration){
+				
+				if(mapfieldDecs.get(nameAssignedTo) != null && mapfieldDecs.get(nameAssignedTo).getParent() instanceof FieldDeclaration){
 					FieldDeclaration fieldDec = (FieldDeclaration) mapfieldDecs.get(nameAssignedTo).getParent();
 					if(fieldDec.getType().toString().toLowerCase().equals("long"))
 							return true;
