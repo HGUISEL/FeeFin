@@ -108,6 +108,18 @@ public class TestBugPatternMissingLongCast {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     	
+    	// FP flink	1e6f8f342d2fa1cdcc92efbfb552c66e60c78a06	610082d9788b5544b29bab9176f48eea1a45d940
+    	// pact/pact-compiler/src/main/java/eu/stratosphere/pact/compiler/plan/CrossNode.java	224	
+    	// estNumStubCalls=pred1.estimatedNumRecords * pred2.estimatedNumRecords
+    	// difficult to track type of operands
+    	projectName = "flink";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "pact/pact-compiler/src/main/java/eu/stratosphere/pact/compiler/plan/CrossNode.java";
+    	shaId = "610082d9788b5544b29bab9176f48eea1a45d940";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
