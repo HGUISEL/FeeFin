@@ -1229,4 +1229,16 @@ public class JavaASTParser {
 		return fieldAccesses;
 	}
 
+	public MethodDeclaration getMethodDec(ASTNode node) {
+		
+		if(node.getParent() == null)
+			return null;
+		
+		if(node.getParent() instanceof MethodDeclaration){
+			return (MethodDeclaration) node.getParent();
+		}
+		
+		return getMethodDec(node.getParent());
+	}
+
 }
