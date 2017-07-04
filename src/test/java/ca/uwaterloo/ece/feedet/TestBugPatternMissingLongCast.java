@@ -152,6 +152,19 @@ public class TestBugPatternMissingLongCast {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(++numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FN lucene-solr	e2d3fe178776d3803b47d819b906e92156cd45b7
+    	// src/java/org/apache/lucene/store/RAMInputStream.java
+    	// 90     bufferStart = BUFFER_SIZE * currentBufferIndex;
+    	// 103 bufferStart = BUFFER_SIZE * currentBufferIndex;
+    	projectName = "lucene-solr";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "src/java/org/apache/lucene/store/RAMInputStream.java";
+    	shaId = "e2d3fe178776d3803b47d819b906e92156cd45b7~1";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	numOfTPs += 2;
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
