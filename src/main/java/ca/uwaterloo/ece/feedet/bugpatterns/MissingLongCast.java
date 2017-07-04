@@ -51,16 +51,18 @@ public class MissingLongCast extends Bug {
 			if(infixExp.getLeftOperand() instanceof NumberLiteral && infixExp.getRightOperand() instanceof NumberLiteral) continue;
 			if(!(infixExp.getLeftOperand() instanceof SimpleName
 					|| infixExp.getLeftOperand() instanceof QualifiedName
+					|| infixExp.getLeftOperand() instanceof FieldAccess
 					|| infixExp.getLeftOperand() instanceof NumberLiteral)) continue;
 			if(!(infixExp.getRightOperand() instanceof SimpleName
 					|| infixExp.getRightOperand() instanceof QualifiedName
+					|| infixExp.getRightOperand() instanceof FieldAccess
 					|| infixExp.getRightOperand() instanceof NumberLiteral)) continue;
 
 			//System.out.println(infixExp.toString());
 			
 			ArrayList<ASTNode> operands = getAllOperands(infixExp);
 			
-			if(containsLessThanTwoSimpleNamesOrQualfiedNames(operands)) continue;
+			if(containsLessThanTwoSimpleNamesOrQualfieldNamesOrFieldAccess(operands)) continue;
 			
 			// e.g., a * b * 1024L?
 			if(containsLongNumberLiteral(operands)) continue;
@@ -79,13 +81,14 @@ public class MissingLongCast extends Bug {
 		return listDetRec;
 	}
 
-	private boolean containsLessThanTwoSimpleNamesOrQualfiedNames(ArrayList<ASTNode> operands) {
+	private boolean containsLessThanTwoSimpleNamesOrQualfieldNamesOrFieldAccess(ArrayList<ASTNode> operands) {
 		
 		int totalNames = 0;
 		
 		for(ASTNode operand:operands){
 			if(operand instanceof SimpleName) totalNames++;
 			if(operand instanceof QualifiedName) totalNames++;
+			if(operand instanceof FieldAccess) totalNames++;
 		}
 		
 		if(totalNames<2) return true;
