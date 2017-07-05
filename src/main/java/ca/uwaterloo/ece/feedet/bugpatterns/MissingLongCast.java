@@ -13,6 +13,7 @@ import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.NumberLiteral;
+import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
@@ -52,10 +53,12 @@ public class MissingLongCast extends Bug {
 			if(!(infixExp.getLeftOperand() instanceof SimpleName
 					|| infixExp.getLeftOperand() instanceof QualifiedName
 					|| infixExp.getLeftOperand() instanceof FieldAccess
+					|| infixExp.getLeftOperand() instanceof ParenthesizedExpression
 					|| infixExp.getLeftOperand() instanceof NumberLiteral)) continue;
 			if(!(infixExp.getRightOperand() instanceof SimpleName
 					|| infixExp.getRightOperand() instanceof QualifiedName
 					|| infixExp.getRightOperand() instanceof FieldAccess
+					|| infixExp.getLeftOperand() instanceof ParenthesizedExpression
 					|| infixExp.getRightOperand() instanceof NumberLiteral)) continue;
 
 			//System.out.println(infixExp.toString());
@@ -89,6 +92,7 @@ public class MissingLongCast extends Bug {
 			if(operand instanceof SimpleName) totalNames++;
 			if(operand instanceof QualifiedName) totalNames++;
 			if(operand instanceof FieldAccess) totalNames++;
+			if(operand instanceof ParenthesizedExpression) totalNames++;
 		}
 		
 		if(totalNames<2) return true;
