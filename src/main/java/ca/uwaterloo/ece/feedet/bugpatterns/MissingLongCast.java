@@ -273,7 +273,12 @@ public class MissingLongCast extends Bug {
 			// TODO For QualifiedName cases
 			// difficult to track its type, so just ignore just for now. But it can be tracked if it is not from external library.
 			if(operand instanceof QualifiedName){
+				
+				if(operand.toString().toLowerCase().contains("long"))	// workaround for some FPs.
+					return false;
+					
 				numUnknownType++;
+				
 				if(numUnknownType==numOperands)
 					return false;
 			}
