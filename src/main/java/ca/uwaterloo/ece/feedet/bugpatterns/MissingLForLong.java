@@ -74,11 +74,31 @@ public class MissingLForLong extends Bug {
 						return false;
 				}
 				
+				// compute actual values
+				int maxInt = Integer.MAX_VALUE;
+				if(compute(numberLiterals) <= maxInt) return false;
+				
 				return true;
 			}
 		}
 		
 		return false;
+	}
+
+	private Long compute(ArrayList<NumberLiteral> numberLiterals) {
+		
+		ArrayList<Long> values = new ArrayList<Long>();
+		
+		for(NumberLiteral numLiteral:numberLiterals){
+			values.add(Long.parseLong(numLiteral.toString()));
+		}
+		
+		Long finalvalue = 1L;
+		for(Long value:values){
+			finalvalue *= value;
+		}
+		
+		return finalvalue;
 	}
 
 	private boolean isLongType(FieldDeclaration fieldDec) {
