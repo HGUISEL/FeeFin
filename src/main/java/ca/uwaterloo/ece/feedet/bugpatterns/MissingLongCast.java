@@ -228,7 +228,7 @@ public class MissingLongCast extends Bug {
 		HashMap<String,VariableDeclaration> varDecs = wholeCodeAST.getMapForVariableDeclaration(methodDec);
 		
 		int numOperands = operands.size();
-		int numUnknownTyepe = 0;
+		int numUnknownType = 0;
 		
 		for(ASTNode operand:operands){
 			
@@ -277,8 +277,13 @@ public class MissingLongCast extends Bug {
 			// TODO For QualifiedName cases
 			// difficult to track its type, so just ignore just for now. But it can be tracked if it is not from external library.
 			if(operand instanceof QualifiedName){
-				numUnknownTyepe++;
-				if(numUnknownTyepe==numOperands)
+				
+				if(operand.toString().toLowerCase().contains("long"))	// workaround for some FPs.
+					return false;
+					
+				numUnknownType++;
+				
+				if(numUnknownType==numOperands)
 					return false;
 			}
 			

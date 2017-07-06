@@ -15,15 +15,15 @@ import java.io.File;
 public class TestJITFeeDetForSingleProject {
 	@Test public void testSomeLibraryMethod() {
 
-		String project = "ignite";
-		String patternName = "WrongLogicForNullChecker";
-		String verbose = "-v"; // or ""
+		String project = "drill";
+		String patternName = "MissingLongCast";
+		String verbose = ""; //"-v"; // or ""
 		String rootPath = System.getProperty("user.home") + "/Documents/githubProjects/apache";//"/j22nam/projects/apache"};//,"/local/j22nam/projects/google"};//System.getProperty("user.home") + "/Documents/githubProjects/apache"};
 
 		BuggyChangeDetectorAndValidator runner = new BuggyChangeDetectorAndValidator();
 
 		System.out.println("=================\n" + project + "\n=================");
-		String [] args ={"-g",rootPath + File.separator + project,"-p", project,"-n",patternName, verbose,"-s", "2014-06-10 00:00:00","-e", "2015-06-10 00:00:00"};//, "-s", "2010-12-10 00:00:00", "-e", "2011-07-10 00:00:00"};
+		String [] args ={"-g",rootPath + File.separator + project,"-p", project,"-n",patternName, verbose}; //,"-s", "2014-06-10 00:00:00","-e", "2015-06-10 00:00:00"};//, "-s", "2010-12-10 00:00:00", "-e", "2011-07-10 00:00:00"};
 
 		runner.run(args);
 	}
