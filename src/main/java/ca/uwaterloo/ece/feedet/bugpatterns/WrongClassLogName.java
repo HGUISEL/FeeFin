@@ -1,7 +1,6 @@
 package ca.uwaterloo.ece.feedet.bugpatterns;
 
 import java.util.ArrayList;
-import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jgit.lib.Repository;
 
