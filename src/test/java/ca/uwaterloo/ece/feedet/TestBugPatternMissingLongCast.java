@@ -167,6 +167,17 @@ public class TestBugPatternMissingLongCast {
     	numOfTPs += 2;
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     	
+		// FP harmony-classlib	a313a2dcdad9cf154114e7e10ffc2d9bacfe02a7	371d12883609a89198390aefa2b794e40799c91f
+    	// modules/luni/src/main/java/org/apache/harmony/luni/util/FloatingPointParser.java	445	
+    	// exponent=expSign * Long.MAX_VALUE
+    	projectName = "harmony-classlib";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "modules/luni/src/main/java/org/apache/harmony/luni/util/FloatingPointParser.java";
+    	shaId = "371d12883609a89198390aefa2b794e40799c91f";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
     	// FN lucene-solr	5aaf587516b79c2553f82b4f019bf471c7d0733a	src/java/org/apache/lucene/index/DocumentsWriter.java 
     	// -    numBytesUsed -= numBlocks * BYTE_BLOCK_SIZE;
     	// +    numBytesUsed -= (end-start) * BYTE_BLOCK_SIZE;
@@ -176,18 +187,7 @@ public class TestBugPatternMissingLongCast {
     	shaId = "5aaf587516b79c2553f82b4f019bf471c7d0733a";
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-    	numOfTPs += 8;
-	assertEquals(numOfTPs,identifiedPotentialBug.size());
-    	
-	// FP harmony-classlib	a313a2dcdad9cf154114e7e10ffc2d9bacfe02a7	371d12883609a89198390aefa2b794e40799c91f
-    	// modules/luni/src/main/java/org/apache/harmony/luni/util/FloatingPointParser.java	445	
-    	// exponent=expSign * Long.MAX_VALUE
-    	projectName = "harmony-classlib";
-    	gitURI = projectPathRoot1 + File.separator + projectName;
-    	path = "modules/luni/src/main/java/org/apache/harmony/luni/util/FloatingPointParser.java";
-    	shaId = "371d12883609a89198390aefa2b794e40799c91f";
- 
-    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	numOfTPs += 9;
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
