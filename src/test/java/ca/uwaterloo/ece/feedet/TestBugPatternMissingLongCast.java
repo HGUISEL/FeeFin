@@ -200,6 +200,17 @@ public class TestBugPatternMissingLongCast {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP commons-lang	371e866442f46131cc38a9a5018e1703f52f9b60	3a0c152c22b6e96fc809fdee2d6ea5b816a139e6
+    	// src/main/java/org/apache/commons/lang3/math/Fraction.java	640
+    	// m=((long)x) * ((long)y)
+    	projectName = "commons-lang";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "src/main/java/org/apache/commons/lang3/math/Fraction.java";
+    	shaId = "3a0c152c22b6e96fc809fdee2d6ea5b816a139e6";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

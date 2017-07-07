@@ -71,6 +71,9 @@ public class MissingLongCast extends Bug {
 			// e.g., a * b * 1024L?
 			if(containsLongNumberLiteral(operands)) continue;
 			
+			// contains (long) casting?
+			if(infixExp.toString().contains("(long)")) continue;
+			
 			// Type of SimpleName or QualifiedName is int or Integer?
 			if(!areAllNamesIntTypes(operands,getMethodDeclaration(infixExp))) continue;
 			
