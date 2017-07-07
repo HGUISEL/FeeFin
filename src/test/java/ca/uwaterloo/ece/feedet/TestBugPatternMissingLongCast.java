@@ -187,7 +187,18 @@ public class TestBugPatternMissingLongCast {
     	shaId = "5aaf587516b79c2553f82b4f019bf471c7d0733a";
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-    	numOfTPs += 9;
+    	numOfTPs += 7;
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP commons-codec 20a88d9b49beda71ddee69af92872716fd00f13a	372c15eb25b6087d13bc4f107e9a048e69a2a478
+    	// src/java/org/apache/commons/codec/binary/Base64.java	750	
+    	// len+=(len / CHUNK_SIZE) * CHUNK_SEPARATOR.length
+    	projectName = "commons-codec";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "src/java/org/apache/commons/codec/binary/Base64.java";
+    	shaId = "372c15eb25b6087d13bc4f107e9a048e69a2a478";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
