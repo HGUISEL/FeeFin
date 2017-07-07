@@ -1241,4 +1241,14 @@ public class JavaASTParser {
 		return getMethodDec(node.getParent());
 	}
 
+	public TypeDeclaration getTypeDeclaration(ASTNode node) {
+		
+		if(node.getParent() == null) return null;
+		
+		if(node.getParent() instanceof MethodDeclaration)
+			return (TypeDeclaration) node.getParent();
+		
+		return getTypeDeclaration(node.getParent());
+	}
+
 }

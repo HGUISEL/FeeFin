@@ -2,6 +2,7 @@ package ca.uwaterloo.ece.feedet.bugpatterns;
 
 import java.util.ArrayList;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jgit.lib.Repository;
 
 import ca.uwaterloo.ece.feedet.DetectionRecord;
@@ -31,12 +32,26 @@ public class WrongClassLogName extends Bug {
 			if(!(methodInv.getParent() instanceof MethodInvocation
 					&&methodInv.getParent().toString().toLowerCase().contains("log"))) continue;
 			
-			// get Line number
-			int lineNum = wholeCodeAST.getLineNum(methodInv.getStartPosition());
 			
-			listDetRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, methodInv.getParent().toString(), false, false));	
+			if(!doesClassNameConsistent(methodInv)){
+				// get Line number
+				int lineNum = wholeCodeAST.getLineNum(methodInv.getStartPosition());
+				
+				listDetRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, methodInv.getParent().toString(), false, false));	
+			}
 		}
 		
 		return listDetRec;
+	}
+
+	private boolean doesClassNameConsistent(MethodInvocation methodInv) {
+		
+		TypeDeclaration typeDec = wholeCodeAST.getTypeDeclaration(methodInv);
+		if(typeDec==null) return false;
+		
+		String typeName = typeDec.getName().toString();
+		String classNameInLogging = methodInv.toString().replace("class.getName()", "");
+		
+		return typeName.equals(classNameInLogging);
 	}
 }
