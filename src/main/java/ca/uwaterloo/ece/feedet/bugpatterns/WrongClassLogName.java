@@ -50,7 +50,7 @@ public class WrongClassLogName extends Bug {
 		if(typeDec==null) return false;
 		
 		String typeName = typeDec.getName().toString();
-		String classNameInLogging = methodInv.toString().replace("class.getName()", "");
+		String classNameInLogging = methodInv.toString().replace(".class.getName()", "");
 		
 		return typeName.equals(classNameInLogging);
 	}

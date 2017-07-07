@@ -1245,7 +1245,7 @@ public class JavaASTParser {
 		
 		if(node.getParent() == null) return null;
 		
-		if(node.getParent() instanceof MethodDeclaration)
+		if(node.getParent() instanceof TypeDeclaration)
 			return (TypeDeclaration) node.getParent();
 		
 		return getTypeDeclaration(node.getParent());

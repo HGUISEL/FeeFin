@@ -42,16 +42,16 @@ public class TestBugPatternWrongClassLogName {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(++numOfTPs,identifiedPotentialBug.size());
     	
-    	// FP hadoop	Alive	2273a74c1f3895163046cca09ff5e983df301d22
-    	// hadoop-yarn-project/hadoop-yarn/hadoop-yarn-api/src/main/java/org/apache/hadoop/yarn/conf/YarnConfiguration.java
-    	// 510	public static final long RM_DELEGATION_KEY_UPDATE_INTERVAL_DEFAULT=24 * 60 * 60* 1000;
-    	/*projectName = "hadoop";
+    	// FP hive	Alive	bbf0629a5a2e43531c4fd5e17d727497e89d267d
+    	// metastore/src/java/org/apache/hadoop/hive/metastore/cache/CachedStore.java	126	
+    	// LoggerFactory.getLogger(CachedStore.class.getName())
+    	projectName = "hive";
     	gitURI = projectPathRoot1 + File.separator + projectName;
-    	path = "hadoop-yarn-project/hadoop-yarn/hadoop-yarn-api/src/main/java/org/apache/hadoop/yarn/conf/YarnConfiguration.java";
-    	shaId = "2273a74c1f3895163046cca09ff5e983df301d22";
+    	path = "metastore/src/java/org/apache/hadoop/hive/metastore/cache/CachedStore.java";
+    	shaId = "bbf0629a5a2e43531c4fd5e17d727497e89d267d";
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-    	assertEquals(numOfTPs,identifiedPotentialBug.size());*/
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
