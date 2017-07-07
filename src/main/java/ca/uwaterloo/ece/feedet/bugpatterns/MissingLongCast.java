@@ -1,7 +1,6 @@
 package ca.uwaterloo.ece.feedet.bugpatterns;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -9,7 +8,6 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.InfixExpression;
@@ -163,7 +161,8 @@ public class MissingLongCast extends Bug {
 			// left SimpleName (local variable)
 			if(assignment.getLeftHandSide() instanceof SimpleName){
 				String name = assignment.getLeftHandSide().toString();
-				ArrayList<VariableDeclaration> varDecs = wholeCodeAST.getVariableDeclaration(wholeCodeAST.getMethodDec(assignment.getLeftHandSide()));
+				ASTNode whereToGetVarDec = wholeCodeAST.getMethodDec(assignment.getLeftHandSide());
+				ArrayList<VariableDeclaration> varDecs = whereToGetVarDec == null? new ArrayList<VariableDeclaration>():wholeCodeAST.getVariableDeclaration(wholeCodeAST.getMethodDec(assignment.getLeftHandSide()));
 				for(VariableDeclaration varDec:varDecs){
 					if(name.equals(varDec.getName().toString())){
 						if(varDec instanceof VariableDeclarationFragment){
