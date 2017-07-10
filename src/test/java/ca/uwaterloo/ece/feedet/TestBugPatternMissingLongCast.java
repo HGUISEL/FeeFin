@@ -187,7 +187,7 @@ public class TestBugPatternMissingLongCast {
     	shaId = "5aaf587516b79c2553f82b4f019bf471c7d0733a";
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-    	numOfTPs += 7;
+    	numOfTPs += 9;
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     	
     	// FP commons-codec 20a88d9b49beda71ddee69af92872716fd00f13a	372c15eb25b6087d13bc4f107e9a048e69a2a478
@@ -208,6 +208,17 @@ public class TestBugPatternMissingLongCast {
     	gitURI = projectPathRoot1 + File.separator + projectName;
     	path = "src/main/java/org/apache/commons/lang3/math/Fraction.java";
     	shaId = "3a0c152c22b6e96fc809fdee2d6ea5b816a139e6";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP directory-server	Alive	7fbe6ad0dd894e1161a259cce549a46a40e67eab
+    	// kerberos-codec/src/main/java/org/apache/directory/server/kerberos/shared/replay/ReplayCacheImpl.java	55	
+    	// DEFAULT_CLOCK_SKEW=5 * KerberosTime.MINUTE
+    	projectName = "directory-server";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "kerberos-codec/src/main/java/org/apache/directory/server/kerberos/shared/replay/ReplayCacheImpl.java";
+    	shaId = "7fbe6ad0dd894e1161a259cce549a46a40e67eab";
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
