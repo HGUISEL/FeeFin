@@ -63,6 +63,17 @@ public class TestBugPatternWrongClassLogName {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP activemq-artemis	Alive	9f7fc883634eada05bfeb3b3b0e28b27025273d3	
+    	// artemis-cli/src/main/java/org/apache/activemq/artemis/cli/commands/user/UserAction.java	64	
+    	// entry.getLoginModuleName().equals(PropertiesLoginModule.class.getName())
+    	projectName = "activemq-artemis";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "artemis-cli/src/main/java/org/apache/activemq/artemis/cli/commands/user/UserAction.java";
+    	shaId = "9f7fc883634eada05bfeb3b3b0e28b27025273d3";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

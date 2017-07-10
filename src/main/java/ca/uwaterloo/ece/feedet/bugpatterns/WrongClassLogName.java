@@ -30,7 +30,10 @@ public class WrongClassLogName extends Bug {
 			if(!methodInv.toString().contains("class.getName()")) continue;
 			
 			if(!(methodInv.getParent() instanceof MethodInvocation
-					&&methodInv.getParent().toString().toLowerCase().contains("getlog"))) continue;
+					&& methodInv.getParent().toString().toLowerCase().contains("getlog"))
+				|| methodInv.getParent().toString().toLowerCase().contains("getlogi") // exceptional case
+			)
+				continue;
 			
 			
 			if(!doesClassNameConsistent(methodInv)){
