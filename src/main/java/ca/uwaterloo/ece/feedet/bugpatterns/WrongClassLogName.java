@@ -52,6 +52,6 @@ public class WrongClassLogName extends Bug {
 		String typeName = typeDec.getName().toString();
 		String classNameInLogging = methodInv.toString().replace(".class.getName()", "");
 		
-		return typeName.equals(classNameInLogging);
+		return typeName.equals(classNameInLogging) || (typeDec.getSuperclassType()!= null && typeDec.getSuperclassType().toString().equals(classNameInLogging));
 	}
 }

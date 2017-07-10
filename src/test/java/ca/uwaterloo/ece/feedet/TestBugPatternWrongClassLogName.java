@@ -52,6 +52,17 @@ public class TestBugPatternWrongClassLogName {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP accumulo	e4583eb3da30b31588bbdb6698110f5d53c472e1	6bc67602c66f2cb88de5f7d8863701ac76309ab0
+    	// server/base/src/main/java/org/apache/accumulo/server/rpc/TNonblockingServerSocket.java
+    	// extends
+    	projectName = "accumulo";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "server/base/src/main/java/org/apache/accumulo/server/rpc/TNonblockingServerSocket.java";
+    	shaId = "6bc67602c66f2cb88de5f7d8863701ac76309ab0";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
