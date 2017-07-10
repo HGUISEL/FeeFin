@@ -7,6 +7,7 @@ import java.util.List;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Assignment;
+import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
@@ -320,6 +321,7 @@ public class MissingLongCast extends Bug {
 		return operands;
 	}
 
+	@SuppressWarnings("unchecked")
 	private ArrayList<ASTNode> extractOperands(ASTNode operand) {
 		
 		final ArrayList<ASTNode> operands = new ArrayList<ASTNode>();
@@ -333,45 +335,30 @@ public class MissingLongCast extends Bug {
 					|| infixExp.getLeftOperand() instanceof NumberLiteral
 		 */
 		
-		operand.accept(new ASTVisitor() {
-			public boolean visit(SimpleName node) {
-				operands.add(node);
-				return super.visit(node);
-			}
+		if(operand instanceof InfixExpression){
+			InfixExpression opOfInfixExp = (InfixExpression) operand;
+			operands.addAll(extractOperands(opOfInfixExp.getLeftOperand()));
+			operands.addAll(extractOperands(opOfInfixExp.getRightOperand()));
+			operands.addAll(opOfInfixExp.extendedOperands());
 			
-		});
+		} else if(operand instanceof SimpleName
+					|| operand instanceof QualifiedName
+					|| operand instanceof FieldAccess
+					|| operand instanceof NumberLiteral
+					|| operand instanceof CastExpression
+				) {
+			operands.add(operand);
+
+		}		
 		
-		operand.accept(new ASTVisitor() {
-			public boolean visit(QualifiedName node) {
-				operands.add(node);
-				return super.visit(node);
-			}
+		if(operand instanceof ParenthesizedExpression){
+			ParenthesizedExpression parenthesizedExp = (ParenthesizedExpression)operand;
+			if(parenthesizedExp.getExpression() instanceof InfixExpression)
+				operands.addAll(extractOperands(parenthesizedExp.getExpression()));
+			else
+				operands.add(parenthesizedExp.getExpression());
 			
-		});
-		
-		operand.accept(new ASTVisitor() {
-			public boolean visit(FieldAccess node) {
-				operands.add(node);
-				return super.visit(node);
-			}
-			
-		});
-		
-		operand.accept(new ASTVisitor() {
-			public boolean visit(NumberLiteral node) {
-				operands.add(node);
-				return super.visit(node);
-			}
-			
-		});
-		
-		operand.accept(new ASTVisitor() {
-			public boolean visit(ParenthesizedExpression node) {
-				operands.add(node);
-				return super.visit(node);
-			}
-			
-		});
+		}
 		
 		return operands;
 	}
