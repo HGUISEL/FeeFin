@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.InfixExpression;
+import org.eclipse.jdt.core.dom.InfixExpression.Operator;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
@@ -47,7 +49,8 @@ public class DownCasting extends Bug {
 				
 				if(!castExp.getType().toString().toLowerCase().equals("int")) continue;
 				if(castExp.getExpression() instanceof MethodInvocation && dealWithFloatOrDoubleForIntCasting(castExp.getExpression())) continue;
-				
+				//Q2
+				if(containsMinusOperation(castExp.getExpression())) continue;
 			} else {
 				
 				if(!castExp.getType().toString().toLowerCase().equals("float")) continue;
@@ -59,6 +62,18 @@ public class DownCasting extends Bug {
 		}
 		
 		return listDetRec;
+	}
+
+	private boolean containsMinusOperation(Expression expression) {
+		
+		ArrayList<InfixExpression> infixExpressions = wholeCodeAST.getInfixExpressions(expression);
+		
+		for(InfixExpression infixExp:infixExpressions){
+			if(infixExp.getOperator() == Operator.MINUS)
+				return true;
+		}
+		
+		return false;
 	}
 
 	private boolean dealWithFloatOrDoubleForIntCasting(Expression expression) {

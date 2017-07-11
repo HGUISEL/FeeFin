@@ -75,17 +75,6 @@ public class TestBugPatternDownCasting {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     	
-    	// ?? zookeeper       Alive   73e102a58d01b27bc6208bbfbde2d12f0deba1f4        
-    	// src/java/main/org/apache/zookeeper/ClientCnxn.java      1203    
-    	// int idlePingRwServer=(int)(now - lastPingRwServer);
-    	projectName = "zookeeper";
-    	gitURI = projectPathRoot1 + File.separator + projectName;
-    	path = "src/java/main/org/apache/zookeeper/ClientCnxn.java";
-    	shaId = "73e102a58d01b27bc6208bbfbde2d12f0deba1f4";
- 
-    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-    	assertEquals(++numOfTPs,identifiedPotentialBug.size());
-    	
     	// flink   Alive   27ebdf7acde0e2c3ad183503d0588ca91e63d729        
     	// flink-yarn/src/main/java/org/apache/flink/yarn/cli/FlinkYarnSessionCli.java     361     
     	// int slotsPerTM=(int)Math.ceil((double)userParallelism / yarnClusterDescriptor.getTaskManagerCount());
@@ -93,6 +82,29 @@ public class TestBugPatternDownCasting {
     	gitURI = projectPathRoot1 + File.separator + projectName;
     	path = "flink-yarn/src/main/java/org/apache/flink/yarn/cli/FlinkYarnSessionCli.java";
     	shaId = "27ebdf7acde0e2c3ad183503d0588ca91e63d729";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP zookeeper       Alive   73e102a58d01b27bc6208bbfbde2d12f0deba1f4        
+    	// src/java/main/org/apache/zookeeper/ClientCnxn.java      1203    
+    	// int idlePingRwServer=(int)(now - lastPingRwServer);
+    	projectName = "zookeeper";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "src/java/main/org/apache/zookeeper/ClientCnxn.java";
+    	shaId = "73e102a58d01b27bc6208bbfbde2d12f0deba1f4";
+    	
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP hbase   Alive   efc7edc81a0d9da486ca37b8314baf5a7e75bc86        
+    	// hbase-server/src/main/java/org/apache/hadoop/hbase/ipc/RpcServer.java   410     
+    	// int processingTime=(int)(endTime - startTime);
+    	// ignore minus computation
+    	projectName = "hbase";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "hbase-server/src/main/java/org/apache/hadoop/hbase/ipc/RpcServer.java";
+    	shaId = "efc7edc81a0d9da486ca37b8314baf5a7e75bc86";
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
