@@ -48,9 +48,14 @@ public class DownCasting extends Bug {
 			
 			CastExpression castExp = (CastExpression) varDec.getInitializer();
 			
+			// TODO ignore all method invocation just for now. Later, need to track return type of method invocation
+			if(castExp.getExpression() instanceof MethodInvocation) continue;
+			
 			if(varDecStmt.getType().toString().toLowerCase().equals("int")){
 				
 				if(!castExp.getType().toString().toLowerCase().equals("int")) continue;
+				
+				
 				if(castExp.getExpression() instanceof MethodInvocation && dealWithFloatOrDoubleForIntCasting(castExp.getExpression())) continue;
 				//Q2
 				if(containsMinusOrShiftOperation(castExp.getExpression())) continue;

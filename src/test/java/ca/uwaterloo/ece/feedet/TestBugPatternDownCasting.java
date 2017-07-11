@@ -143,6 +143,18 @@ public class TestBugPatternDownCasting {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP mahout	Alive	c9ee7282d0c695a6eb76dda9590a5386309c758a	
+    	// mr/src/main/java/org/apache/mahout/classifier/df/split/OptIgSplit.java	104	
+    	// int label=(int)dataset.getLabel(instance);
+    	// method returns double
+    	projectName = "mahout";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "mr/src/main/java/org/apache/mahout/classifier/df/split/OptIgSplit.java";
+    	shaId = "c9ee7282d0c695a6eb76dda9590a5386309c758a";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
