@@ -108,6 +108,17 @@ public class TestBugPatternDownCasting {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP kafka   Alive   67f1e5b91bf073151ff57d5d656693e385726697        
+    	// clients/src/main/java/org/apache/kafka/common/record/FileRecords.java   435     
+    	// int result=(int)(offset ^ (offset >>> 32)); 
+    	projectName = "kafka";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "clients/src/main/java/org/apache/kafka/common/record/FileRecords.java";
+    	shaId = "67f1e5b91bf073151ff57d5d656693e385726697";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

@@ -50,7 +50,7 @@ public class DownCasting extends Bug {
 				if(!castExp.getType().toString().toLowerCase().equals("int")) continue;
 				if(castExp.getExpression() instanceof MethodInvocation && dealWithFloatOrDoubleForIntCasting(castExp.getExpression())) continue;
 				//Q2
-				if(containsMinusOperation(castExp.getExpression())) continue;
+				if(containsMinusOrShiftOperation(castExp.getExpression())) continue;
 			} else {
 				
 				if(!castExp.getType().toString().toLowerCase().equals("float")) continue;
@@ -64,12 +64,16 @@ public class DownCasting extends Bug {
 		return listDetRec;
 	}
 
-	private boolean containsMinusOperation(Expression expression) {
+	private boolean containsMinusOrShiftOperation(Expression expression) {
 		
 		ArrayList<InfixExpression> infixExpressions = wholeCodeAST.getInfixExpressions(expression);
 		
 		for(InfixExpression infixExp:infixExpressions){
 			if(infixExp.getOperator() == Operator.MINUS)
+				return true;
+			if(infixExp.getOperator() == Operator.LEFT_SHIFT
+					|| infixExp.getOperator() == Operator.RIGHT_SHIFT_SIGNED
+					|| infixExp.getOperator() == Operator.RIGHT_SHIFT_UNSIGNED)
 				return true;
 		}
 		
