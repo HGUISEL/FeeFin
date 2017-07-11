@@ -74,8 +74,7 @@ public class DownCasting extends Bug {
 		for(InfixExpression infixExp:infixExpressions){
 			if(infixExp.getOperator() == Operator.MINUS)
 				return true;
-			if(infixExp.getOperator() == Operator.LEFT_SHIFT
-					|| infixExp.getOperator() == Operator.RIGHT_SHIFT_SIGNED
+			if(infixExp.getOperator() == Operator.RIGHT_SHIFT_SIGNED
 					|| infixExp.getOperator() == Operator.RIGHT_SHIFT_UNSIGNED)
 				return true;
 		}
