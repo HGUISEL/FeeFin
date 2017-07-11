@@ -131,6 +131,18 @@ public class TestBugPatternDownCasting {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP hadoop	Alive	aebb9127bae872835d057e1c6a6e6b3c6a8be6cd	
+    	// hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/datanode/VolumeScanner.java	333	
+    	// int slotIdx=(int)(m % MINUTES_PER_HOUR);
+    	// ignore cases that use %
+    	projectName = "hadoop";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/datanode/VolumeScanner.java";
+    	shaId = "aebb9127bae872835d057e1c6a6e6b3c6a8be6cd";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

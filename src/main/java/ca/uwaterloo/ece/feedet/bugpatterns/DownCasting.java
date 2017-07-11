@@ -72,9 +72,9 @@ public class DownCasting extends Bug {
 		ArrayList<InfixExpression> infixExpressions = wholeCodeAST.getInfixExpressions(expression);
 		
 		for(InfixExpression infixExp:infixExpressions){
-			if(infixExp.getOperator() == Operator.MINUS)
-				return true;
-			if(infixExp.getOperator() == Operator.RIGHT_SHIFT_SIGNED
+			if(infixExp.getOperator() == Operator.MINUS
+					|| infixExp.getOperator() == Operator.REMAINDER
+					|| infixExp.getOperator() == Operator.RIGHT_SHIFT_SIGNED
 					|| infixExp.getOperator() == Operator.RIGHT_SHIFT_UNSIGNED)
 				return true;
 		}
