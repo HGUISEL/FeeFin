@@ -119,6 +119,18 @@ public class TestBugPatternDownCasting {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP Alive   ca80968e039382b8def51adb2a4520e76c89f7fb        
+    	// ql/src/java/org/apache/hadoop/hive/ql/exec/vector/mapjoin/fast/VectorMapJoinFastBytesHashTable.java     65      
+    	// int intHashCode=(int)hashCode;
+    	// intentionally down caseted
+    	projectName = "hive";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "ql/src/java/org/apache/hadoop/hive/ql/exec/vector/mapjoin/fast/VectorMapJoinFastBytesHashTable.java";
+    	shaId = "ca80968e039382b8def51adb2a4520e76c89f7fb";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

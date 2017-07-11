@@ -41,6 +41,9 @@ public class DownCasting extends Bug {
 					|| varDecStmt.getType().toString().toLowerCase().equals("float")))
 				continue;
 			
+			// Q3
+			if(varDec.getName().toString().toLowerCase().startsWith("int")) continue;
+			
 			if(!(varDec.getInitializer() instanceof CastExpression)) continue;
 			
 			CastExpression castExp = (CastExpression) varDec.getInitializer();
