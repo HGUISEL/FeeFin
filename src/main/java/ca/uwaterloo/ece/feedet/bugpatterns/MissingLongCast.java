@@ -8,6 +8,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
+import org.eclipse.jdt.core.dom.ConditionalExpression;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.InfixExpression;
@@ -59,7 +60,7 @@ public class MissingLongCast extends Bug {
 			if(!(infixExp.getRightOperand() instanceof SimpleName
 					|| infixExp.getRightOperand() instanceof QualifiedName
 					|| infixExp.getRightOperand() instanceof FieldAccess
-					|| infixExp.getLeftOperand() instanceof ParenthesizedExpression
+					|| infixExp.getRightOperand() instanceof ParenthesizedExpression
 					|| infixExp.getRightOperand() instanceof NumberLiteral)) continue;
 
 			//System.out.println(infixExp.toString());
@@ -97,6 +98,7 @@ public class MissingLongCast extends Bug {
 			if(operand instanceof QualifiedName) totalNames++;
 			if(operand instanceof FieldAccess) totalNames++;
 			if(operand instanceof ParenthesizedExpression) totalNames++;
+			if(operand instanceof NumberLiteral) totalNames++;
 		}
 		
 		if(totalNames<2) return true;
@@ -232,8 +234,8 @@ public class MissingLongCast extends Bug {
 		HashMap<String,VariableDeclarationFragment> fields = wholeCodeAST.getMapForFieldDeclarations();
 		HashMap<String,VariableDeclaration> varDecs = wholeCodeAST.getMapForVariableDeclaration(methodDec);
 		
-		int numOperands = operands.size();
-		int numUnknownType = 0;
+		//int numOperands = operands.size();
+		//int numUnknownType = 0;
 		
 		for(ASTNode operand:operands){
 			
@@ -283,13 +285,15 @@ public class MissingLongCast extends Bug {
 			// difficult to track its type, so just ignore just for now. But it can be tracked if it is not from external library.
 			if(operand instanceof QualifiedName){
 				
-				if(operand.toString().toLowerCase().contains("long"))	// workaround for some FPs.
+				return false;
+				
+				/*if(operand.toString().toLowerCase().contains("long"))	// workaround for some FPs.
 					return false;
 					
 				numUnknownType++;
 				
 				if(numUnknownType==numOperands)
-					return false;
+					return false;*/
 			}
 			
 		}
@@ -348,14 +352,18 @@ public class MissingLongCast extends Bug {
 				) {
 			operands.add(operand);
 
-		}		
+		} else if(operand instanceof ConditionalExpression){
+			ConditionalExpression condExp = (ConditionalExpression) operand;
+			operands.addAll(extractOperands(condExp.getThenExpression()));
+			operands.addAll(extractOperands(condExp.getElseExpression()));
+		}
 		
 		if(operand instanceof ParenthesizedExpression){
 			ParenthesizedExpression parenthesizedExp = (ParenthesizedExpression)operand;
 			if(parenthesizedExp.getExpression() instanceof InfixExpression)
 				operands.addAll(extractOperands(parenthesizedExp.getExpression()));
 			else
-				operands.add(parenthesizedExp.getExpression());
+				operands.addAll(extractOperands(parenthesizedExp.getExpression()));
 			
 		}
 		
