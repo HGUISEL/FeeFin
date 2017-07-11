@@ -3,6 +3,8 @@ package ca.uwaterloo.ece.feedet.bugpatterns;
 import java.util.ArrayList;
 
 import org.eclipse.jdt.core.dom.CastExpression;
+import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jgit.lib.Repository;
@@ -44,6 +46,7 @@ public class DownCasting extends Bug {
 			if(varDecStmt.getType().toString().toLowerCase().equals("int")){
 				
 				if(!castExp.getType().toString().toLowerCase().equals("int")) continue;
+				if(castExp.getExpression() instanceof MethodInvocation && dealWithFloatOrDoubleForIntCasting(castExp.getExpression())) continue;
 				
 			} else {
 				
@@ -56,5 +59,13 @@ public class DownCasting extends Bug {
 		}
 		
 		return listDetRec;
+	}
+
+	private boolean dealWithFloatOrDoubleForIntCasting(Expression expression) {
+		return expression.toString().toLowerCase().contains("float") 
+				|| expression.toString().toLowerCase().contains("double")
+				|| expression.toString().toLowerCase().contains("floor")
+				|| expression.toString().toLowerCase().contains("ceil")
+				|| expression.toString().toLowerCase().contains("round");
 	}
 }

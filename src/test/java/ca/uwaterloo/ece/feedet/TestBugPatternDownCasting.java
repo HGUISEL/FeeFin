@@ -42,16 +42,60 @@ public class TestBugPatternDownCasting {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(++numOfTPs,identifiedPotentialBug.size());
     	
-//    	// FP hadoop	Alive	2273a74c1f3895163046cca09ff5e983df301d22
-//    	// hadoop-yarn-project/hadoop-yarn/hadoop-yarn-api/src/main/java/org/apache/hadoop/yarn/conf/YarnConfiguration.java
-//    	// 510	public static final long RM_DELEGATION_KEY_UPDATE_INTERVAL_DEFAULT=24 * 60 * 60* 1000;
-//    	projectName = "hadoop";
-//    	gitURI = projectPathRoot1 + File.separator + projectName;
-//    	path = "hadoop-yarn-project/hadoop-yarn/hadoop-yarn-api/src/main/java/org/apache/hadoop/yarn/conf/YarnConfiguration.java";
-//    	shaId = "2273a74c1f3895163046cca09ff5e983df301d22";
-// 
-//    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-//    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	// FP nutch   Alive   e53b34b2322f2d071981a72577644a225642ecbc        
+    	// src/java/org/apache/nutch/fetcher/FetcherThread.java    735     
+    	// int maxOutlinksByDepth=(int)Math.floor(outlinksDepthDivisor / (outlinkDepth + 1) * maxOutlinkDepthNumLinks);
+    	projectName = "nutch";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "src/java/org/apache/nutch/fetcher/FetcherThread.java";
+    	shaId = "e53b34b2322f2d071981a72577644a225642ecbc";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// TP kafka   Alive   e36e8079d8a005550c5281ecebb4b7b622cc41b1        
+    	// clients/src/main/java/org/apache/kafka/common/record/MemoryRecords.java 51      
+    	// int pos=(int)position;
+    	projectName = "kafka";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "clients/src/main/java/org/apache/kafka/common/record/MemoryRecords.java";
+    	shaId = "e36e8079d8a005550c5281ecebb4b7b622cc41b1";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(++numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP zeppelin        Alive   2fe5a00857bd06a2d6c7691f245e4c0c00b3b051        
+    	// zeppelin-server/src/main/java/org/apache/zeppelin/socket/NotebookServer.java    1030    
+    	// int cursor=(int)Double.parseDouble(fromMessage.get("cursor").toString());
+    	projectName = "zeppelin";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "zeppelin-server/src/main/java/org/apache/zeppelin/socket/NotebookServer.java";
+    	shaId = "2fe5a00857bd06a2d6c7691f245e4c0c00b3b051";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// ?? zookeeper       Alive   73e102a58d01b27bc6208bbfbde2d12f0deba1f4        
+    	// src/java/main/org/apache/zookeeper/ClientCnxn.java      1203    
+    	// int idlePingRwServer=(int)(now - lastPingRwServer);
+    	projectName = "zookeeper";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "src/java/main/org/apache/zookeeper/ClientCnxn.java";
+    	shaId = "73e102a58d01b27bc6208bbfbde2d12f0deba1f4";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(++numOfTPs,identifiedPotentialBug.size());
+    	
+    	// flink   Alive   27ebdf7acde0e2c3ad183503d0588ca91e63d729        
+    	// flink-yarn/src/main/java/org/apache/flink/yarn/cli/FlinkYarnSessionCli.java     361     
+    	// int slotsPerTM=(int)Math.ceil((double)userParallelism / yarnClusterDescriptor.getTaskManagerCount());
+    	projectName = "flink";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "flink-yarn/src/main/java/org/apache/flink/yarn/cli/FlinkYarnSessionCli.java";
+    	shaId = "27ebdf7acde0e2c3ad183503d0588ca91e63d729";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
