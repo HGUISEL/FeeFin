@@ -245,6 +245,17 @@ public class TestBugPatternMissingLongCast {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP airavata	8acbfe8c5393f3f4b522e8a0a8fb7eb82e4205bb	a8d8f9a5fbc612db33c1191e2132c6da22246931	
+    	// modules/registry/airavata-jpa-registry/src/main/java/org/apache/airavata/persistance/registry/jpa/impl/AiravataJPARegistry.java	169	
+    	// Thread.sleep(CONNECT_FAIL_WAIT_TIME * 3)
+    	projectName = "airavata";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "modules/registry/airavata-jpa-registry/src/main/java/org/apache/airavata/persistance/registry/jpa/impl/AiravataJPARegistry.java";
+    	shaId = "a8d8f9a5fbc612db33c1191e2132c6da22246931";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
