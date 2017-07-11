@@ -296,6 +296,15 @@ public class MissingLongCast extends Bug {
 					return false;*/
 			}
 			
+			if(operand instanceof FieldAccess){
+				String key = operand.toString().replace("this.", "");
+				if(fields.containsKey(key)){
+					VariableDeclarationFragment VarDecFrag = wholeCodeAST.getMapForFieldDeclarations().get(key);
+					FieldDeclaration fieldDec = (FieldDeclaration) VarDecFrag.getParent();
+					if(fieldDec.getType().toString().toLowerCase().equals("long")) return false;
+				}
+			}
+			
 		}
 		
 		return true;

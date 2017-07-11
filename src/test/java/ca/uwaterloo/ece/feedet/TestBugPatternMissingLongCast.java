@@ -234,6 +234,17 @@ public class TestBugPatternMissingLongCast {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(++numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP roller	b4f4f360d8a74a277e2ac76cddc2f7912b9fc4c6	21c1f5e580bf88eb639c65599be1a9bf471aebc3	
+    	// app/src/main/java/org/apache/roller/weblogger/ui/struts2/editor/MediaFileSearchBean.java	178	
+    	// filterSize=this.size * 1024 // this.size is long
+    	projectName = "roller";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "app/src/main/java/org/apache/roller/weblogger/ui/struts2/editor/MediaFileSearchBean.java";
+    	shaId = "21c1f5e580bf88eb639c65599be1a9bf471aebc3";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
