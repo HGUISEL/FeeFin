@@ -92,11 +92,11 @@ public class DownCasting extends Bug {
 		return false;
 	}
 
-	private boolean dealWithFloatOrDoubleForIntCasting(Expression expression) {
+	/*private boolean dealWithFloatOrDoubleForIntCasting(Expression expression) {
 		return expression.toString().toLowerCase().contains("float") 
 				|| expression.toString().toLowerCase().contains("double")
 				|| expression.toString().toLowerCase().contains("floor")
 				|| expression.toString().toLowerCase().contains("ceil")
 				|| expression.toString().toLowerCase().contains("round");
-	}
+	}*/
 }
