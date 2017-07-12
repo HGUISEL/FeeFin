@@ -155,6 +155,17 @@ public class TestBugPatternDownCasting {
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// cordova-android	4ea684dd7a7952d8ae30e5d381d7433515045e28	455298d736f8db1febde187891c0d86617667c30	
+    	// framework/src/org/apache/cordova/CordovaPreferences.java	147	
+    	// int asInt=(int)(long)Long.decode(value);
+    	projectName = "cordova-android";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "framework/src/org/apache/cordova/CordovaPreferences.java";
+    	shaId = "455298d736f8db1febde187891c0d86617667c30";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
