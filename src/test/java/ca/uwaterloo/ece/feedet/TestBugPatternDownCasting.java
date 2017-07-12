@@ -4,7 +4,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.junit.Test;
 
 import ca.uwaterloo.ece.feedet.DetectionRecord;
-import ca.uwaterloo.ece.feedet.bugpatterns.DownCasting;
+import ca.uwaterloo.ece.feedet.bugpatterns.declined.DownCasting;
 import ca.uwaterloo.ece.feedet.utils.JavaASTParser;
 import ca.uwaterloo.ece.feedet.utils.Utils;
 
@@ -163,6 +163,17 @@ public class TestBugPatternDownCasting {
     	gitURI = projectPathRoot1 + File.separator + projectName;
     	path = "framework/src/org/apache/cordova/CordovaPreferences.java";
     	shaId = "455298d736f8db1febde187891c0d86617667c30";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP cassandra	4a2464192e9e69457f5a5ecf26c094f9298bf069	29cb5910612b603e312d1e99555113d827f6cd9b	
+    	// src/java/org/apache/cassandra/db/ReadCommand.java	855	
+    	// int nowInSec=(int)(in.readLong() / 1000);
+    	projectName = "cassandra";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "src/java/org/apache/cassandra/db/ReadCommand.java";
+    	shaId = "29cb5910612b603e312d1e99555113d827f6cd9b";
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
