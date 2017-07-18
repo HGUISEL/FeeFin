@@ -1008,7 +1008,7 @@ public class JavaASTParser {
 		return simpleNames;
 	}
 
-	public ArrayList<QualifiedName> getQualifiedNames(Expression exp) {
+	public ArrayList<QualifiedName> getQualifiedNames(ASTNode exp) {
 		final ArrayList<QualifiedName> qualifiedNames = new ArrayList<QualifiedName>();
 		
 		exp.accept(new ASTVisitor() {
@@ -1249,6 +1249,17 @@ public class JavaASTParser {
 			return (TypeDeclaration) node.getParent();
 		
 		return getTypeDeclaration(node.getParent());
+	}
+
+	public MethodDeclaration getMethodDecBelongTo(ASTNode node) {
+		
+		if(node.getParent() == null) return null;
+		
+		if(node.getParent() instanceof MethodDeclaration)
+			return (MethodDeclaration) node.getParent();
+		
+		
+		return getMethodDecBelongTo(node.getParent());
 	}
 
 }
