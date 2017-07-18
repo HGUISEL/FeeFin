@@ -1262,4 +1262,18 @@ public class JavaASTParser {
 		return getMethodDecBelongTo(node.getParent());
 	}
 
+	public ArrayList<ThrowStatement> getThrowStatements(ASTNode node) {
+		final ArrayList<ThrowStatement> throwStatements = new ArrayList<ThrowStatement>();
+		
+		node.accept(new ASTVisitor() {
+			
+			public boolean visit(ThrowStatement node) {
+				throwStatements.add(node);
+				return super.visit(node);
+			}
+			
+		});
+		
+		return throwStatements;
+	}
 }
