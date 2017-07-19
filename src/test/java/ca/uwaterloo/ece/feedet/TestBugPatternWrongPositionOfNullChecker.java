@@ -50,6 +50,16 @@ public class TestBugPatternWrongPositionOfNullChecker {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     	
+    	// FP storm   Alive 
+    	// external/storm-kafka/src/jvm/org/apache/storm/kafka/KafkaUtils.java
+    	projectName = "storm";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "external/storm-kafka/src/jvm/org/apache/storm/kafka/KafkaUtils.java";
+    	shaId = "21f365ea333d3a75eebce7bbb1e3a1ae68be8f86";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
