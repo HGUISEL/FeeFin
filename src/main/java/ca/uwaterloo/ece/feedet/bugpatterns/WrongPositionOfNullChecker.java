@@ -97,7 +97,7 @@ public class WrongPositionOfNullChecker extends Bug {
 			int lineNumOfMethodInv = wholeCodeAST.getLineNum(fieldAccess.getStartPosition());
 			if(lineNumOfMethodInv >= lineNum) continue;
 			
-			if(fieldAccess.getName().toString().equals(nullCheckingObject.toString())) return true;
+			if(fieldAccess.getExpression().toString().equals(nullCheckingObject.toString())) return true;
 			
 		}
 		

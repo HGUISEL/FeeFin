@@ -40,16 +40,15 @@ public class TestBugPatternWrongPositionOfNullChecker {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(++numOfTPs,identifiedPotentialBug.size());
     	
-    	// FP nutch   Alive   e53b34b2322f2d071981a72577644a225642ecbc        
-    	// src/java/org/apache/nutch/fetcher/FetcherThread.java    735     
-    	// int maxOutlinksByDepth=(int)Math.floor(outlinksDepthDivisor / (outlinkDepth + 1) * maxOutlinkDepthNumLinks);
-    	/*projectName = "nutch";
+    	// FP kafka   Alive   233cd4b18af83e9f9eadfaf048cdaa1888faf546
+    	// streams/src/main/java/org/apache/kafka/streams/processor/internals/StreamPartitionAssignor.java
+    	projectName = "kafka";
     	gitURI = projectPathRoot1 + File.separator + projectName;
-    	path = "src/java/org/apache/nutch/fetcher/FetcherThread.java";
-    	shaId = "e53b34b2322f2d071981a72577644a225642ecbc";
+    	path = "streams/src/main/java/org/apache/kafka/streams/processor/internals/StreamPartitionAssignor.java";
+    	shaId = "233cd4b18af83e9f9eadfaf048cdaa1888faf546";
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-    	assertEquals(numOfTPs,identifiedPotentialBug.size());*/
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
     	
     }
 
