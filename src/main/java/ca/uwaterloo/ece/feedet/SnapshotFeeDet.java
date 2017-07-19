@@ -33,7 +33,6 @@ import ca.uwaterloo.ece.feedet.bugpatterns.SleepWithNegativeValue;
 import ca.uwaterloo.ece.feedet.bugpatterns.WrongClassLogName;
 import ca.uwaterloo.ece.feedet.bugpatterns.WrongIncrementer;
 import ca.uwaterloo.ece.feedet.bugpatterns.WrongLogicForNullChecker;
-import ca.uwaterloo.ece.feedet.bugpatterns.WrongPositionOfNullChecker;
 import ca.uwaterloo.ece.feedet.bugpatterns.WrongReturnObjectInGetter;
 import ca.uwaterloo.ece.feedet.bugpatterns.WrongReturnType;
 import ca.uwaterloo.ece.feedet.utils.JavaASTParser;
@@ -123,7 +122,7 @@ public class SnapshotFeeDet {
 			process(project,new WrongClassLogName(project,preFixWholeCodeAST,shaId,path,repo).detect());
 			process(project,new WrongIncrementer(project,preFixWholeCodeAST,shaId,path,repo).detect());
 			process(project,new WrongLogicForNullChecker(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new WrongPositionOfNullChecker(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			// process(project,new WrongPositionOfNullChecker(project,preFixWholeCodeAST,shaId,path,repo).detect()); // working on, so commented
 			process(project,new WrongReturnObjectInGetter(project,preFixWholeCodeAST,shaId,path,repo).detect());
 			process(project,new WrongReturnType(project,preFixWholeCodeAST,shaId,path,repo).detect());
 
