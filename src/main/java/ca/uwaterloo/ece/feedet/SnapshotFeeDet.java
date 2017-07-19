@@ -11,14 +11,31 @@ import java.util.Collection;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.lib.Repository;
 
+import ca.uwaterloo.ece.feedet.bugpatterns.CompareSameValueFromGetterAndField;
 import ca.uwaterloo.ece.feedet.bugpatterns.EqualToSameExpression;
 import ca.uwaterloo.ece.feedet.bugpatterns.IllogicalCondition;
+import ca.uwaterloo.ece.feedet.bugpatterns.IllogicalConditionNPE;
+import ca.uwaterloo.ece.feedet.bugpatterns.InconsistentIncrementerInWhile;
 import ca.uwaterloo.ece.feedet.bugpatterns.IncorrectDirectorySlash;
 import ca.uwaterloo.ece.feedet.bugpatterns.IncorrectMapIterator;
+import ca.uwaterloo.ece.feedet.bugpatterns.IncorrectStringCompare;
+import ca.uwaterloo.ece.feedet.bugpatterns.IntOverflowOfMathMin;
+import ca.uwaterloo.ece.feedet.bugpatterns.MissingCurrentObjRefThis;
+import ca.uwaterloo.ece.feedet.bugpatterns.MissingLForLong;
+import ca.uwaterloo.ece.feedet.bugpatterns.MissingLongCast;
+import ca.uwaterloo.ece.feedet.bugpatterns.MissingThrow;
+import ca.uwaterloo.ece.feedet.bugpatterns.RedundantAssignment;
+import ca.uwaterloo.ece.feedet.bugpatterns.RedundantCondition;
 import ca.uwaterloo.ece.feedet.bugpatterns.RedundantException;
 import ca.uwaterloo.ece.feedet.bugpatterns.RedundantInstantiation;
 import ca.uwaterloo.ece.feedet.bugpatterns.SameObjEquals;
+import ca.uwaterloo.ece.feedet.bugpatterns.SleepWithNegativeValue;
+import ca.uwaterloo.ece.feedet.bugpatterns.WrongClassLogName;
 import ca.uwaterloo.ece.feedet.bugpatterns.WrongIncrementer;
+import ca.uwaterloo.ece.feedet.bugpatterns.WrongLogicForNullChecker;
+import ca.uwaterloo.ece.feedet.bugpatterns.WrongPositionOfNullChecker;
+import ca.uwaterloo.ece.feedet.bugpatterns.WrongReturnObjectInGetter;
+import ca.uwaterloo.ece.feedet.bugpatterns.WrongReturnType;
 import ca.uwaterloo.ece.feedet.utils.JavaASTParser;
 import ca.uwaterloo.ece.feedet.utils.Utils;
 
@@ -79,19 +96,36 @@ public class SnapshotFeeDet {
 
 			JavaASTParser preFixWholeCodeAST = new JavaASTParser(fileSource);
 			
-			process(project,new RedundantException(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			//new RedundantCondition(preFixWholeCodeAST,shaId,path,repo,identifiedPotentialBug).detect(); // not new pattern
-			process(project,new RedundantInstantiation(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new CompareSameValueFromGetterAndField(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new EqualToSameExpression(project,preFixWholeCodeAST,shaId,path,repo).detect());
 			process(project,new IllogicalCondition(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			//process(project,new IllogicalConditionNPE(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new IllogicalConditionNPE(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new InconsistentIncrementerInWhile(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new IncorrectDirectorySlash(project,preFixWholeCodeAST,shaId,path,repo).detect());
 			process(project,new IncorrectMapIterator(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			//process(project,new MissingThrow(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new IncorrectStringCompare(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new IntOverflowOfMathMin(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			
+			process(project,new MissingCurrentObjRefThis(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new MissingLForLong(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new MissingLongCast(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new MissingThrow(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			
+			process(project,new RedundantAssignment(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new RedundantCondition(project,preFixWholeCodeAST,shaId,path,repo).detect()); // not new pattern
+			process(project,new RedundantException(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new RedundantInstantiation(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			
+			process(project,new SameObjEquals(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new SleepWithNegativeValue(project,preFixWholeCodeAST,shaId,path,repo).detect());
 			
 			//process(project,new MissingTimeResolution(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new WrongClassLogName(project,preFixWholeCodeAST,shaId,path,repo).detect());
 			process(project,new WrongIncrementer(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new SameObjEquals(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new EqualToSameExpression(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new IncorrectDirectorySlash(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new WrongLogicForNullChecker(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new WrongPositionOfNullChecker(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new WrongReturnObjectInGetter(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			process(project,new WrongReturnType(project,preFixWholeCodeAST,shaId,path,repo).detect());
 
 		} catch (IOException e1) {
 			e1.printStackTrace();
