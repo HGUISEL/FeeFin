@@ -98,7 +98,7 @@ public class MissingLongCast extends Bug {
 			if(operand instanceof QualifiedName) totalNames++;
 			if(operand instanceof FieldAccess) totalNames++;
 			if(operand instanceof ParenthesizedExpression) totalNames++;
-			if(operand instanceof NumberLiteral) totalNames++;
+			//if(operand instanceof NumberLiteral) totalNames++;
 		}
 		
 		if(totalNames<2) return true;

@@ -224,17 +224,6 @@ public class TestBugPatternMissingLongCast {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     	
-    	// FN ExoPlayer	b6755c145e0f06360f7852a9b1f9ad67cec47533		
-    	// library/src/main/java/com/google/android/exoplayer/extractor/ogg/DefaultOggSeeker.java
-    	// +      long offset = pageSize * (granuleDistance <= 0 ? 2 : 1);
-    	projectName = "ExoPlayer";
-    	gitURI = projectPathRoot2 + File.separator + projectName;
-    	path = "library/src/main/java/com/google/android/exoplayer/extractor/ogg/DefaultOggSeeker.java";
-    	shaId = "b6755c145e0f06360f7852a9b1f9ad67cec47533";
- 
-    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-    	assertEquals(++numOfTPs,identifiedPotentialBug.size());
-    	
     	// FP roller	b4f4f360d8a74a277e2ac76cddc2f7912b9fc4c6	21c1f5e580bf88eb639c65599be1a9bf471aebc3	
     	// app/src/main/java/org/apache/roller/weblogger/ui/struts2/editor/MediaFileSearchBean.java	178	
     	// filterSize=this.size * 1024 // this.size is long
@@ -253,6 +242,17 @@ public class TestBugPatternMissingLongCast {
     	gitURI = projectPathRoot1 + File.separator + projectName;
     	path = "modules/registry/airavata-jpa-registry/src/main/java/org/apache/airavata/persistance/registry/jpa/impl/AiravataJPARegistry.java";
     	shaId = "a8d8f9a5fbc612db33c1191e2132c6da22246931";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP storm 21f365ea333d3a75eebce7bbb1e3a1ae68be8f86
+    	// examples/storm-hdfs-examples/src/main/java/org/apache/storm/hdfs/bolt/HdfsFileTopology.java  116     
+    	// Thread.sleep(seconds * 1000)
+    	projectName = "storm";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "examples/storm-hdfs-examples/src/main/java/org/apache/storm/hdfs/bolt/HdfsFileTopology.java";
+    	shaId = "21f365ea333d3a75eebce7bbb1e3a1ae68be8f86";
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
