@@ -4,7 +4,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.junit.Test;
 
 import ca.uwaterloo.ece.feedet.DetectionRecord;
-import ca.uwaterloo.ece.feedet.bugpatterns.InconsistentExceptionHandling;
+import ca.uwaterloo.ece.feedet.bugpatterns.declined.InconsistentExceptionHandling;
 import ca.uwaterloo.ece.feedet.utils.JavaASTParser;
 import ca.uwaterloo.ece.feedet.utils.Utils;
 
