@@ -352,7 +352,9 @@ public class MissingLongCast extends Bug {
 		if(operand instanceof InfixExpression){
 			InfixExpression opOfInfixExp = (InfixExpression) operand;
 			
-			if(opOfInfixExp.getOperator() != Operator.TIMES) return operands; // only consider operands for times.
+			if(opOfInfixExp.getOperator() != Operator.TIMES
+					&& opOfInfixExp.getOperator() != Operator.PLUS 
+					&& opOfInfixExp.getOperator() != Operator.MINUS) return operands; // only consider operands for times.
 			operands.addAll(extractOperands(opOfInfixExp.getLeftOperand()));
 			operands.addAll(extractOperands(opOfInfixExp.getRightOperand()));
 			operands.addAll(opOfInfixExp.extendedOperands());

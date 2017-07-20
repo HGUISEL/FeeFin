@@ -188,7 +188,7 @@ public class TestBugPatternMissingLongCast {
     	shaId = "5aaf587516b79c2553f82b4f019bf471c7d0733a";
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-    	numOfTPs += 6;
+    	numOfTPs += 7;
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     	
     	// FP commons-codec 20a88d9b49beda71ddee69af92872716fd00f13a	372c15eb25b6087d13bc4f107e9a048e69a2a478
@@ -266,6 +266,18 @@ public class TestBugPatternMissingLongCast {
     	shaId = "7e030c7cfa1d7d5df1897a9cdb01eea28423080d";
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// TN hadoop	e107886d6f621b7992f2d9a74cb1c0f987c9d774	5e8837dd6cc747b3259751930f2a9eed7163bcad	
+    	// hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/util/StripedBlockUtil.java	107	
+    	// blkSize=(numStripes - 1) * cellSize
+    	projectName = "hadoop";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/util/StripedBlockUtil.java";
+    	shaId = "5e8837dd6cc747b3259751930f2a9eed7163bcad";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	numOfTPs += 2;
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
