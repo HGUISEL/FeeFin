@@ -12,6 +12,7 @@ import org.eclipse.jdt.core.dom.ConditionalExpression;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.InfixExpression;
+import org.eclipse.jdt.core.dom.InfixExpression.Operator;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.NumberLiteral;
@@ -66,7 +67,7 @@ public class MissingLongCast extends Bug {
 			//System.out.println(infixExp.toString());
 			
 			ArrayList<ASTNode> operands = getAllOperands(infixExp);
-			
+
 			if(containsLessThanTwoSimpleNamesOrQualfieldNamesOrFieldAccess(operands)) continue;
 			
 			// e.g., a * b * 1024L?
@@ -347,8 +348,11 @@ public class MissingLongCast extends Bug {
 					|| infixExp.getLeftOperand() instanceof NumberLiteral
 		 */
 		
+		
 		if(operand instanceof InfixExpression){
 			InfixExpression opOfInfixExp = (InfixExpression) operand;
+			
+			if(opOfInfixExp.getOperator() != Operator.TIMES) return operands; // only consider operands for times.
 			operands.addAll(extractOperands(opOfInfixExp.getLeftOperand()));
 			operands.addAll(extractOperands(opOfInfixExp.getRightOperand()));
 			operands.addAll(opOfInfixExp.extendedOperands());

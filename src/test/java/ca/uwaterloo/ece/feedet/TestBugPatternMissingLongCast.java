@@ -28,7 +28,7 @@ public class TestBugPatternMissingLongCast {
     @Test public void testSomeLibraryMethod() {
     	
     	String projectPathRoot1 = System.getProperty("user.home") + "/Documents/githubProjects/apache"; //System.getProperty("user.home") + "/X"; // "/Volumes/Faith/githubProjects/apache"; //System.getProperty("user.home") + "/Documents/githubProjects/apache";
-    	String projectPathRoot2 = System.getProperty("user.home") + "/Documents/githubProjects/google"; //System.getProperty("user.home") + "/X"; // "/Volumes/Faith/githubProjects/apache"; //System.getProperty("user.home") + "/Documents/githubProjects/apache";
+    	//String projectPathRoot2 = System.getProperty("user.home") + "/Documents/githubProjects/google"; //System.getProperty("user.home") + "/X"; // "/Volumes/Faith/githubProjects/apache"; //System.getProperty("user.home") + "/Documents/githubProjects/apache";
 
     	int numOfTPs = 0;
     	
@@ -188,7 +188,7 @@ public class TestBugPatternMissingLongCast {
     	shaId = "5aaf587516b79c2553f82b4f019bf471c7d0733a";
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-    	numOfTPs += 7;
+    	numOfTPs += 6;
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     	
     	// FP commons-codec 20a88d9b49beda71ddee69af92872716fd00f13a	372c15eb25b6087d13bc4f107e9a048e69a2a478
@@ -253,6 +253,17 @@ public class TestBugPatternMissingLongCast {
     	gitURI = projectPathRoot1 + File.separator + projectName;
     	path = "examples/storm-hdfs-examples/src/main/java/org/apache/storm/hdfs/bolt/HdfsFileTopology.java";
     	shaId = "21f365ea333d3a75eebce7bbb1e3a1ae68be8f86";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP ignite	d3ed7ff4ad8d403627d212aa7218fd7b0068996d	7e030c7cfa1d7d5df1897a9cdb01eea28423080d
+    	// modules/core/src/main/java/org/gridgain/grid/kernal/processors/hadoop/shuffle/GridHadoopMultimap.java
+    	// tblAddr=8 * (keyHash & (tblCap - 1))
+    	projectName = "ignite";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "modules/core/src/main/java/org/gridgain/grid/kernal/processors/hadoop/shuffle/GridHadoopMultimap.java";
+    	shaId = "7e030c7cfa1d7d5df1897a9cdb01eea28423080d";
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
