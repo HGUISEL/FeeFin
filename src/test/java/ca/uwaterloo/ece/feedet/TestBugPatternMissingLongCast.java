@@ -28,7 +28,7 @@ public class TestBugPatternMissingLongCast {
     @Test public void testSomeLibraryMethod() {
     	
     	String projectPathRoot1 = System.getProperty("user.home") + "/Documents/githubProjects/apache"; //System.getProperty("user.home") + "/X"; // "/Volumes/Faith/githubProjects/apache"; //System.getProperty("user.home") + "/Documents/githubProjects/apache";
-    	String projectPathRoot2 = System.getProperty("user.home") + "/Documents/githubProjects/google"; //System.getProperty("user.home") + "/X"; // "/Volumes/Faith/githubProjects/apache"; //System.getProperty("user.home") + "/Documents/githubProjects/apache";
+    	//String projectPathRoot2 = System.getProperty("user.home") + "/Documents/githubProjects/google"; //System.getProperty("user.home") + "/X"; // "/Volumes/Faith/githubProjects/apache"; //System.getProperty("user.home") + "/Documents/githubProjects/apache";
 
     	int numOfTPs = 0;
     	
@@ -224,17 +224,6 @@ public class TestBugPatternMissingLongCast {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     	
-    	// FN ExoPlayer	b6755c145e0f06360f7852a9b1f9ad67cec47533		
-    	// library/src/main/java/com/google/android/exoplayer/extractor/ogg/DefaultOggSeeker.java
-    	// +      long offset = pageSize * (granuleDistance <= 0 ? 2 : 1);
-    	projectName = "ExoPlayer";
-    	gitURI = projectPathRoot2 + File.separator + projectName;
-    	path = "library/src/main/java/com/google/android/exoplayer/extractor/ogg/DefaultOggSeeker.java";
-    	shaId = "b6755c145e0f06360f7852a9b1f9ad67cec47533";
- 
-    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-    	assertEquals(++numOfTPs,identifiedPotentialBug.size());
-    	
     	// FP roller	b4f4f360d8a74a277e2ac76cddc2f7912b9fc4c6	21c1f5e580bf88eb639c65599be1a9bf471aebc3	
     	// app/src/main/java/org/apache/roller/weblogger/ui/struts2/editor/MediaFileSearchBean.java	178	
     	// filterSize=this.size * 1024 // this.size is long
@@ -255,6 +244,40 @@ public class TestBugPatternMissingLongCast {
     	shaId = "a8d8f9a5fbc612db33c1191e2132c6da22246931";
  
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP storm 21f365ea333d3a75eebce7bbb1e3a1ae68be8f86
+    	// examples/storm-hdfs-examples/src/main/java/org/apache/storm/hdfs/bolt/HdfsFileTopology.java  116     
+    	// Thread.sleep(seconds * 1000)
+    	projectName = "storm";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "examples/storm-hdfs-examples/src/main/java/org/apache/storm/hdfs/bolt/HdfsFileTopology.java";
+    	shaId = "21f365ea333d3a75eebce7bbb1e3a1ae68be8f86";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP ignite	d3ed7ff4ad8d403627d212aa7218fd7b0068996d	7e030c7cfa1d7d5df1897a9cdb01eea28423080d
+    	// modules/core/src/main/java/org/gridgain/grid/kernal/processors/hadoop/shuffle/GridHadoopMultimap.java
+    	// tblAddr=8 * (keyHash & (tblCap - 1))
+    	projectName = "ignite";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "modules/core/src/main/java/org/gridgain/grid/kernal/processors/hadoop/shuffle/GridHadoopMultimap.java";
+    	shaId = "7e030c7cfa1d7d5df1897a9cdb01eea28423080d";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// TN hadoop	e107886d6f621b7992f2d9a74cb1c0f987c9d774	5e8837dd6cc747b3259751930f2a9eed7163bcad	
+    	// hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/util/StripedBlockUtil.java	107	
+    	// blkSize=(numStripes - 1) * cellSize
+    	projectName = "hadoop";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/util/StripedBlockUtil.java";
+    	shaId = "5e8837dd6cc747b3259751930f2a9eed7163bcad";
+ 
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	numOfTPs += 2;
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
     }
 
