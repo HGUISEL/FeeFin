@@ -62,8 +62,14 @@ public class LoadKnownNullByMistake extends Bug {
 			
 			// get Line number
 			int lineNum = wholeCodeAST.getLineNum(stmtInNulchecker.getStartPosition());
+			
+			ASTNode buggyNode = null;
+			if(methodInvs.size() > 0 )
+				buggyNode = methodInvs.get(0);
+			else
+				buggyNode = fieldAccesses.get(0);
 				
-			listDetRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, stmtInNulchecker.getParent().toString(), false, false));
+			listDetRec.add(new DetectionRecord(bugName, getDescription(), projectName, id, path, lineNum, buggyNode.toString(), ifStmt.toString(), false, false));
 		}
 		
 		return listDetRec;
