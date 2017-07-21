@@ -1276,4 +1276,19 @@ public class JavaASTParser {
 		
 		return throwStatements;
 	}
+
+	public ArrayList<Assignment> getAssignments(ASTNode node) {
+		final ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+		
+		node.accept(new ASTVisitor() {
+			
+			public boolean visit(Assignment node) {
+				assignments.add(node);
+				return super.visit(node);
+			}
+			
+		});
+		
+		return assignments;
+	}
 }
