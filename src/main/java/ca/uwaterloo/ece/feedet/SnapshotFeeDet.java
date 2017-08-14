@@ -3,6 +3,8 @@ package ca.uwaterloo.ece.feedet;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.Collection;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.lib.Repository;
 
+import ca.uwaterloo.ece.feedet.bugpatterns.Bug;
 import ca.uwaterloo.ece.feedet.bugpatterns.CompareSameValueFromGetterAndField;
 import ca.uwaterloo.ece.feedet.bugpatterns.EqualToSameExpression;
 import ca.uwaterloo.ece.feedet.bugpatterns.IllogicalCondition;
@@ -47,6 +50,8 @@ public class SnapshotFeeDet {
 	private void run(String[] args) {
 		String rootPath = args[0];
 		
+		String pattern = args.length == 2? args[1]:"";
+		
 		File file = new File(rootPath);
 		String[] projects = file.list(new FilenameFilter() {
 			@Override
@@ -77,13 +82,13 @@ public class SnapshotFeeDet {
 				// ignore all files under test directory
 				if(path.getPath().indexOf("/test")>=0) continue;
 				
-				detect(project, null, path.getPath(), "");
+				detect(project, null, path.getPath(), "",pattern);
 
 			}
 		}
 	}
 	
-	private void detect(String project, Repository repo, String path, String shaId) {
+	private void detect(String project, Repository repo, String path, String shaId, String patternName) {
 		try {
 			String fileSource=new String(Files.readAllBytes(FileSystems.getDefault().getPath(path)));//;Utils.fetchBlob(repo, shaId, path);
 
@@ -95,39 +100,66 @@ public class SnapshotFeeDet {
 
 			JavaASTParser preFixWholeCodeAST = new JavaASTParser(fileSource);
 			
-			process(project,new CompareSameValueFromGetterAndField(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new EqualToSameExpression(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new IllogicalCondition(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new IllogicalConditionNPE(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new InconsistentIncrementerInWhile(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new IncorrectDirectorySlash(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new IncorrectMapIterator(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new IncorrectStringCompare(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new IntOverflowOfMathMin(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			
-			process(project,new MissingCurrentObjRefThis(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new MissingLForLong(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new MissingLongCast(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new MissingThrow(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			
-			process(project,new RedundantAssignment(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new RedundantCondition(project,preFixWholeCodeAST,shaId,path,repo).detect()); // not new pattern
-			process(project,new RedundantException(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new RedundantInstantiation(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			
-			process(project,new SameObjEquals(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new SleepWithNegativeValue(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			
-			//process(project,new MissingTimeResolution(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new WrongClassLogName(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new WrongIncrementer(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new WrongLogicForNullChecker(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			// process(project,new WrongPositionOfNullChecker(project,preFixWholeCodeAST,shaId,path,repo).detect()); // working on, so commented
-			process(project,new WrongReturnObjectInGetter(project,preFixWholeCodeAST,shaId,path,repo).detect());
-			process(project,new WrongReturnType(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			if(!patternName.isEmpty()){
+				Class<?> bugPatternClass = Class.forName("ca.uwaterloo.ece.feedet.bugpatterns." + patternName);
+				Constructor<?> constructor = bugPatternClass.getConstructor(String.class, JavaASTParser.class,String.class,String.class,Repository.class);
+				process(project,((Bug)constructor.newInstance(project,preFixWholeCodeAST,shaId,path,repo)).detect());
+			}else{
+				process(project,new CompareSameValueFromGetterAndField(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new EqualToSameExpression(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new IllogicalCondition(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new IllogicalConditionNPE(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new InconsistentIncrementerInWhile(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new IncorrectDirectorySlash(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new IncorrectMapIterator(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new IncorrectStringCompare(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new IntOverflowOfMathMin(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				
+				process(project,new MissingCurrentObjRefThis(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new MissingLForLong(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new MissingLongCast(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new MissingThrow(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				
+				process(project,new RedundantAssignment(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new RedundantCondition(project,preFixWholeCodeAST,shaId,path,repo).detect()); // not new pattern
+				process(project,new RedundantException(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new RedundantInstantiation(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				
+				process(project,new SameObjEquals(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new SleepWithNegativeValue(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				
+				//process(project,new MissingTimeResolution(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new WrongClassLogName(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new WrongIncrementer(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new WrongLogicForNullChecker(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				// process(project,new WrongPositionOfNullChecker(project,preFixWholeCodeAST,shaId,path,repo).detect()); // working on, so commented
+				process(project,new WrongReturnObjectInGetter(project,preFixWholeCodeAST,shaId,path,repo).detect());
+				process(project,new WrongReturnType(project,preFixWholeCodeAST,shaId,path,repo).detect());
+			}
 
 		} catch (IOException e1) {
 			e1.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
