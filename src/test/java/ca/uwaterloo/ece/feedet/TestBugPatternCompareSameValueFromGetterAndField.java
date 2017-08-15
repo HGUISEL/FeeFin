@@ -29,7 +29,7 @@ public class TestBugPatternCompareSameValueFromGetterAndField {
     	
     	String projectPathRoot1 = System.getProperty("user.home") + "/Documents/githubProjects/apache"; //System.getProperty("user.home") + "/X"; // "/Volumes/Faith/githubProjects/apache"; //System.getProperty("user.home") + "/Documents/githubProjects/apache";
     	String projectPathRoot2 = System.getProperty("user.home") + "/Documents/githubProjects/google";
-    	
+    	String projectPathRoot3 = System.getProperty("user.home") + "/Documents/githubProjects/others";
     	int numOfTPs = 0;
     	
     	// TP src/main/java/org/apache/hadoop/hbase/HRegionInfo.java	0b0fa9708460883b0827691c6c50b4aaf2f81546
@@ -94,6 +94,37 @@ public class TestBugPatternCompareSameValueFromGetterAndField {
     	
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
+    	// FP
+    	// 84134d304959b3a40ff59555000594f741370eaf
+    	// jackrabbit-core/src/main/java/org/apache/jackrabbit/core/persistence/pool/BundleDbPersistenceManager.java
+    	// method in this class can be overriden by other classes. So, developers does not care of this case
+    	// Developer comment: "This is a non-final class and subclasses such as DerbyPersistenceManager and PostgreSQLPersistenceManager
+    	// override this method and return a different value. This works as designed."
+    	/*projectName = "jackrabbit";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "jackrabbit-core/src/main/java/org/apache/jackrabbit/core/persistence/pool/BundleDbPersistenceManager.java";
+    	shaId = "84134d304959b3a40ff59555000594f741370eaf";
+    	
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());*/
+    	
+    	// FP
+    	// CompareSameValueFromGetterAndField      platform_frameworks_base
+    	// packages/SettingsLib/src/com/android/settingslib/wifi/AccessPoint.java       252     security == getSecurity(result)
+    	// security == getSecurity(result)
+    	// ssid.equals(result.SSID) && security == getSecurity(result)
+    	// public int getSecurity(){
+    	//  return security;
+    	// }
+    	projectName = "platform_frameworks_base";
+    	gitURI = projectPathRoot3 + File.separator + projectName;
+    	path = "packages/SettingsLib/src/com/android/settingslib/wifi/AccessPoint.java";
+    	shaId = "deb4eb5d05ccf983adcb7252c98c2580a8a36c60";
+    	
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

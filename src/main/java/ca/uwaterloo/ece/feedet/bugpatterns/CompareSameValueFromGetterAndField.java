@@ -54,6 +54,9 @@ public class CompareSameValueFromGetterAndField extends Bug {
 			
 			String methodName = methodInv.getName().toString();
 			
+			// skip when the method call has arguments
+			if(methodInv.arguments().size()!=0) continue;		
+					
 			if(methodInv.getExpression() != null) continue; // to only consider member methods
 			
 			if(!mapGetters.containsKey(methodName)) continue;
