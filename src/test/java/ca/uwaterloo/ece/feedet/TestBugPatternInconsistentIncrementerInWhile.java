@@ -210,6 +210,18 @@ public class TestBugPatternInconsistentIncrementerInWhile {
         
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(identifiedPotentialBug.size(),numOfTPs);
+    	
+    	// FP phoenix	Alive	
+    	// 3e4aec1bc440ad503d5058237e3b508392df9266	
+    	// phoenix-core/src/main/java/org/apache/phoenix/compile/WhereOptimizer.java	
+    	// 381	lhs=count == 0 ? candidates.get(0) : new RowValueConstructorExpression(candidates.subList(0,count + 1),false)
+    	projectName = "phoenix";
+    	gitURI = projectPathRoot1 + File.separator + projectName;
+    	path = "phoenix-core/src/main/java/org/apache/phoenix/compile/WhereOptimizer.java";
+    	shaId = "3e4aec1bc440ad503d5058237e3b508392df9266";
+        
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(identifiedPotentialBug.size(),numOfTPs);
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {

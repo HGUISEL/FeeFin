@@ -258,6 +258,9 @@ public class InconsistentIncrementerInWhile extends Bug {
 				
 				ArrayList<SimpleName> simpleNames = wholeCodeAST.getSimpleNames((ASTNode)argument);
 				
+				// if there are no simple names, no need to worry as there are no incrementer.
+				if(simpleNames.size() ==0) return true;
+				
 				for(SimpleName simpleName:simpleNames){
 					if(simpleName.toString().equals(incrementer))
 							return true;
