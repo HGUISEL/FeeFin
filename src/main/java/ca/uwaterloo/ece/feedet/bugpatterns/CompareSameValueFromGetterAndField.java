@@ -12,6 +12,7 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jgit.lib.Repository;
 
@@ -37,7 +38,14 @@ public class CompareSameValueFromGetterAndField extends Bug {
 		
 		// get all getters
 		HashMap<String,MethodDeclaration> mapGetters = new HashMap<String,MethodDeclaration>();
+		
+		ArrayList<TypeDeclaration> typeDecs = wholeCodeAST.getTypeDeclarations();
+		
 		for(MethodDeclaration methodDec:wholeCodeAST.getMethodDeclarations()){
+			
+			// only consider the primary class
+			if(!typeDecs.get(0).equals(wholeCodeAST.getTypeDeclaration(methodDec))) continue;
+			
 			if(methodDec.getReturnType2() != null && methodDec.parameters().size() == 0) // getter
 				mapGetters.put(methodDec.getName().toString(),methodDec);
 		}
