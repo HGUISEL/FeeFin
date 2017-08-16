@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldAccess;
+import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.PostfixExpression;
@@ -70,6 +71,9 @@ public class InconsistentIncrementerInWhile extends Bug {
 				}
 				
 				if(targetCollection !=null && !incrementer.isEmpty()){
+					
+					if(outerLoopHasDifferentIncrementForTheSameArray(whileStmt,targetCollection)) continue;
+					
 					anyIssueUsingIncrementer(expStmts,vardecFrags,targetCollection,incrementer,listDetRec);
 				}else{
 					// initiate
@@ -79,6 +83,57 @@ public class InconsistentIncrementerInWhile extends Bug {
 			}
 		}
 		return listDetRec;
+	}
+
+	private boolean outerLoopHasDifferentIncrementForTheSameArray(WhileStatement whileStmt,ASTNode targetCollection) {
+		
+		// get outer while
+		WhileStatement outerWhileStmt = (WhileStatement) getOuterWhile(whileStmt);
+		if(outerWhileStmt!=null){
+			if(outerWhileStmt.getExpression() instanceof InfixExpression){
+				InfixExpression infixExp = (InfixExpression) outerWhileStmt.getExpression();
+				ArrayList<SimpleName> simpleNames = wholeCodeAST.getSimpleNames(infixExp);
+				for(SimpleName name:simpleNames){
+					if(name.toString().equals(targetCollection.toString()))
+						return true;
+				}
+			}
+		}
+		
+		ForStatement forStmt = (ForStatement) getOuterForLoop(whileStmt);
+		if(forStmt!=null){
+			if(forStmt.getExpression() instanceof InfixExpression){
+				InfixExpression infixExp = (InfixExpression) forStmt.getExpression();
+				ArrayList<SimpleName> simpleNames = wholeCodeAST.getSimpleNames(infixExp);
+				for(SimpleName name:simpleNames){
+					if(name.toString().equals(targetCollection.toString()))
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private ASTNode getOuterForLoop(ASTNode node) {
+		
+		if(node.getParent() == null)
+			return null;
+		
+		if(node.getParent() instanceof ForStatement)
+			return node.getParent();
+		
+		return getOuterForLoop(node.getParent());
+	}
+
+	private ASTNode getOuterWhile(ASTNode node) {
+		
+		if(node.getParent() == null)
+			return null;
+		
+		if(node.getParent() instanceof WhileStatement)
+			return node.getParent();
+		
+		return getOuterWhile(node.getParent());
 	}
 
 	private void anyIssueUsingIncrementer(ArrayList<ExpressionStatement> expStmts, ArrayList<VariableDeclarationFragment> varDecFrags, ASTNode targetCollection, String incrementer,ArrayList<DetectionRecord> listDetRec) {
