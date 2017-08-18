@@ -70,19 +70,24 @@ public class SnapshotFeeDetPerProject {
 			String targetDirPath = rootPath;
 			
 			String[] extensions = {"java"};
-			Collection<File> list = FileUtils.listFiles(new File(targetDirPath), extensions, true);
 			
-			System.out.println("# of all paths: " + list.size());
-			for(File path:list){
-
-				// ignore when no previous revision of a file, Test files, and non-java files.
-				if(path.getPath().indexOf("Test")>=0  || Utils.isWordInStatement("test", path.getPath()) || Utils.isWordInStatement("tests", path.getPath())) continue;
-
-				// ignore all files under test directory
-				if(path.getPath().indexOf("/test")>=0) continue;
-				
-				detect(project, null, path.getPath(), "",pattern);
-
+			try{
+				Collection<File> list = FileUtils.listFiles(new File(targetDirPath), extensions, true);
+			
+				System.out.println("# of all paths: " + list.size());
+				for(File path:list){
+	
+					// ignore when no previous revision of a file, Test files, and non-java files.
+					if(path.getPath().indexOf("Test")>=0  || Utils.isWordInStatement("test", path.getPath()) || Utils.isWordInStatement("tests", path.getPath())) continue;
+	
+					// ignore all files under test directory
+					if(path.getPath().indexOf("/test")>=0) continue;
+					
+					detect(project, null, path.getPath(), "",pattern);
+	
+				}
+			}catch(IllegalArgumentException e){
+				System.err.println("Check if the direction path is correct.");
 			}
 		//}
 	}
