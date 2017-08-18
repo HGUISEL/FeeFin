@@ -46,7 +46,7 @@ public class Main {
 				.build());
 
 		options.addOption(Option.builder("p").longOpt("pattern")
-				.desc("One pattern name to detect")
+				.desc("One pattern name to detect. If not set, detect all patterns")
 				.hasArg()
 				.argName("Pattern Name")
 				.build());
