@@ -117,14 +117,23 @@ public class TestBugPatternCompareSameValueFromGetterAndField {
     	// public int getSecurity(){
     	//  return security;
     	// }
-    	projectName = "platform_frameworks_base";
+    	/*projectName = "platform_frameworks_base";
     	gitURI = projectPathRoot3 + File.separator + projectName;
     	path = "packages/SettingsLib/src/com/android/settingslib/wifi/AccessPoint.java";
     	shaId = "deb4eb5d05ccf983adcb7252c98c2580a8a36c60";
     	
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
-    	assertEquals(numOfTPs,identifiedPotentialBug.size());
-
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());*/
+    	
+    	// TP spring-data-elasticsearch	e15d8942322d2c5b8e5850bb3c0264097b7343ae	src/main/java/org/springframework/data/elasticsearch/core/query/Criteria.java
+    	// 554	OR_OPERATOR == getConjunctionOperator()
+    	projectName = "spring-data-elasticsearch";
+    	gitURI = projectPathRoot3 + File.separator + projectName;
+    	path = "src/main/java/org/springframework/data/elasticsearch/core/query/Criteria.java";
+    	shaId = "e15d8942322d2c5b8e5850bb3c0264097b7343ae";
+    	
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(++numOfTPs,identifiedPotentialBug.size());
     }
 
 	private void detect(String prjName, String gitURI, String path, String shaId,HashSet<DetectionRecord> identifiedPotentialBug) {
