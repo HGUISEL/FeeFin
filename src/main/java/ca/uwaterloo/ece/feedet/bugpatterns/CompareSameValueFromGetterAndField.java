@@ -44,7 +44,7 @@ public class CompareSameValueFromGetterAndField extends Bug {
 		for(MethodDeclaration methodDec:wholeCodeAST.getMethodDeclarations()){
 			
 			// only consider the primary class
-			if(!typeDecs.get(0).equals(wholeCodeAST.getTypeDeclaration(methodDec))) continue;
+			if(typeDecs.size() == 0 || !typeDecs.get(0).equals(wholeCodeAST.getTypeDeclaration(methodDec))) continue;
 			
 			if(methodDec.getReturnType2() != null && methodDec.parameters().size() == 0) // getter
 				mapGetters.put(methodDec.getName().toString(),methodDec);
