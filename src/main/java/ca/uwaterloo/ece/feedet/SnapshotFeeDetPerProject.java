@@ -145,6 +145,7 @@ public class SnapshotFeeDetPerProject {
 			e1.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			System.err.println("Pattern, " + patternName  + ", does not exist. Please check if the pattern name is correct.");
+			System.exit(0);
 		} catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
