@@ -60,7 +60,7 @@ public class WrongLogicForNullChecker extends Bug {
 		
 		InfixExpression.Operator operator = infixExp.getOperator();
 		
-		if(!(infixExp.getRightOperand() instanceof NullLiteral) && !(infixExp.getRightOperand() instanceof NullLiteral))
+		if(!(infixExp.getRightOperand() instanceof NullLiteral) && !(infixExp.getLeftOperand() instanceof NullLiteral))
 			return false; // there is no null literal? ignore
 		
 		ASTNode targetNode = infixExp.getRightOperand() instanceof NullLiteral? infixExp.getLeftOperand():infixExp.getRightOperand();

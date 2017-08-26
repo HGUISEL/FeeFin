@@ -43,8 +43,10 @@ public class CompareSameValueFromGetterAndField extends Bug {
 		
 		for(MethodDeclaration methodDec:wholeCodeAST.getMethodDeclarations()){
 			
+			if(doesMethodDecInInterface(methodDec)) continue;
+			
 			// only consider the primary class
-			if(!typeDecs.get(0).equals(wholeCodeAST.getTypeDeclaration(methodDec))) continue;
+			if(typeDecs.size() == 0 || !typeDecs.get(0).equals(wholeCodeAST.getTypeDeclaration(methodDec))) continue;
 			
 			if(methodDec.getReturnType2() != null && methodDec.parameters().size() == 0) // getter
 				mapGetters.put(methodDec.getName().toString(),methodDec);
@@ -112,6 +114,18 @@ public class CompareSameValueFromGetterAndField extends Bug {
 		}
 		
 		return listDetRec;
+	}
+
+	private boolean doesMethodDecInInterface(MethodDeclaration methodDec) {
+		
+		TypeDeclaration typeDec = (TypeDeclaration) wholeCodeAST.getInterface(methodDec);
+		
+		if(typeDec != null){
+			if(typeDec.isInterface())
+					return true;
+		}
+		
+		return false;
 	}
 
 	private ASTNode getMethodDeclaration(ASTNode inFixExp) {

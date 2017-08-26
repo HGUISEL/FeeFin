@@ -125,6 +125,19 @@ public class TestBugPatternCompareSameValueFromGetterAndField {
     	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
     	assertEquals(numOfTPs,identifiedPotentialBug.size());*/
     	
+    	// FP
+    	// CompareSameValueFromGetterAndField      caffeine	
+    	// 05264e00beecce4fbff757ab50790918c02db09e	
+    	// caffeine/src/main/java/com/github/benmanes/caffeine/cache/Node.java	getQueueType() == EDEN	162
+    	// }
+    	projectName = "caffeine";
+    	gitURI = projectPathRoot3 + File.separator + projectName;
+    	path = "caffeine/src/main/java/com/github/benmanes/caffeine/cache/Node.java";
+    	shaId = "05264e00beecce4fbff757ab50790918c02db09e";
+    	
+    	detect(projectName,gitURI, path, shaId,identifiedPotentialBug);
+    	assertEquals(numOfTPs,identifiedPotentialBug.size());
+    	
     	// TP spring-data-elasticsearch	e15d8942322d2c5b8e5850bb3c0264097b7343ae	src/main/java/org/springframework/data/elasticsearch/core/query/Criteria.java
     	// 554	OR_OPERATOR == getConjunctionOperator()
     	projectName = "spring-data-elasticsearch";

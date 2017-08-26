@@ -1291,4 +1291,14 @@ public class JavaASTParser {
 		
 		return assignments;
 	}
+
+	public ASTNode getInterface(ASTNode node) {
+		
+		if(node == null) return null;
+		
+		if(node.getParent() instanceof TypeDeclaration)
+			return node.getParent();
+		
+		return getInterface(node.getParent());
+	}
 }
