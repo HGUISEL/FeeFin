@@ -116,7 +116,7 @@ public class RedundantException extends Bug {
 
 					// (5) If the finally block exists, check if lstStrLocalObjectAssignedByMethodCallOutOfTryBlock have at least two object.
 					//     If yes, it is a potential defect.
-					if(lstLocalObjectAssignedByMethodCallOutOfTryBlock.size() >= 1 && finallyBlockRelatedToThrownExceptionAndLocalObjects){
+					if(lstLocalObjectAssignedByMethodCallOutOfTryBlock.size() >= 2 && finallyBlockRelatedToThrownExceptionAndLocalObjects){
 						
 						String buggyCode = "";
 						int lineNum = -1;
