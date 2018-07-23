@@ -15,12 +15,14 @@ public class PMDExperimenter {
 	private void run(String[] args) {
 
 		String srcDir = args[0];
+		
+		String pmdCommand = System.getProperty("os.name").contains("Windows")?"pmd.bat":"pmd";
 
 		Runtime rt = Runtime.getRuntime();
 		try {
 			System.out.println("PMD");
 			Process p = rt
-					.exec("pmd.bat -d " + srcDir + " -f csv -R category/java/errorprone.xml/DataflowAnomalyAnalysis");
+					.exec(pmdCommand + " -d " + srcDir + " -f csv -R category/java/errorprone.xml/DataflowAnomalyAnalysis");
 
 			ArrayList<DetectionRecord> detectionResults = new ArrayList<DetectionRecord>();
 			// create a thread that deals with output
