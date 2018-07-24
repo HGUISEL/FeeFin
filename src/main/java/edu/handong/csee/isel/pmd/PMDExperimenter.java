@@ -127,6 +127,8 @@ public class PMDExperimenter {
 
 					try {
 						String line = input.readLine(); // ignore header
+						if(VERBOSE)
+							System.out.println(line);
 						while ((line = input.readLine()) != null) {
 							DetectionRecord decRec = new DetectionRecord(commitID, line);
 							detectionResults.add(decRec);
