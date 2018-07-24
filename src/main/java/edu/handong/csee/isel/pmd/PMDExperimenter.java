@@ -35,7 +35,7 @@ public class PMDExperimenter {
 	private void run(String[] args) {
 		
 		String gitURI = args[0];
-		if(args.length == 2)
+		if(args.length >= 2)
 			pmdCommand = args[1];
 		
 		if(args.length == 3)
