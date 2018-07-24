@@ -15,6 +15,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jdt.core.dom.Comment;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jgit.api.Git;
@@ -461,6 +462,16 @@ public class Utils {
 				costs[s2.length()] = lastValue;
 		}
 		return costs[s2.length()];
+	}
+
+	public static void removeAllFilesinDir(String dir) {
+		try {
+			File directory = new File(dir);
+			if (!directory.exists()) return;
+			FileUtils.cleanDirectory(directory);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
