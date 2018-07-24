@@ -113,7 +113,7 @@ public class PMDExperimenter {
 		try {
 			
 			
-			String cmd = pmdCommand + " -d ./" + srcDir + " -f csv -R category/java/errorprone.xml/DataflowAnomalyAnalysis";
+			String cmd = pmdCommand + " -d " + srcDir + " -f csv -R category/java/errorprone.xml/DataflowAnomalyAnalysis";
 			if(VERBOSE)
 				System.out.println(cmd);
 			Process p = rt
@@ -121,8 +121,8 @@ public class PMDExperimenter {
 
 			
 			// create a thread that deals with output
-			//new Thread(new Runnable() {
-			//	public void run() {
+			new Thread(new Runnable() {
+				public void run() {
 					BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
 					try {
@@ -140,10 +140,10 @@ public class PMDExperimenter {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-			//	}
-			//}).start();
+				}
+			}).start();
 
-			//p.waitFor();
+			p.waitFor();
 			
 			ArrayList<DetectionRecord> filteredRecords = filterByInterest(detectionResults);
 
@@ -151,8 +151,8 @@ public class PMDExperimenter {
 
 		} catch (IOException e) {
 			e.printStackTrace();
-		/*} catch (InterruptedException e) {
-			e.printStackTrace();*/
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 		
 		return detectionResults;
