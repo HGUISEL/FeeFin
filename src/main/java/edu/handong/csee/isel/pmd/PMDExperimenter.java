@@ -78,14 +78,13 @@ public class PMDExperimenter {
 					e.printStackTrace();
 				}
 				df.close();
+				
+				// apply PMD
+				ArrayList<DetectionRecord> fixedRecords = applyPMD(targetDirAfterFix,rev.name());
+				ArrayList<DetectionRecord> recordsBeforeFixed = applyPMD(targetDirBeforeFix,parent.name());
+				
+				ArrayList<String> results = getFixedAndAliveIssues(fixedRecords, recordsBeforeFixed);
 			}
-			
-			// apply PMD
-			ArrayList<DetectionRecord> fixedRecords = applyPMD(targetDirAfterFix,rev.name());
-			ArrayList<DetectionRecord> recordsBeforeFixed = applyPMD(targetDirBeforeFix,parent.name());
-			
-			ArrayList<String> results = getFixedAndAliveIssues(fixedRecords, recordsBeforeFixed);
-			
 		}
 	}
 
