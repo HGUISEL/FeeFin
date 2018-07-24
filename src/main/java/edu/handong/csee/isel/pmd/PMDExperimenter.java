@@ -38,6 +38,9 @@ public class PMDExperimenter {
 		if(args.length == 2)
 			pmdCommand = args[1];
 		
+		if(args.length == 3)
+			VERBOSE = true;
+		
 		try {
 			git = Git.open( new File(gitURI) );
 		} catch (IOException e1) {
@@ -108,10 +111,13 @@ public class PMDExperimenter {
 		
 		Runtime rt = Runtime.getRuntime();
 		try {
+			
+			
+			String cmd = pmdCommand + " -d " + srcDir + " -f csv -R category/java/errorprone.xml/DataflowAnomalyAnalysis";
 			if(VERBOSE)
-				System.out.println("PMD");
+				System.out.println(cmd);
 			Process p = rt
-					.exec(pmdCommand + " -d " + srcDir + " -f csv -R category/java/errorprone.xml/DataflowAnomalyAnalysis");
+					.exec(cmd);
 
 			
 			// create a thread that deals with output
