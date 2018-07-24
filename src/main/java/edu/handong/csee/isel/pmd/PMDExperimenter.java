@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -28,6 +29,12 @@ public class PMDExperimenter {
 	String pmdCommand = "";
 
 	public static void main(String[] args) {
+		
+		Map<String, String> env = System.getenv();
+		for (String envName : env.keySet()) {
+		     System.out.format("%s=%s%n", envName, env.get(envName));
+		}
+		
 		PMDExperimenter experimenter = new PMDExperimenter();
 		experimenter.run(args);
 	}
