@@ -160,10 +160,10 @@ public class PMDExperimenter {
 	private String getFullCodeOfTheChangedFile(String newPath, RevCommit rev) {
 		
 		// ignore when no previous revision of a file, Test files, and non-java files.
-		if(newPath.indexOf("Test")>=0  || !newPath.endsWith(".java") || Utils.isWordInStatement("test", newPath)) return null;
+		if(newPath.indexOf("Test")>=0  || !newPath.endsWith(".java") || Utils.isWordInStatement("test", newPath)) return ""; // return empty string to avoid to analyze
 
 		// ignore all files under test directory
-		if(newPath.indexOf("/test")>=0) return null;
+		if(newPath.indexOf("/test")>=0) return "";
 		
 		String id =  rev.name() + "";
 		String fileSource = null;
