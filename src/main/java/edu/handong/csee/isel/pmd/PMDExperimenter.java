@@ -25,6 +25,7 @@ public class PMDExperimenter {
 	boolean VERBOSE = false;
 	private Git git;
 	private Repository repo;
+	String pmdCommand = "";
 
 	public static void main(String[] args) {
 		PMDExperimenter experimenter = new PMDExperimenter();
@@ -34,6 +35,8 @@ public class PMDExperimenter {
 	private void run(String[] args) {
 		
 		String gitURI = args[0];
+		if(args.length > 2)
+			pmdCommand = args[1];
 		
 		try {
 			git = Git.open( new File(gitURI) );
@@ -99,7 +102,9 @@ public class PMDExperimenter {
 
 	private ArrayList<DetectionRecord> applyPMD(String srcDir, String commitID) {
 		
-		String pmdCommand = System.getProperty("os.name").contains("Windows")?"pmd.bat":"pmd";
+		if(pmdCommand.isEmpty())
+			pmdCommand = System.getProperty("os.name").contains("Windows")?"pmd.bat":"pmd";
+		
 		ArrayList<DetectionRecord> detectionResults = new ArrayList<DetectionRecord>();
 		
 		Runtime rt = Runtime.getRuntime();
