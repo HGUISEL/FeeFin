@@ -113,7 +113,7 @@ public class PMDExperimenter {
 		try {
 			
 			
-			String cmd = pmdCommand + " -d " + srcDir + " -f csv -R category/java/errorprone.xml/DataflowAnomalyAnalysis";
+			String cmd = pmdCommand + " -d ./" + srcDir + " -f csv -R category/java/errorprone.xml/DataflowAnomalyAnalysis";
 			if(VERBOSE)
 				System.out.println(cmd);
 			Process p = rt
