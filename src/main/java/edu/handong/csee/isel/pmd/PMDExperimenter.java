@@ -137,7 +137,7 @@ public class PMDExperimenter {
 			
 			ArrayList<DetectionRecord> filteredRecords = filterByInterest(detectionResults);
 
-			printResults(filteredRecords);
+			System.out.println(filteredRecords.size());
 
 		} catch (IOException e) {
 			e.printStackTrace();
