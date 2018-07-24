@@ -130,8 +130,10 @@ public class PMDExperimenter {
 						while ((line = input.readLine()) != null) {
 							DetectionRecord decRec = new DetectionRecord(commitID, line);
 							detectionResults.add(decRec);
-							if(VERBOSE)
+							if(VERBOSE) {
+								System.out.println(line);
 								System.out.println("Detected: " + commitID + " " + decRec.getFile());
+							}
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
