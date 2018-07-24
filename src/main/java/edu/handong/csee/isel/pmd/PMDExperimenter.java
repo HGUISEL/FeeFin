@@ -20,8 +20,9 @@ import org.eclipse.jgit.util.io.DisabledOutputStream;
 import ca.uwaterloo.ece.feedet.utils.Utils;
 
 public class PMDExperimenter {
-	final private String targetDir = "targetDir";
-	boolean VERBOSE = true;
+	final private String targetDirBeforeFix = "targetDirBeforeFix";
+	final private String targetDirAfterFix = "targetDirAfterFix";
+	boolean VERBOSE = false;
 	private Git git;
 	private Repository repo;
 
@@ -47,10 +48,12 @@ public class PMDExperimenter {
 		
 		// (2) retrieve changes
 		for(RevCommit rev:commits) {
+			// parent is a previous commit
 			RevCommit parent = rev.getParentCount()==0?null:rev.getParent(0);
 			
 			// init targetDir
-			initTargetDir();
+			initTargetDir(targetDirBeforeFix);
+			initTargetDir(targetDirAfterFix);
 			
 			if(parent!=null) {
 				DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
@@ -60,12 +63,13 @@ public class PMDExperimenter {
 				df.setDetectRenames(true);
 				List<DiffEntry> diffs;
 				try {
-
 					// do diff
 					diffs = df.scan(parent.getTree(), rev.getTree());
 					for (DiffEntry diff : diffs) {
-						String source = getFullCodeOfTheChangedFile(diff.getNewPath(),rev);
-						saveSourceInTargetDir(source,diff.getNewPath());
+						String prevSource = getFullCodeOfTheChangedFile(diff.getOldPath(),parent); // in case a file name changes, we need to get source from the old path
+						String fixedSource = getFullCodeOfTheChangedFile(diff.getNewPath(),rev);
+						saveSourceInTargetDir(prevSource, targetDirBeforeFix,diff.getNewPath());
+						saveSourceInTargetDir(fixedSource, targetDirAfterFix,diff.getNewPath()); 
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -74,14 +78,30 @@ public class PMDExperimenter {
 			}
 			
 			// apply PMD
-			applyPMD(targetDir,rev.name());
+			ArrayList<DetectionRecord> fixedRecords = applyPMD(targetDirAfterFix,rev.name());
+			ArrayList<DetectionRecord> recordsBeforeFixed = applyPMD(targetDirBeforeFix,parent.name());
+			
+			ArrayList<String> results = getFixedAndAliveIssues(fixedRecords, recordsBeforeFixed);
+			
 		}
 	}
 
-	private void applyPMD(String srcDir, String commitID) {
+	private ArrayList<String> getFixedAndAliveIssues(ArrayList<DetectionRecord> fixedRecords, ArrayList<DetectionRecord> recordsBeforeFixed) {
+		
+		ArrayList<String> results = new ArrayList<String>();
+		
+		if(fixedRecords.size() < recordsBeforeFixed.size()) {
+			System.out.println(recordsBeforeFixed.get(0).getLastestCommitIDAnIssueExists() + " " + recordsBeforeFixed.get(0).getFile());
+		}
+		
+		return results;
+	}
+
+	private ArrayList<DetectionRecord> applyPMD(String srcDir, String commitID) {
 		
 		String pmdCommand = System.getProperty("os.name").contains("Windows")?"pmd.bat":"pmd";
-
+		ArrayList<DetectionRecord> detectionResults = new ArrayList<DetectionRecord>();
+		
 		Runtime rt = Runtime.getRuntime();
 		try {
 			if(VERBOSE)
@@ -89,7 +109,7 @@ public class PMDExperimenter {
 			Process p = rt
 					.exec(pmdCommand + " -d " + srcDir + " -f csv -R category/java/errorprone.xml/DataflowAnomalyAnalysis");
 
-			ArrayList<DetectionRecord> detectionResults = new ArrayList<DetectionRecord>();
+			
 			// create a thread that deals with output
 			new Thread(new Runnable() {
 				public void run() {
@@ -98,7 +118,7 @@ public class PMDExperimenter {
 					try {
 						String line = input.readLine(); // ignore header
 						while ((line = input.readLine()) != null) {
-							DetectionRecord decRec = new DetectionRecord(line);
+							DetectionRecord decRec = new DetectionRecord(commitID, line);
 							detectionResults.add(decRec);
 							if(VERBOSE)
 								System.out.println("Detected: " + commitID + " " + decRec.getFile());
@@ -120,13 +140,15 @@ public class PMDExperimenter {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		return detectionResults;
 	}
 
-	private void initTargetDir() {
+	private void initTargetDir(String targetDir) {
 		Utils.removeAllFilesinDir(targetDir);
 	}
 
-	private void saveSourceInTargetDir(String source, String newPath) {
+	private void saveSourceInTargetDir(String source, String targetDir, String newPath) {
 		Utils.writeAFile(source, targetDir + File.separator + newPath);
 	}
 
