@@ -36,3 +36,5 @@ bin
 # Mac
 .DS_Store
 /targetDir/
+/targetDirAfterFix/
+/targetDirBeforeFix/
