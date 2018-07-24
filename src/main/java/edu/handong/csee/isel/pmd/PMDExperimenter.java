@@ -30,11 +30,6 @@ public class PMDExperimenter {
 
 	public static void main(String[] args) {
 		
-		Map<String, String> env = System.getenv();
-		for (String envName : env.keySet()) {
-		     System.out.format("%s=%s%n", envName, env.get(envName));
-		}
-		
 		PMDExperimenter experimenter = new PMDExperimenter();
 		experimenter.run(args);
 	}
@@ -65,8 +60,8 @@ public class PMDExperimenter {
 			RevCommit parent = rev.getParentCount()==0?null:rev.getParent(0);
 			
 			// init targetDir
-			//initTargetDir(targetDirBeforeFix);
-			//initTargetDir(targetDirAfterFix);
+			initTargetDir(targetDirBeforeFix);
+			initTargetDir(targetDirAfterFix);
 			
 			if(parent!=null) {
 				DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
