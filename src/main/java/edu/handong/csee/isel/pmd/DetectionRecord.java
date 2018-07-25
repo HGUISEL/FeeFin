@@ -2,7 +2,9 @@ package edu.handong.csee.isel.pmd;
 
 public class DetectionRecord {
 	String lastestCommitIDAnIssueExists;
+	String prevCommitID;
 	String date;
+	String dataOfPrevCommit;
 	int problemNo;
 	String pakcage;
 	String file;
@@ -13,10 +15,37 @@ public class DetectionRecord {
 	String ruleSet;
 	String rule;
 	
-	public DetectionRecord(String commitID, String date, String line) {
+	public DetectionRecord(String commitID, String date, String line, String prevCommitID, String datePrevCommit) {
 		lastestCommitIDAnIssueExists = commitID;
+		this.prevCommitID = prevCommitID;
+		dataOfPrevCommit = datePrevCommit;
 		this.date = date;
 		setMembersFromLine(line);
+		
+	}
+
+	public String getPrevCommitID() {
+		return prevCommitID;
+	}
+
+	public void setPrevCommitID(String prevCommitID) {
+		this.prevCommitID = prevCommitID;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public String getDataOfPrevCommit() {
+		return dataOfPrevCommit;
+	}
+
+	public void setDataOfPrevCommit(String dataOfPrevCommit) {
+		this.dataOfPrevCommit = dataOfPrevCommit;
 	}
 
 	public void setMembersFromLine(String line) {

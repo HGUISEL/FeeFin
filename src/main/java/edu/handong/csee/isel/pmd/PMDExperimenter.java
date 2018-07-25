@@ -86,23 +86,29 @@ public class PMDExperimenter {
 				df.close();
 				
 				// apply PMD
-				ArrayList<DetectionRecord> fixedRecords = applyPMD(targetDirAfterFix,rev);
-				ArrayList<DetectionRecord> recordsBeforeFixed = applyPMD(targetDirBeforeFix,parent);
+				HashMap<String,DetectionRecord> fixedRecords = applyPMD(targetDirAfterFix,rev);
+				HashMap<String,DetectionRecord> recordsBeforeFixed = applyPMD(targetDirBeforeFix,parent);
 				
 				ArrayList<String> results = getFixedAndAliveIssues(fixedRecords, recordsBeforeFixed);
+				
+				for(String result:results) {
+					System.out.println(result);
+				}
 			}
 		}
 	}
 
-	private ArrayList<DetectionRecord> applyPMD(String srcDir, RevCommit rev) {
+	private HashMap<String,DetectionRecord> applyPMD(String srcDir, RevCommit rev) {
 		
 		String commitID = rev.getName();
+		String prevCommitID = rev.getParent(0) != null? rev.getParent(0).getName():"";
 		String date = Utils.getStringDateTimeFromCommitTime(rev.getCommitTime());
+		String datePrevCommit = rev.getParent(0) != null?Utils.getStringDateTimeFromCommitTime(rev.getParent(0).getCommitTime()):"";
 		
 		if(pmdCommand.isEmpty())
 			pmdCommand = System.getProperty("os.name").contains("Windows")?"pmd.bat":"pmd";
 		
-		ArrayList<DetectionRecord> detectionResults = new ArrayList<DetectionRecord>();
+		HashMap<String,DetectionRecord> detectionResults = new HashMap<String,DetectionRecord>();
 		
 		Runtime rt = Runtime.getRuntime();
 		try {
@@ -125,9 +131,9 @@ public class PMDExperimenter {
 						if(VERBOSE)
 							System.out.println(line);
 						while ((line = input.readLine()) != null) {
-							DetectionRecord decRec = new DetectionRecord(commitID, date, line);
+							DetectionRecord decRec = new DetectionRecord(commitID, date, line,prevCommitID,datePrevCommit);
 							decRec.setLine(Utils.readAFile(decRec.getFile())); // set line for decRec
-							detectionResults.add(decRec);
+							detectionResults.put(decRec.getFile() + decRec.getLine(),decRec);
 							if(VERBOSE) {
 								System.out.println(line);
 								System.out.println("Detected: " + commitID + " " + decRec.getFile());
@@ -141,7 +147,7 @@ public class PMDExperimenter {
 
 			p.waitFor();
 			
-			ArrayList<DetectionRecord> filteredRecords = filterByInterest(detectionResults);
+			//ArrayList<DetectionRecord> filteredRecords = filterByInterest(detectionResults);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -152,18 +158,42 @@ public class PMDExperimenter {
 		return detectionResults;
 	}
 
-	private ArrayList<String> getFixedAndAliveIssues(ArrayList<DetectionRecord> fixedRecords, ArrayList<DetectionRecord> recordsBeforeFixed) {
+	private ArrayList<String> getFixedAndAliveIssues(HashMap<String,DetectionRecord> fixedRecords, HashMap<String,DetectionRecord> recordsBeforeFixed) {
 		
+		// TYPE, prevCommitID, prevDate, changeCommitID, change_date, path, lineNum, line
 		ArrayList<String> results = new ArrayList<String>();
 		
 		// three types of changes: BI, FIXED, UNFIXED
-		if(fixedRecords.size() < recordsBeforeFixed.size()) {
-			for(DetectionRecord decRecBeforeFixed:recordsBeforeFixed) {
-				for(DetectionRecord decRecFixed:fixedRecords) {
-					
+		if(fixedRecords.size() < recordsBeforeFixed.size()) { // There is something FIXED.
+			//loop by recordsBeforeFixed
+			for(String key:recordsBeforeFixed.keySet()) {
+				if(fixedRecords.containsKey(key)) { // ALIVE
+					DetectionRecord decRec = fixedRecords.get(key);
+					results.add("ALIVE," + decRec.getPrevCommitID() + "," + decRec.getDataOfPrevCommit() + ","
+								+ decRec.getLastestCommitIDAnIssueExists() + "," + decRec.getDate() + ","
+								+ decRec.getFile() + "," + decRec.getLineNum() + "," + decRec.getLine());
+				} else {	// FIXED
+					DetectionRecord decRec = recordsBeforeFixed.get(key);
+					results.add("FIXED," + decRec.getPrevCommitID() + "," + decRec.getDataOfPrevCommit() + ","
+								+ decRec.getLastestCommitIDAnIssueExists() + "," + decRec.getDate() + ","
+								+ decRec.getFile() + "," + decRec.getLineNum() + "," + decRec.getLine());
 				}
 			}
-			System.out.println(recordsBeforeFixed.get(0).getLastestCommitIDAnIssueExists() + " " + recordsBeforeFixed.get(0).getFile());
+		} else {
+			//loop by fixedRecords
+			for(String key:fixedRecords.keySet()) {
+				if(recordsBeforeFixed.containsKey(key)) { // ALIVE
+					DetectionRecord decRec = fixedRecords.get(key);
+					results.add("ALIVE," + decRec.getPrevCommitID() + "," + decRec.getDataOfPrevCommit() + ","
+								+ decRec.getLastestCommitIDAnIssueExists() + "," + decRec.getDate() + ","
+								+ decRec.getFile() + "," + decRec.getLineNum() + "," + decRec.getLine());
+				} else { // BI
+					DetectionRecord decRec = fixedRecords.get(key);
+					results.add("BI," + decRec.getPrevCommitID() + "," + decRec.getDataOfPrevCommit() + ","
+								+ decRec.getLastestCommitIDAnIssueExists() + "," + decRec.getDate() + ","
+								+ decRec.getFile() + "," + decRec.getLineNum() + "," + decRec.getLine());
+				}
+			}
 		}
 		
 		return results;
@@ -203,11 +233,13 @@ public class PMDExperimenter {
 		return fileSource;
 	}
 
-	private ArrayList<DetectionRecord> filterByInterest(ArrayList<DetectionRecord> detectionResults) {
+	private ArrayList<DetectionRecord> filterByInterest(HashMap<String,DetectionRecord> detectionResults) {
 		
 		ArrayList<DetectionRecord> filteredRecords = new ArrayList<DetectionRecord>();
 		
-		for(DetectionRecord decRec:detectionResults) {
+		for(String key:detectionResults.keySet()) {
+			
+			DetectionRecord decRec = detectionResults.get(key);
 			
 			if(decRec.rule.equals("DataflowAnomalyAnalysis")) {
 				if(decRec.description.startsWith("Found 'DD'-anomaly")) {
