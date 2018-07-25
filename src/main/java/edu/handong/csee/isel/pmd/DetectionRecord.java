@@ -85,4 +85,7 @@ public class DetectionRecord {
 	public void showSummary() {
 		System.out.println(file + " " + description);
 	}
+	public String getLine() {
+		return line;
+	}
 }
