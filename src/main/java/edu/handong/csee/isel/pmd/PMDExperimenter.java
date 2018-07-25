@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -132,8 +131,8 @@ public class PMDExperimenter {
 						if(VERBOSE)
 							System.out.println(line);
 						while ((line = input.readLine()) != null) {
-							DetectionRecord decRec = new DetectionRecord(commitID, date, line,prevCommitID,datePrevCommit);
-							decRec.setLine(Utils.readAFile(decRec.getFile())); // set line for decRec
+							DetectionRecord decRec = new DetectionRecord(commitID, date, line,prevCommitID,datePrevCommit,srcDir);
+							decRec.setLine(Utils.readAFile(decRec.getFullFilePath())); // set line for decRec
 							detectionResults.put(decRec.getFile() + decRec.getLine(),decRec);
 							if(VERBOSE) {
 								System.out.println(line);
@@ -193,7 +192,7 @@ public class PMDExperimenter {
 	}
 
 	private String getInfo(DetectionRecord decRec) {
-		return decRec.getRuleSet() + "," + decRec.getRule() + "," + decRec.getPrevCommitID() + "," + decRec.getDataOfPrevCommit() + ","
+		return decRec.getFile() + decRec.getLine().replaceAll(",", "") + "," + decRec.getRuleSet() + "," + decRec.getRule() + "," + decRec.getPrevCommitID() + "," + decRec.getDataOfPrevCommit() + ","
 				+ decRec.getLastestCommitIDAnIssueExists() + "," + decRec.getDate() + ","
 				+ decRec.getFile() + "," + decRec.getLineNum() + "," + decRec.getLine();
 	}

@@ -1,5 +1,7 @@
 package edu.handong.csee.isel.pmd;
 
+import java.io.File;
+
 public class DetectionRecord {
 	String lastestCommitIDAnIssueExists;
 	String prevCommitID;
@@ -8,19 +10,23 @@ public class DetectionRecord {
 	int problemNo;
 	String packageName;
 	String file;
+	String fullFilePath;
 	String priority;
 	int lineNum;
 	String line;
 	String description;
+	public String getFullFilePath() {
+		return fullFilePath;
+	}
 	String ruleSet;
 	String rule;
 	
-	public DetectionRecord(String commitID, String date, String line, String prevCommitID, String datePrevCommit) {
+	public DetectionRecord(String commitID, String date, String line, String prevCommitID, String datePrevCommit, String srcDir) {
 		lastestCommitIDAnIssueExists = commitID;
 		this.prevCommitID = prevCommitID;
 		dataOfPrevCommit = datePrevCommit;
 		this.date = date;
-		setMembersFromLine(line);
+		setMembersFromLine(line,srcDir);
 		
 	}
 
@@ -48,11 +54,12 @@ public class DetectionRecord {
 		this.dataOfPrevCommit = dataOfPrevCommit;
 	}
 
-	public void setMembersFromLine(String line) {
+	public void setMembersFromLine(String line, String srcDir) {
 		String[] data = line.replace("\"", "").split(",");
 		problemNo = Integer.parseInt(data[0]);
 		packageName = data[1];
-		file = data[2];
+		file = data[2].replace((new File(srcDir)).getAbsolutePath(), "");
+		fullFilePath = data[2];
 		priority = data[3];
 		lineNum = Integer.parseInt(data[4]);
 		description = data[5];
