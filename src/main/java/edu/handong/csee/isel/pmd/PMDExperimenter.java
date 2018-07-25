@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,7 +77,7 @@ public class PMDExperimenter {
 					for (DiffEntry diff : diffs) {
 						String prevSource = getFullCodeOfTheChangedFile(diff.getOldPath(),parent); // in case a file name changes, we need to get source from the old path
 						String fixedSource = getFullCodeOfTheChangedFile(diff.getNewPath(),rev);
-						saveSourceInTargetDir(prevSource, targetDirBeforeFix,diff.getNewPath());
+						saveSourceInTargetDir(prevSource, targetDirBeforeFix,diff.getNewPath()); // set new path even for the prev revision
 						saveSourceInTargetDir(fixedSource, targetDirAfterFix,diff.getNewPath()); 
 					}
 				} catch (IOException e) {
@@ -85,26 +86,18 @@ public class PMDExperimenter {
 				df.close();
 				
 				// apply PMD
-				ArrayList<DetectionRecord> fixedRecords = applyPMD(targetDirAfterFix,rev.name());
-				ArrayList<DetectionRecord> recordsBeforeFixed = applyPMD(targetDirBeforeFix,parent.name());
+				ArrayList<DetectionRecord> fixedRecords = applyPMD(targetDirAfterFix,rev);
+				ArrayList<DetectionRecord> recordsBeforeFixed = applyPMD(targetDirBeforeFix,parent);
 				
 				ArrayList<String> results = getFixedAndAliveIssues(fixedRecords, recordsBeforeFixed);
 			}
 		}
 	}
 
-	private ArrayList<String> getFixedAndAliveIssues(ArrayList<DetectionRecord> fixedRecords, ArrayList<DetectionRecord> recordsBeforeFixed) {
+	private ArrayList<DetectionRecord> applyPMD(String srcDir, RevCommit rev) {
 		
-		ArrayList<String> results = new ArrayList<String>();
-		
-		if(fixedRecords.size() < recordsBeforeFixed.size()) {
-			System.out.println(recordsBeforeFixed.get(0).getLastestCommitIDAnIssueExists() + " " + recordsBeforeFixed.get(0).getFile());
-		}
-		
-		return results;
-	}
-
-	private ArrayList<DetectionRecord> applyPMD(String srcDir, String commitID) {
+		String commitID = rev.getName();
+		String date = Utils.getStringDateTimeFromCommitTime(rev.getCommitTime());
 		
 		if(pmdCommand.isEmpty())
 			pmdCommand = System.getProperty("os.name").contains("Windows")?"pmd.bat":"pmd";
@@ -132,7 +125,8 @@ public class PMDExperimenter {
 						if(VERBOSE)
 							System.out.println(line);
 						while ((line = input.readLine()) != null) {
-							DetectionRecord decRec = new DetectionRecord(commitID, line);
+							DetectionRecord decRec = new DetectionRecord(commitID, date, line);
+							decRec.setLine(Utils.readAFile(decRec.getFile())); // set line for decRec
 							detectionResults.add(decRec);
 							if(VERBOSE) {
 								System.out.println(line);
@@ -149,8 +143,6 @@ public class PMDExperimenter {
 			
 			ArrayList<DetectionRecord> filteredRecords = filterByInterest(detectionResults);
 
-			System.out.println(filteredRecords.size());
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
@@ -158,6 +150,23 @@ public class PMDExperimenter {
 		}
 		
 		return detectionResults;
+	}
+
+	private ArrayList<String> getFixedAndAliveIssues(ArrayList<DetectionRecord> fixedRecords, ArrayList<DetectionRecord> recordsBeforeFixed) {
+		
+		ArrayList<String> results = new ArrayList<String>();
+		
+		// three types of changes: BI, FIXED, UNFIXED
+		if(fixedRecords.size() < recordsBeforeFixed.size()) {
+			for(DetectionRecord decRecBeforeFixed:recordsBeforeFixed) {
+				for(DetectionRecord decRecFixed:fixedRecords) {
+					
+				}
+			}
+			System.out.println(recordsBeforeFixed.get(0).getLastestCommitIDAnIssueExists() + " " + recordsBeforeFixed.get(0).getFile());
+		}
+		
+		return results;
 	}
 
 	private void initTargetDir(String targetDir) {

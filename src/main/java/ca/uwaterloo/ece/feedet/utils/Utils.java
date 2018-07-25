@@ -474,4 +474,22 @@ public class Utils {
 		}
 	}
 
+	static public String readAFile(String file){
+		String text ="";
+		String thisLine="";
+		//Open the file for reading
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			while ((thisLine = br.readLine()) != null) { // while loop begins here
+				text += thisLine + "\n";
+			} // end while 
+			br.close();
+		} // end try
+		catch (IOException e) {
+			System.err.println("Error: " + e);
+			//System.exit(0);
+		}
+
+		return text;
+	}
 }
