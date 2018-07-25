@@ -6,7 +6,7 @@ public class DetectionRecord {
 	String date;
 	String dataOfPrevCommit;
 	int problemNo;
-	String pakcage;
+	String packageName;
 	String file;
 	String priority;
 	int lineNum;
@@ -51,7 +51,7 @@ public class DetectionRecord {
 	public void setMembersFromLine(String line) {
 		String[] data = line.replace("\"", "").split(",");
 		problemNo = Integer.parseInt(data[0]);
-		pakcage = data[1];
+		packageName = data[1];
 		file = data[2];
 		priority = data[3];
 		lineNum = Integer.parseInt(data[4]);
@@ -70,10 +70,10 @@ public class DetectionRecord {
 		this.problemNo = problemNo;
 	}
 	public String getPakcage() {
-		return pakcage;
+		return packageName;
 	}
 	public void setPakcage(String pakcage) {
-		this.pakcage = pakcage;
+		this.packageName = pakcage;
 	}
 	public String getFile() {
 		return file;
