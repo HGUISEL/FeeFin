@@ -2,17 +2,20 @@ package edu.handong.csee.isel.pmd;
 
 public class DetectionRecord {
 	String lastestCommitIDAnIssueExists;
+	String date;
 	int problemNo;
 	String pakcage;
 	String file;
 	String priority;
-	String lineNum;
+	int lineNum;
+	String line;
 	String description;
 	String ruleSet;
 	String rule;
 	
-	public DetectionRecord(String commitID, String line) {
+	public DetectionRecord(String commitID, String date, String line) {
 		lastestCommitIDAnIssueExists = commitID;
+		this.date = date;
 		setMembersFromLine(line);
 	}
 
@@ -22,12 +25,15 @@ public class DetectionRecord {
 		pakcage = data[1];
 		file = data[2];
 		priority = data[3];
-		lineNum = data[4];
+		lineNum = Integer.parseInt(data[4]);
 		description = data[5];
 		ruleSet = data[6];
 		rule = data[7];
 	}
 
+	public void setLine(String source) {
+		line = source.split("\n")[lineNum+1].trim();
+	}
 	public int getProblemNo() {
 		return problemNo;
 	}
@@ -55,11 +61,8 @@ public class DetectionRecord {
 	public String getLastestCommitIDAnIssueExists() {
 		return lastestCommitIDAnIssueExists;
 	}
-	public String getLine() {
+	public int getLineNum() {
 		return lineNum;
-	}
-	public void setLine(String line) {
-		this.lineNum = line;
 	}
 	public String getDescription() {
 		return description;
