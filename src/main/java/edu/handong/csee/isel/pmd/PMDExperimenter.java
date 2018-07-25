@@ -123,8 +123,8 @@ public class PMDExperimenter {
 
 			
 			// create a thread that deals with output
-			new Thread(new Runnable() {
-				public void run() {
+			//new Thread(new Runnable() {
+			//	public void run() {
 					BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
 					try {
@@ -143,17 +143,17 @@ public class PMDExperimenter {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-				}
-			}).start();
+			//	}
+			//}).start();
 
-			p.waitFor();
+			//p.waitFor();
 			
 			filteredRecords = filterByInterest(detectionResults);
 
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		/*} catch (InterruptedException e) {
+			e.printStackTrace();*/
 		}
 		
 		return filteredRecords;
@@ -170,14 +170,10 @@ public class PMDExperimenter {
 			for(String key:recordsBeforeFixed.keySet()) {
 				if(fixedRecords.containsKey(key)) { // ALIVE
 					DetectionRecord decRec = fixedRecords.get(key);
-					results.add("ALIVE," + decRec.getPrevCommitID() + "," + decRec.getDataOfPrevCommit() + ","
-								+ decRec.getLastestCommitIDAnIssueExists() + "," + decRec.getDate() + ","
-								+ decRec.getFile() + "," + decRec.getLineNum() + "," + decRec.getLine());
+					results.add("ALIVE," + getInfo(decRec));
 				} else {	// FIXED
 					DetectionRecord decRec = recordsBeforeFixed.get(key);
-					results.add("FIXED," + decRec.getPrevCommitID() + "," + decRec.getDataOfPrevCommit() + ","
-								+ decRec.getLastestCommitIDAnIssueExists() + "," + decRec.getDate() + ","
-								+ decRec.getFile() + "," + decRec.getLineNum() + "," + decRec.getLine());
+					results.add("FIXED," + getInfo(decRec));
 				}
 			}
 		} else {
@@ -185,19 +181,21 @@ public class PMDExperimenter {
 			for(String key:fixedRecords.keySet()) {
 				if(recordsBeforeFixed.containsKey(key)) { // ALIVE
 					DetectionRecord decRec = fixedRecords.get(key);
-					results.add("ALIVE," + decRec.getPrevCommitID() + "," + decRec.getDataOfPrevCommit() + ","
-								+ decRec.getLastestCommitIDAnIssueExists() + "," + decRec.getDate() + ","
-								+ decRec.getFile() + "," + decRec.getLineNum() + "," + decRec.getLine());
+					results.add("ALIVE," + getInfo(decRec));
 				} else { // BI
 					DetectionRecord decRec = fixedRecords.get(key);
-					results.add("BI," + decRec.getPrevCommitID() + "," + decRec.getDataOfPrevCommit() + ","
-								+ decRec.getLastestCommitIDAnIssueExists() + "," + decRec.getDate() + ","
-								+ decRec.getFile() + "," + decRec.getLineNum() + "," + decRec.getLine());
+					results.add("BI," + getInfo(decRec));
 				}
 			}
 		}
 		
 		return results;
+	}
+
+	private String getInfo(DetectionRecord decRec) {
+		return decRec.getRuleSet() + "," + decRec.getRule() + "," + decRec.getPrevCommitID() + "," + decRec.getDataOfPrevCommit() + ","
+				+ decRec.getLastestCommitIDAnIssueExists() + "," + decRec.getDate() + ","
+				+ decRec.getFile() + "," + decRec.getLineNum() + "," + decRec.getLine();
 	}
 
 	private void initTargetDir(String targetDir) {
