@@ -61,7 +61,7 @@ public class DetectionRecord {
 	}
 
 	public void setLine(String source) {
-		line = source.split("\n")[lineNum+1].trim();
+		line = source.split("\n")[lineNum-1].trim();
 	}
 	public int getProblemNo() {
 		return problemNo;

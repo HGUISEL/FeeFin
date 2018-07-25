@@ -109,6 +109,7 @@ public class PMDExperimenter {
 			pmdCommand = System.getProperty("os.name").contains("Windows")?"pmd.bat":"pmd";
 		
 		HashMap<String,DetectionRecord> detectionResults = new HashMap<String,DetectionRecord>();
+		HashMap<String,DetectionRecord> filteredRecords = null;
 		
 		Runtime rt = Runtime.getRuntime();
 		try {
@@ -147,7 +148,7 @@ public class PMDExperimenter {
 
 			p.waitFor();
 			
-			//ArrayList<DetectionRecord> filteredRecords = filterByInterest(detectionResults);
+			filteredRecords = filterByInterest(detectionResults);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -155,7 +156,7 @@ public class PMDExperimenter {
 			e.printStackTrace();
 		}
 		
-		return detectionResults;
+		return filteredRecords;
 	}
 
 	private ArrayList<String> getFixedAndAliveIssues(HashMap<String,DetectionRecord> fixedRecords, HashMap<String,DetectionRecord> recordsBeforeFixed) {
@@ -233,9 +234,9 @@ public class PMDExperimenter {
 		return fileSource;
 	}
 
-	private ArrayList<DetectionRecord> filterByInterest(HashMap<String,DetectionRecord> detectionResults) {
+	private HashMap<String,DetectionRecord> filterByInterest(HashMap<String,DetectionRecord> detectionResults) {
 		
-		ArrayList<DetectionRecord> filteredRecords = new ArrayList<DetectionRecord>();
+		HashMap<String,DetectionRecord> filteredRecords = new HashMap<String,DetectionRecord>();
 		
 		for(String key:detectionResults.keySet()) {
 			
@@ -243,19 +244,11 @@ public class PMDExperimenter {
 			
 			if(decRec.rule.equals("DataflowAnomalyAnalysis")) {
 				if(decRec.description.startsWith("Found 'DD'-anomaly")) {
-					filteredRecords.add(decRec);
+					filteredRecords.put(key, decRec);
 				}
 			}
 		}
 		
 		return filteredRecords;
-	}
-
-	private void printResults(ArrayList<DetectionRecord> detectionResults) {
-
-		for (DetectionRecord decRec : detectionResults) {
-			decRec.showSummary();
-		}
-
 	}
 }
