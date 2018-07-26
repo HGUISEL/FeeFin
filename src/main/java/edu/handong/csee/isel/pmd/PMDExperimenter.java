@@ -146,32 +146,6 @@ public class PMDExperimenter {
 					.exec(cmd);
 
 			// create a thread that deals with output
-			//new Thread(new Runnable() {
-			//	public void run() {
-					BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-					try {
-						String line = input.readLine(); // ignore header
-						if(VERBOSE)
-							System.out.println(line);
-						while ((line = input.readLine()) != null) {
-							DetectionRecord decRec = new DetectionRecord(commitID, date, line,prevCommitID,datePrevCommit,srcDir);
-							decRec.setLine(Utils.readAFile(decRec.getFullFilePath())); // set line for decRec
-							detectionResults.put(decRec.getFile() + decRec.getLine(),decRec);
-							if(VERBOSE) {
-								System.out.println(line);
-								System.out.println("Detected: " + commitID + " " + decRec.getFile());
-							}
-						}
-						input.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
-			//	}
-			//}).start();
-
-			// create a thread that deals with output
 			new Thread(new Runnable() {
 				public void run() {
 					BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -185,6 +159,32 @@ public class PMDExperimenter {
 
 				}
 			}).start();
+
+			// create a thread that deals with output
+			//new Thread(new Runnable() {
+			//	public void run() {
+			BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+			try {
+				String line = input.readLine(); // ignore header
+				if(VERBOSE)
+					System.out.println(line);
+				while ((line = input.readLine()) != null) {
+					DetectionRecord decRec = new DetectionRecord(commitID, date, line,prevCommitID,datePrevCommit,srcDir);
+					decRec.setLine(Utils.readAFile(decRec.getFullFilePath())); // set line for decRec
+					detectionResults.put(decRec.getFile() + decRec.getLine(),decRec);
+					if(VERBOSE) {
+						System.out.println(line);
+						System.out.println("Detected: " + commitID + " " + decRec.getFile());
+					}
+				}
+				input.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			//	}
+			//}).start();
 
 			p.waitFor();
 
