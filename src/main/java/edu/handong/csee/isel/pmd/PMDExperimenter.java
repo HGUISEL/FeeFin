@@ -146,8 +146,8 @@ public class PMDExperimenter {
 					.exec(cmd);
 
 			// create a thread that deals with output
-			new Thread(new Runnable() {
-				public void run() {
+			//new Thread(new Runnable() {
+			//	public void run() {
 					BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
 					try {
@@ -168,8 +168,8 @@ public class PMDExperimenter {
 						e.printStackTrace();
 					}
 
-				}
-			}).start();
+			//	}
+			//}).start();
 
 			// create a thread that deals with output
 			new Thread(new Runnable() {
