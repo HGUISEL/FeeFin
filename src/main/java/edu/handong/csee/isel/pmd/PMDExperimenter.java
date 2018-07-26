@@ -348,7 +348,7 @@ public class PMDExperimenter {
 
 			projectDir = cmd.getOptionValue("d");
 			pmdCommand = cmd.getOptionValue("p");
-			numThreads = Integer.parseInt(cmd.getOptionValue("t"));
+			numThreads = cmd.hasOption("t")?Integer.parseInt(cmd.getOptionValue("t")):1;
 			VERBOSE = cmd.hasOption("v");
 			help = cmd.hasOption("h");
 
