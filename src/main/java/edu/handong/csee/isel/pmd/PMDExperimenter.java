@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,6 +42,8 @@ public class PMDExperimenter {
 	private int numThreads = 1;
 	private boolean help;
 
+	Date startDate, endDate;
+
 	public static void main(String[] args) {
 
 		PMDExperimenter experimenter = new PMDExperimenter();
@@ -56,7 +61,7 @@ public class PMDExperimenter {
 			}
 
 			String gitURI = projectDir;
-			
+
 			if(pmdCommand == null)
 				pmdCommand = System.getProperty("os.name").contains("Windows")?"pmd.bat":"pmd";
 
@@ -70,7 +75,7 @@ public class PMDExperimenter {
 			}
 
 			// (1) get all commits
-			ArrayList<RevCommit> commits = Utils.getRevCommits(gitURI,null,null);
+			ArrayList<RevCommit> commits = Utils.getRevCommits(gitURI,startDate,endDate);
 
 			repo = git.getRepository();
 
@@ -78,6 +83,9 @@ public class PMDExperimenter {
 			for(RevCommit rev:commits) {
 				// parent is a previous commit
 				RevCommit parent = rev.getParentCount()==0?null:rev.getParent(0);
+
+				if(VERBOSE)
+					System.out.println("****** Processing : " + rev.getName());
 
 				// init targetDir
 				initTargetDir(targetDirBeforeFix);
@@ -139,37 +147,54 @@ public class PMDExperimenter {
 					.exec(cmd);
 
 			// create a thread that deals with output
-			//new Thread(new Runnable() {
-			//	public void run() {
-			BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			new Thread(new Runnable() {
+				public void run() {
+					BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-			try {
-				String line = input.readLine(); // ignore header
-				if(VERBOSE)
-					System.out.println(line);
-				while ((line = input.readLine()) != null) {
-					DetectionRecord decRec = new DetectionRecord(commitID, date, line,prevCommitID,datePrevCommit,srcDir);
-					decRec.setLine(Utils.readAFile(decRec.getFullFilePath())); // set line for decRec
-					detectionResults.put(decRec.getFile() + decRec.getLine(),decRec);
-					if(VERBOSE) {
-						System.out.println(line);
-						System.out.println("Detected: " + commitID + " " + decRec.getFile());
+					try {
+						String line = input.readLine(); // ignore header
+						if(VERBOSE)
+							System.out.println(line);
+						while ((line = input.readLine()) != null) {
+							DetectionRecord decRec = new DetectionRecord(commitID, date, line,prevCommitID,datePrevCommit,srcDir);
+							decRec.setLine(Utils.readAFile(decRec.getFullFilePath())); // set line for decRec
+							detectionResults.put(decRec.getFile() + decRec.getLine(),decRec);
+							if(VERBOSE) {
+								System.out.println(line);
+								System.out.println("Detected: " + commitID + " " + decRec.getFile());
+							}
+						}
+						input.close();
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			//	}
-			//}).start();
 
-			//p.waitFor();
+				}
+			}).start();
+
+			// create a thread that deals with output
+			new Thread(new Runnable() {
+				public void run() {
+					BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+					try {
+						//while ((input.readLine()) != null) {
+						//	}
+						input.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				}
+			}).start();
+
+			p.waitFor();
 
 			filteredRecords = filterByInterest(detectionResults);
 
 		} catch (IOException e) {
 			e.printStackTrace();
-			/*} catch (InterruptedException e) {
-			e.printStackTrace();*/
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 
 		return filteredRecords;
@@ -299,6 +324,18 @@ public class PMDExperimenter {
 				.desc("Help")
 				.build());
 
+		options.addOption(Option.builder("s").longOpt("startdate")
+				.desc("Start date for collecting bug-introducing changes")
+				.hasArg()
+				.argName("Start date")
+				.build());
+
+		options.addOption(Option.builder("e").longOpt("enddate")
+				.desc("End date for collecting bug-introducing changes")
+				.hasArg()
+				.argName("End date")
+				.build());
+
 		return options;
 	}
 
@@ -315,6 +352,16 @@ public class PMDExperimenter {
 			numThreads = Integer.parseInt(cmd.getOptionValue("t"));
 			VERBOSE = cmd.hasOption("v");
 			help = cmd.hasOption("h");
+
+			if(cmd.hasOption("s")){
+				String strStartDate = cmd.getOptionValue("s");
+				startDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").parse(strStartDate + " -0000");
+			}
+
+			if(cmd.hasOption("e")){
+				String strEndDate = cmd.getOptionValue("e");
+				endDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").parse(strEndDate + " -0000");
+			}
 
 		} catch (Exception e) {
 			printHelp(options);
