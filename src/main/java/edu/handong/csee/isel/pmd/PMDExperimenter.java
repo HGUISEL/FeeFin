@@ -128,9 +128,9 @@ public class PMDExperimenter {
 	private HashMap<String,DetectionRecord> applyPMD(String srcDir, RevCommit rev) {
 
 		String commitID = rev.getName();
-		String prevCommitID = rev.getParent(0) != null? rev.getParent(0).getName():"";
+		String prevCommitID = rev.getParents().length > 0? rev.getParent(0).getName():"";
 		String date = Utils.getStringDateTimeFromCommitTime(rev.getCommitTime());
-		String datePrevCommit = rev.getParent(0) != null?Utils.getStringDateTimeFromCommitTime(rev.getParent(0).getCommitTime()):"";
+		String datePrevCommit = rev.getParents().length > 0?Utils.getStringDateTimeFromCommitTime(rev.getParent(0).getCommitTime()):"";
 
 		HashMap<String,DetectionRecord> detectionResults = new HashMap<String,DetectionRecord>();
 		HashMap<String,DetectionRecord> filteredRecords = null;
