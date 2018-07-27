@@ -29,14 +29,15 @@ import org.eclipse.jgit.util.io.DisabledOutputStream;
 import ca.uwaterloo.ece.feedet.utils.Utils;
 
 public class PMDExperimenter {
-	final private String targetDirBeforeFix = "targetDirBeforeFix";
-	final private String targetDirAfterFix = "targetDirAfterFix";
+	private String targetDirBeforeFix = "targetDirBeforeFix";
+	private String targetDirAfterFix = "targetDirAfterFix";
 
 	boolean VERBOSE = false;
 	private Git git;
 	private Repository repo;
 
 	private String projectDir;
+	private String projectName;
 	private String pmdCommand;
 	private int numThreads = 1;
 	private boolean help;
@@ -66,7 +67,10 @@ public class PMDExperimenter {
 
 			if(args.length == 3)
 				VERBOSE = true;
-
+			
+			// initiate tmp directory name
+			targetDirBeforeFix += "-" + projectName;
+			targetDirAfterFix += "-" + projectName;
 			try {
 				git = Git.open( new File(gitURI) );
 			} catch (IOException e1) {
@@ -303,6 +307,13 @@ public class PMDExperimenter {
 				.required()
 				.build());
 
+		options.addOption(Option.builder("n").longOpt("name")
+				.desc("Target project name")
+				.hasArg()
+				.argName("proj. name")
+				.required()
+				.build());
+		
 		options.addOption(Option.builder("p").longOpt("pmd")
 				.desc("pmd path. Default is pmd")
 				.hasArg()
@@ -347,6 +358,7 @@ public class PMDExperimenter {
 			CommandLine cmd = parser.parse(options, args);
 
 			projectDir = cmd.getOptionValue("d");
+			projectName = cmd.getOptionValue("n");
 			pmdCommand = cmd.getOptionValue("p");
 			numThreads = cmd.hasOption("t")?Integer.parseInt(cmd.getOptionValue("t")):1;
 			VERBOSE = cmd.hasOption("v");
