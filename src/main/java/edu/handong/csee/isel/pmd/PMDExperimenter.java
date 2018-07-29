@@ -105,6 +105,11 @@ public class PMDExperimenter {
 						// do diff
 						diffs = df.scan(parent.getTree(), rev.getTree());
 						for (DiffEntry diff : diffs) {
+							String newPath = diff.getNewPath();
+							if(newPath.indexOf("Test")>=0  || !newPath.endsWith(".java") || Utils.isWordInStatement("test", newPath)) break;
+							// ignore all files under test directory
+							if(newPath.indexOf("/test")>=0) break;
+							
 							String prevSource = getFullCodeOfTheChangedFile(diff.getOldPath(),parent); // in case a file name changes, we need to get source from the old path
 							String fixedSource = getFullCodeOfTheChangedFile(diff.getNewPath(),rev);
 							saveSourceInTargetDir(prevSource, targetDirBeforeFix,diff.getNewPath()); // set new path even for the prev revision
