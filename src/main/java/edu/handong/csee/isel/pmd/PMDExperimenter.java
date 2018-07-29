@@ -104,11 +104,15 @@ public class PMDExperimenter {
 					try {
 						// do diff
 						diffs = df.scan(parent.getTree(), rev.getTree());
+						int i=0;
 						for (DiffEntry diff : diffs) {
+							if(VERBOSE) System.out.print("Processing diffs = " + (++i) + "/" + diffs.size() + "\r");
 							String newPath = diff.getNewPath();
 							if(newPath.indexOf("Test")>=0  || !newPath.endsWith(".java") || Utils.isWordInStatement("test", newPath)) continue;
 							// ignore all files under test directory
 							if(newPath.indexOf("/test")>=0) continue;
+							
+							if(VERBOSE) System.out.println("- Processing : " + newPath);
 							
 							String prevSource = getFullCodeOfTheChangedFile(diff.getOldPath(),parent); // in case a file name changes, we need to get source from the old path
 							String fixedSource = getFullCodeOfTheChangedFile(diff.getNewPath(),rev);
