@@ -106,9 +106,9 @@ public class PMDExperimenter {
 						diffs = df.scan(parent.getTree(), rev.getTree());
 						for (DiffEntry diff : diffs) {
 							String newPath = diff.getNewPath();
-							if(newPath.indexOf("Test")>=0  || !newPath.endsWith(".java") || Utils.isWordInStatement("test", newPath)) break;
+							if(newPath.indexOf("Test")>=0  || !newPath.endsWith(".java") || Utils.isWordInStatement("test", newPath)) continue;
 							// ignore all files under test directory
-							if(newPath.indexOf("/test")>=0) break;
+							if(newPath.indexOf("/test")>=0) continue;
 							
 							String prevSource = getFullCodeOfTheChangedFile(diff.getOldPath(),parent); // in case a file name changes, we need to get source from the old path
 							String fixedSource = getFullCodeOfTheChangedFile(diff.getNewPath(),rev);
@@ -256,12 +256,6 @@ public class PMDExperimenter {
 	}
 
 	private String getFullCodeOfTheChangedFile(String newPath, RevCommit rev) {
-
-		// ignore when no previous revision of a file, Test files, and non-java files.
-		if(newPath.indexOf("Test")>=0  || !newPath.endsWith(".java") || Utils.isWordInStatement("test", newPath)) return ""; // return empty string to avoid to analyze
-
-		// ignore all files under test directory
-		if(newPath.indexOf("/test")>=0) return "";
 
 		String id =  rev.name() + "";
 		String fileSource = null;
