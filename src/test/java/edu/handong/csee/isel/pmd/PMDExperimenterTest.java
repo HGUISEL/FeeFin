@@ -24,5 +24,11 @@ public class PMDExperimenterTest {
 		PMDExperimenter.main(args);
 	}
 	
+	@Test
+	public void testStromStuckIssue() {
+		String[] args = {"-d", "C:\\Users\\jaech\\git\\storm", "-s", "2018-01-01 04:34:22", "-e","2018-01-23 04:34:22","-v","-n", "storm"};
+		PMDExperimenter.main(args);
+	}
+	
 
 }
