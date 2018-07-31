@@ -3,7 +3,8 @@ package edu.handong.csee.isel.pmd;
 import java.io.File;
 
 public class DetectionRecord {
-	String lastestCommitIDAnIssueExists;
+	String type;
+	String commitIDAnIssueExists;
 	String prevCommitID;
 	String date;
 	String dataOfPrevCommit;
@@ -22,12 +23,48 @@ public class DetectionRecord {
 	String rule;
 	
 	public DetectionRecord(String commitID, String date, String line, String prevCommitID, String datePrevCommit, String srcDir) {
-		lastestCommitIDAnIssueExists = commitID;
+		commitIDAnIssueExists = commitID;
 		this.prevCommitID = prevCommitID;
 		dataOfPrevCommit = datePrevCommit;
 		this.date = date;
 		setMembersFromLine(line,srcDir);
 		
+	}
+
+	public DetectionRecord(String[] values) {
+		
+		/*
+		 * 0: TYPE: FIXED, ALIVE, BI
+		 * 1: KEY
+		 * 2: Detection Type e.g., Error Prone
+		 * 3: Rule name. e.g., DataflfowAnomalyAnalysis
+		 * 4: Previous commit id
+		 * 5: Date of previous commit
+		 * 6: Commit id
+		 * 7: Date of the commit id.
+		 * 8: path
+		 * 9: line number
+		 * 10: line
+		 * 11~: additional texts because of a separator ',' in the code.
+		 */
+		type = values[0];
+		prevCommitID = values[4];
+		dataOfPrevCommit = values[5];
+		commitIDAnIssueExists = values[6];
+		date = values[7];
+		line = getCodeLine(values);
+	}
+
+	private String getCodeLine(String[] values) {
+		
+		if(values.length == 11)
+			return values[10];
+
+		String code = values[10];
+		for(int i=11; i<values.length; i++)
+			code += "," + values[i];
+		
+		return code;
 	}
 
 	public String getPrevCommitID() {
@@ -67,6 +104,9 @@ public class DetectionRecord {
 		rule = data[7];
 	}
 
+	public String getType() {
+		return type;
+	}
 	public void setLine(String source) {
 		line = source.split("\n")[lineNum-1].trim();
 	}
@@ -95,7 +135,7 @@ public class DetectionRecord {
 		this.priority = priority;
 	}
 	public String getLastestCommitIDAnIssueExists() {
-		return lastestCommitIDAnIssueExists;
+		return commitIDAnIssueExists;
 	}
 	public int getLineNum() {
 		return lineNum;
