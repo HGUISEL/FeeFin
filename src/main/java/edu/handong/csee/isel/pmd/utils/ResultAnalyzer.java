@@ -45,7 +45,7 @@ public class ResultAnalyzer {
 		// key: path+code line. Value: DetectionRecord
 		HashMap<String,ArrayList<DetectionRecord>> recordsByEachDetection = new HashMap<String,ArrayList<DetectionRecord>>();
 		HashMap<String,ArrayList<String>> recordsByTypes = new HashMap<String,ArrayList<String>>(); // key: TYPE, value: key of recordsByEachDetection
-		
+		ArrayList<String> fixedBugAliveLaterCases = new ArrayList<String>();
 		// get data by the same detection case
 		int i=0;
 		for(String line:lines) {
@@ -56,7 +56,11 @@ public class ResultAnalyzer {
 				recordsByEachDetection.put(key,new ArrayList<DetectionRecord>());
 			}
 			
-			recordsByEachDetection.get(key).add(decRec);
+			if(!recordsByEachDetection.get(key).add(decRec))
+				if(VERBOSE)
+					System.out.println("decRec is not added for a unknown reason");
+			
+			
 			
 			String type = decRec.getType();
 			
@@ -65,11 +69,11 @@ public class ResultAnalyzer {
 			}
 			
 			recordsByTypes.get(type).add(key);
-			
-			// Remove from ALIVE when the FIXED type exists.
+			// Fixed but caused the same case again.
+			//
 			if(type.equals("FIXED")) {
 				if(recordsByTypes.get("ALIVE").contains(key))
-					recordsByTypes.get("ALIVE").remove(key);
+					fixedBugAliveLaterCases.add(key);
 			}	
 			i++;
 		}
@@ -99,8 +103,12 @@ public class ResultAnalyzer {
 			
 		}
 		
-		System.out.println("Average num of commits until fixed: " + Arrays.stream(numAliveIssuesForFixedOnes).average());
-		System.out.println("Average num of commits for not fixed: " + Arrays.stream(numAliveIssuesForNotFixedOnes).average());
+		System.out.println("Average num of commits until fixed: " + Arrays.stream(numAliveIssuesForFixedOnes).average().getAsDouble());
+		System.out.println("Average num of commits for not fixed: " + Arrays.stream(numAliveIssuesForNotFixedOnes).average().getAsDouble());
+		
+		System.out.println("=== Fixed but alive later ===");
+		for(String line:fixedBugAliveLaterCases)
+			System.out.println(line);
 		
 	}
 

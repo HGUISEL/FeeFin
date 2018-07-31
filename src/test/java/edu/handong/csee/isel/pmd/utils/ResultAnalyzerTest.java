@@ -8,7 +8,7 @@ public class ResultAnalyzerTest {
 
 	@Test
 	public void test() {
-		String[] args = {"-p", "data/apex-core-new.csv"};
+		String[] args = {"-p", "data/apex-core-new.csv","-v"};
 		ResultAnalyzer.main(args);
 	}
 
