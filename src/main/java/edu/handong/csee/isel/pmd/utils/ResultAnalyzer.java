@@ -41,10 +41,13 @@ public class ResultAnalyzer {
 	}
 	
 	private void analyzeDetectionResults(ArrayList<String> lines) {
+		
+		// key: path+code line. Value: DetectionRecord
 		HashMap<String,ArrayList<DetectionRecord>> recordsByEachDetection = new HashMap<String,ArrayList<DetectionRecord>>();
 		HashMap<String,ArrayList<String>> recordsByTypes = new HashMap<String,ArrayList<String>>(); // key: TYPE, value: key of recordsByEachDetection
 		
 		// get data by the same detection case
+		int i=0;
 		for(String line:lines) {
 			String[] splitLine = line.split(",");
 			String key = splitLine[1];
@@ -68,7 +71,11 @@ public class ResultAnalyzer {
 				if(recordsByTypes.get("ALIVE").contains(key))
 					recordsByTypes.get("ALIVE").remove(key);
 			}	
+			i++;
 		}
+		
+		System.out.println("Total num of the detected = " + i);
+		System.out.println("Total num of groups by the same detection = " + recordsByEachDetection.size());
 		
 		System.out.println("Num of FIXED = " + recordsByTypes.get("FIXED").size());
 		System.out.println("Num of ALIVE = " +recordsByTypes.get("ALIVE").size());
