@@ -104,7 +104,16 @@ public class PMDExperimenter {
 					try {
 						// do diff
 						diffs = df.scan(parent.getTree(), rev.getTree());
+						int i=0;
 						for (DiffEntry diff : diffs) {
+							if(VERBOSE) System.out.print("Processing diffs = " + (++i) + "/" + diffs.size() + "\r");
+							String newPath = diff.getNewPath();
+							if(newPath.indexOf("Test")>=0  || !newPath.endsWith(".java") || Utils.isWordInStatement("test", newPath)) continue;
+							// ignore all files under test directory
+							if(newPath.indexOf("/test")>=0) continue;
+							
+							if(VERBOSE) System.out.println("- Processing : " + newPath);
+							
 							String prevSource = getFullCodeOfTheChangedFile(diff.getOldPath(),parent); // in case a file name changes, we need to get source from the old path
 							String fixedSource = getFullCodeOfTheChangedFile(diff.getNewPath(),rev);
 							saveSourceInTargetDir(prevSource, targetDirBeforeFix,diff.getNewPath()); // set new path even for the prev revision
@@ -251,12 +260,6 @@ public class PMDExperimenter {
 	}
 
 	private String getFullCodeOfTheChangedFile(String newPath, RevCommit rev) {
-
-		// ignore when no previous revision of a file, Test files, and non-java files.
-		if(newPath.indexOf("Test")>=0  || !newPath.endsWith(".java") || Utils.isWordInStatement("test", newPath)) return ""; // return empty string to avoid to analyze
-
-		// ignore all files under test directory
-		if(newPath.indexOf("/test")>=0) return "";
 
 		String id =  rev.name() + "";
 		String fileSource = null;

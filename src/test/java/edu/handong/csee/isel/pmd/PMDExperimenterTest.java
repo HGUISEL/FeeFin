@@ -25,6 +25,12 @@ public class PMDExperimenterTest {
 	}
 	
 	@Test
+	public void testStromStuckIssue() {
+		String[] args = {"-d", "C:\\Users\\jaech\\git\\storm", "-s", "2018-01-01 04:34:22", "-e","2018-01-23 04:34:22","-v","-n", "storm"};
+		PMDExperimenter.main(args);
+	}
+	
+	@Test
 	public void testApexCoreWrongFixedCase() {
 		String[] args = {"-d", "C:\\Users\\jaech\\git\\apex-core", "-s", "2015-06-27 22:02:55", "-e","2015-06-28 17:15:26","-n", "test"};
 		PMDExperimenter.main(args);
