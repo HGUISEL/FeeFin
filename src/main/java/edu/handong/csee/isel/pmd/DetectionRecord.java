@@ -92,8 +92,8 @@ public class DetectionRecord {
 	}
 
 	public void setMembersFromLine(String line, String srcDir) {
-		String[] data = line.replace("\"", "").split(",");
-		problemNo = Integer.parseInt(data[0]);
+		String[] data = line.split("\",\"");
+		problemNo = Integer.parseInt(data[0].substring(1)); // to ingore the first '"'
 		packageName = data[1];
 		file = data[2].replace((new File(srcDir)).getAbsolutePath(), "");
 		fullFilePath = data[2];
@@ -101,7 +101,7 @@ public class DetectionRecord {
 		lineNum = Integer.parseInt(data[4]);
 		description = data[5];
 		ruleSet = data[6];
-		rule = data[7];
+		rule = data[7].substring(0, data[7].length()-1);
 	}
 
 	public String getType() {

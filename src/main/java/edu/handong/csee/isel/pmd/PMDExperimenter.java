@@ -88,7 +88,7 @@ public class PMDExperimenter {
 				RevCommit parent = rev.getParentCount()==0?null:rev.getParent(0);
 
 				if(VERBOSE)
-					System.out.println("****** Processing : " + rev.getName());
+					System.out.println("****** Processing : " + rev.getName() + " (" + Utils.getStringDateTimeFromCommitTime(rev.getCommitTime()) + ") " + rev.getShortMessage());
 
 				// init targetDir
 				initTargetDir(targetDirBeforeFix);
@@ -125,10 +125,10 @@ public class PMDExperimenter {
 					df.close();
 
 					// apply PMD
-					HashMap<String,DetectionRecord> fixedRecords = applyPMD(targetDirAfterFix,rev);
-					HashMap<String,DetectionRecord> recordsBeforeFixed = applyPMD(targetDirBeforeFix,parent);
+					HashMap<String,DetectionRecord> changedRecords = applyPMD(targetDirAfterFix,rev, null);
+					HashMap<String,DetectionRecord> recordsBeforeChanged = applyPMD(targetDirBeforeFix,parent, rev);
 
-					ArrayList<String> results = getFixedAndAliveIssues(fixedRecords, recordsBeforeFixed);
+					ArrayList<String> results = getFixedAndAliveIssues(changedRecords, recordsBeforeChanged);
 
 					for(String result:results) {
 						System.out.println(result);
@@ -138,12 +138,15 @@ public class PMDExperimenter {
 		}
 	}
 
-	private HashMap<String,DetectionRecord> applyPMD(String srcDir, RevCommit rev) {
+	private HashMap<String,DetectionRecord> applyPMD(String srcDir, RevCommit rev, RevCommit currentRev) {
 
-		String commitID = rev.getName();
-		String prevCommitID = rev.getParents().length > 0? rev.getParent(0).getName():"";
-		String date = Utils.getStringDateTimeFromCommitTime(rev.getCommitTime());
-		String datePrevCommit = rev.getParents().length > 0?Utils.getStringDateTimeFromCommitTime(rev.getParent(0).getCommitTime()):"";
+		// When applyPMD is called for the previous revision, use the current revision to show correct info for FIXED cases.
+		// if currentRev is not null, applyPMD is called for the previous revision.
+		RevCommit targetRev = currentRev == null? rev: currentRev; 
+		String commitID = targetRev.getName();
+		String prevCommitID = targetRev.getParents().length > 0? targetRev.getParent(0).getName():"";
+		String date = Utils.getStringDateTimeFromCommitTime(targetRev.getCommitTime());
+		String datePrevCommit = targetRev.getParents().length > 0?Utils.getStringDateTimeFromCommitTime(targetRev.getParent(0).getCommitTime()):"";
 
 		HashMap<String,DetectionRecord> detectionResults = new HashMap<String,DetectionRecord>();
 		HashMap<String,DetectionRecord> filteredRecords = null;
@@ -212,13 +215,37 @@ public class PMDExperimenter {
 		return filteredRecords;
 	}
 
-	private ArrayList<String> getFixedAndAliveIssues(HashMap<String,DetectionRecord> fixedRecords, HashMap<String,DetectionRecord> recordsBeforeFixed) {
+	private ArrayList<String> getFixedAndAliveIssues(HashMap<String,DetectionRecord> changedRecords, HashMap<String,DetectionRecord> recordsBeforeChanged) {
 
 		// TYPE, prevCommitID, prevDate, changeCommitID, change_date, path, lineNum, line
 		ArrayList<String> results = new ArrayList<String>();
 
+		// check if there are FIXED cases
+		// if keys in recordsBeforeFixed are not exist, it is FIXED.
+		for(String key:recordsBeforeChanged.keySet()) {
+			if(!changedRecords.containsKey(key)) {
+				DetectionRecord decRec = recordsBeforeChanged.get(key);
+				results.add("FIXED," + getInfo(decRec));
+			} else {
+				DetectionRecord decRec = changedRecords.get(key);
+				results.add("ALIVE," + getInfo(decRec));
+			}
+		}
+		
+		// check if there are BI cases
+		for(String key:changedRecords.keySet()) {
+			DetectionRecord decRec = changedRecords.get(key);
+			if(!recordsBeforeChanged.containsKey(key)) {
+				results.add("BI," + getInfo(decRec));
+			} else {
+				String result = "ALIVE," + getInfo(decRec);
+				if(!results.contains(result))
+					results.add(result);
+			}
+		}
+		
 		// three types of changes: BI, FIXED, UNFIXED
-		if(fixedRecords.size() < recordsBeforeFixed.size()) { // There is something FIXED.
+		/*if(fixedRecords.size() < recordsBeforeFixed.size()) { // There is something FIXED.
 			//loop by recordsBeforeFixed
 			for(String key:recordsBeforeFixed.keySet()) {
 				if(fixedRecords.containsKey(key)) { // ALIVE
@@ -240,7 +267,7 @@ public class PMDExperimenter {
 					results.add("BI," + getInfo(decRec));
 				}
 			}
-		}
+		}*/
 
 		return results;
 	}

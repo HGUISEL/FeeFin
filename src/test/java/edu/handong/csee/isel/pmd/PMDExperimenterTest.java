@@ -32,7 +32,7 @@ public class PMDExperimenterTest {
 	
 	@Test
 	public void testApexCoreWrongFixedCase() {
-		String[] args = {"-d", "C:\\Users\\jaech\\git\\apex-core", "-s", "2015-06-27 22:02:55", "-e","2015-06-28 17:15:26","-n", "test"};
+		String[] args = {"-d", "C:\\Users\\jaech\\git\\apex-core", "-s", "2015-06-22 19:18:28", "-e","2015-06-22 19:18:29","-v", "-n", "test"};
 		PMDExperimenter.main(args);
 	}
 	
