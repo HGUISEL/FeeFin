@@ -93,12 +93,10 @@ public class ResultAnalyzer {
 			
 			switch(type) {
 				case "FIXED":
-					
-					numAliveIssuesForFixedOnes = getAverage(recordsByTypes.get(type),recordsByEachDetection);
-					
+					numAliveIssuesForFixedOnes = getNumOfCommitsByTypePerDetection(recordsByTypes.get(type),recordsByEachDetection);
 					break;
 				case "ALIVE":
-					numAliveIssuesForNotFixedOnes = getAverage(recordsByTypes.get(type),recordsByEachDetection);
+					numAliveIssuesForNotFixedOnes = getNumOfCommitsByTypePerDetection(recordsByTypes.get(type),recordsByEachDetection);
 					break;
 			}
 			
@@ -115,7 +113,7 @@ public class ResultAnalyzer {
 		
 	}
 
-	private int[] getAverage(ArrayList<String> arrayList, HashMap<String, ArrayList<DetectionRecord>> recordsByEachDetection) {
+	private int[] getNumOfCommitsByTypePerDetection(ArrayList<String> arrayList, HashMap<String, ArrayList<DetectionRecord>> recordsByEachDetection) {
 		
 		int[] count = new int[arrayList.size()];
 		
