@@ -274,7 +274,7 @@ public class PMDExperimenter {
 	}
 
 	private String getInfo(DetectionRecord decRec) {
-		return decRec.getFile() + decRec.getLine().replaceAll(",", "") + "," + decRec.getRuleSet() + "," + decRec.getRule() + "," + decRec.getPrevCommitID() + "," + decRec.getDataOfPrevCommit() + ","
+		return decRec.getFile() + decRec.getLine().replaceAll(",", "").replaceAll("\\s", "") + "," + decRec.getRuleSet() + "," + decRec.getRule() + "," + decRec.getPrevCommitID() + "," + decRec.getDataOfPrevCommit() + ","
 				+ decRec.getLastestCommitIDAnIssueExists() + "," + decRec.getDate() + ","
 				+ decRec.getFile() + "," + decRec.getLineNum() + "," + decRec.getLine();
 	}
