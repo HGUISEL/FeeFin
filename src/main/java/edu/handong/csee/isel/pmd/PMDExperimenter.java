@@ -188,7 +188,8 @@ public class PMDExperimenter {
 				while ((line = input.readLine()) != null) {
 					DetectionRecord decRec = new DetectionRecord(commitID, date, line,prevCommitID,datePrevCommit,srcDir);
 					decRec.setLine(Utils.readAFile(decRec.getFullFilePath())); // set line for decRec
-					detectionResults.put(decRec.getFile() + decRec.getLine(),decRec);
+					String partOfKeyFromCodeLine = decRec.getLine().trim().replaceAll("\\s+", "");
+					detectionResults.put(decRec.getFile() + partOfKeyFromCodeLine,decRec);
 					if(VERBOSE) {
 						System.out.println(line);
 						System.out.println("Detected: " + commitID + " " + decRec.getFile());
