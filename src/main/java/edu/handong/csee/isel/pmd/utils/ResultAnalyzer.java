@@ -17,6 +17,7 @@ import edu.handong.csee.isel.pmd.DetectionRecord;
 public class ResultAnalyzer {
 	
 	String path;
+	Boolean showAliveAfterFixed;
 	Boolean VERBOSE;
 	Boolean help;
 
@@ -106,9 +107,11 @@ public class ResultAnalyzer {
 		System.out.println("Average num of commits until fixed: " + Arrays.stream(numAliveIssuesForFixedOnes).average().getAsDouble());
 		System.out.println("Average num of commits for not fixed: " + Arrays.stream(numAliveIssuesForNotFixedOnes).average().getAsDouble());
 		
-		System.out.println("=== Fixed but alive later ===");
-		for(String line:fixedBugAliveLaterCases)
-			System.out.println(line);
+		if(showAliveAfterFixed) {
+			System.out.println("=== Fixed but alive later ===");
+			for(String line:fixedBugAliveLaterCases)
+				System.out.println(line);
+		}
 		
 	}
 
@@ -138,6 +141,9 @@ public class ResultAnalyzer {
 				.required()
 				.build());
 
+		options.addOption(Option.builder("a").longOpt("aliveafterfixed")
+				.desc("Show the cases that are fixed but alive again.")
+				.build());
 
 		options.addOption(Option.builder("v").longOpt("verbose")
 				.desc("Turn on verbose.")
@@ -159,6 +165,7 @@ public class ResultAnalyzer {
 			CommandLine cmd = parser.parse(options, args);
 
 			path = cmd.getOptionValue("p");
+			showAliveAfterFixed = cmd.hasOption("p");
 			VERBOSE = cmd.hasOption("v");
 			help = cmd.hasOption("h");
 
