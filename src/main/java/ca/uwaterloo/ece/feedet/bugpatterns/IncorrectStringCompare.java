@@ -31,8 +31,8 @@ public class IncorrectStringCompare extends Bug {
 			
 			
 			if((infixExp.getOperator() == Operator.NOT_EQUALS || infixExp.getOperator() == Operator.EQUALS)) {
-				if ((wholeCodeAST.getTypeOfSimpleName(infixExp, infixExp.getLeftOperand().toString()).equals("String")&&!isNull(infixExp.getRightOperand()))
-						||(wholeCodeAST.getTypeOfSimpleName(infixExp, infixExp.getRightOperand().toString()).equals("String")&&!isNull(infixExp.getLeftOperand()))) {
+				if ((wholeCodeAST.getTypeOfSimpleName(infixExp, infixExp.getLeftOperand()).equals("String")&&!isNull(infixExp.getRightOperand()))
+						||(wholeCodeAST.getTypeOfSimpleName(infixExp, infixExp.getRightOperand()).equals("String")&&!isNull(infixExp.getLeftOperand()))) {
 						
 					int lineNum = wholeCodeAST.getLineNum(infixExp.getStartPosition());
 				

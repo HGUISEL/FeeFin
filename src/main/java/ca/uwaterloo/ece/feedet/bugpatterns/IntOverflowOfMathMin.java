@@ -93,9 +93,9 @@ public class IntOverflowOfMathMin extends Bug {
 	}
 
 	private boolean haveIntegerMaxLengthCheck(MethodInvocation methodInv, Expression expCasted) {
-		
-		ArrayList<String> simpleNames = getSimpleNames(expCasted);
-		
+
+		ArrayList<Expression> simpleNames = getSimpleNames(expCasted);
+
 		ASTNode node = methodInv.getParent();
 		while(node!=null){
 			if(!(node instanceof IfStatement)){
@@ -116,10 +116,10 @@ public class IntOverflowOfMathMin extends Bug {
 			
 			for(InfixExpression infixExp:infixExps){
 				if((infixExp.getRightOperand().toString().contains("Integer.MAX_VALUE")
-						&& simpleNames.contains(infixExp.getLeftOperand().toString()))
+						&& simpleNames.contains(infixExp.getLeftOperand()))
 						||
 					(infixExp.getLeftOperand().toString().contains("Integer.MAX_VALUE")
-						&& simpleNames.contains(infixExp.getRightOperand().toString())))
+						&& simpleNames.contains(infixExp.getRightOperand())))
 					return true;
 			}
 			node = node.getParent();
@@ -131,10 +131,10 @@ public class IntOverflowOfMathMin extends Bug {
 	private boolean containsLongVariable(Expression expression) {
 		
 		if(expression instanceof MethodInvocation) return false; // only consider expression contains only long variables, otherwise ignore.
-		
-		ArrayList<String> simpleNames = getSimpleNames(expression);
-		
-		for(String simpleName:simpleNames){
+
+		ArrayList<Expression> simpleNames = getSimpleNames(expression);
+
+		for(Expression simpleName:simpleNames){
 			if(wholeCodeAST.getTypeOfSimpleName(expression, simpleName).equals("long"))
 				return true;
 		}
@@ -142,17 +142,17 @@ public class IntOverflowOfMathMin extends Bug {
 		return false;
 	}
 
-	private ArrayList<String> getSimpleNames(Expression expression) {
-		final ArrayList<String> simpleNames = new ArrayList<String>();
+	private ArrayList<Expression> getSimpleNames(Expression expression) {
+		final ArrayList<Expression> simpleNames = new ArrayList<>();
 		if(expression instanceof SimpleName){
-			simpleNames.add(expression.toString());
+			simpleNames.add(expression);
 			return simpleNames;
 		}
 		
 		expression.accept(new ASTVisitor() {
 			@Override
 			public boolean visit(SimpleName node) {
-				simpleNames.add(node.toString());
+				simpleNames.add(node);
 				return super.visit(node);
 			}
 		}

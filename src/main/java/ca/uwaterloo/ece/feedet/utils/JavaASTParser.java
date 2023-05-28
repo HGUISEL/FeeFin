@@ -738,22 +738,21 @@ public class JavaASTParser {
 			return "";
 		
 		if(node instanceof SimpleName)
-			return getTypeOfSimpleName(node,node.toString());
-		
+			return getTypeOfSimpleName(node, node);
+
 		if(node instanceof ArrayAccess){
-			return getTypeOfSimpleName(node,getOnlyNameFromArrayAccess(node));
+			return getTypeOfSimpleName(node, node);
 		}
 		
 		// receiver.fieldName
 		if(node instanceof QualifiedName){
 			
 			QualifiedName qName = (QualifiedName) node;
-			
-			String receiverName = qName.getQualifier().toString();
+
 			String fieldName = qName.getName().toString();
-			
-			String typeNameOfReceiver = getTypeOfSimpleName(node,receiverName);
-			
+
+			String typeNameOfReceiver = getTypeOfSimpleName(node, qName.getQualifier());
+
 			String typeNameIfReceiverIsInInnerClass = qulifiedNameInInnerClass(typeNameOfReceiver,fieldName);
 			if(!typeNameIfReceiverIsInInnerClass.isEmpty()) return typeNameIfReceiverIsInInnerClass;
 			
@@ -927,9 +926,9 @@ public class JavaASTParser {
 		
 		return operand.toString();
 	}
-	
-	public String getTypeOfSimpleName(ASTNode astNode,String name) {
-		
+
+	public String getTypeOfSimpleName(ASTNode astNode, Expression operand) {
+
 		// TODO need to find a target name in a hierarchy but not globally in a file
 		final ArrayList<SingleVariableDeclaration> lstSingleVarDecs = new ArrayList<SingleVariableDeclaration>();
 		final ArrayList<VariableDeclarationStatement> lstVarDecStmts = new ArrayList<VariableDeclarationStatement>();
@@ -957,13 +956,14 @@ public class JavaASTParser {
 		);
 		
 		for(SingleVariableDeclaration dec:lstSingleVarDecs){
-			if (dec.getName().toString().equals(name))
+			if (dec.getName().toString().equals(operand.toString())
+				&& dec.getParent().equals(getMethodDec(operand)))
 				return dec.getType().toString();
 		}
 		for(VariableDeclarationStatement dec:lstVarDecStmts){
 			for(Object node:dec.fragments()){
 				if(node instanceof VariableDeclarationFragment){
-					if (((VariableDeclarationFragment)node).getName().toString().equals(name))
+					if (((VariableDeclarationFragment)node).getName().toString().equals(operand.toString()))
 						return dec.getType().toString();
 				}
 			}
@@ -971,7 +971,7 @@ public class JavaASTParser {
 		for(VariableDeclarationExpression dec:lstVarDecExps){
 			for(Object node:dec.fragments()){
 				if(node instanceof VariableDeclarationFragment){
-					if (((VariableDeclarationFragment)node).getName().toString().equals(name))
+					if (((VariableDeclarationFragment)node).getName().toString().equals(operand.toString()))
 						return dec.getType().toString();
 				}
 			}
@@ -980,7 +980,7 @@ public class JavaASTParser {
 		for(FieldDeclaration dec:lstFieldDecs){
 			for(Object node:dec.fragments()){
 				if(node instanceof VariableDeclarationFragment){
-					if (((VariableDeclarationFragment)node).getName().toString().equals(name))
+					if (((VariableDeclarationFragment)node).getName().toString().equals(operand.toString()))
 						return dec.getType().toString();
 				}
 			}
@@ -988,8 +988,8 @@ public class JavaASTParser {
 		
 		if(astNode.getParent() == null)
 			return "";
-		
-		return getTypeOfSimpleName(astNode.getParent(),name);
+
+		return getTypeOfSimpleName(astNode.getParent(), operand);
 	}
 
 	public ArrayList<SimpleName> getSimpleNames(ASTNode node) {
